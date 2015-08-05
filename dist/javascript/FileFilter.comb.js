@@ -102,6 +102,13 @@
     };
 
 })();;(function(){
+	"use script";
+	angular.module(APP.MODULE.COMMON).config([config]);
+
+	function config(){
+
+	};
+})();;(function(){
 	"use strict"
 	angular.module(APP.MODULE.COMMON).directive("svgInclude",[svgInclude]);
 	
