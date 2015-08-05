@@ -22,16 +22,27 @@ module.exports = function(grunt) {
         project : {
         	basedir: '..',
 			dist: '<%= project.basedir %>/dist',
+			css:{
+				src:'<%= project.basedir %>/css',
+				dist:'<%= project.dist %>/css'
+			},
 			js :{
 				src: '<%= project.basedir %>/javascript',
 				dist:'<%= project.dist %>/javascript',
 				combfile: 'FileFilter.comb.js',
-				minfile: 'FileFilter.min.js',
+				minfile: 'FileFilter.min.js'
 			},
 			svg: {
 				src:'<%= project.basedir %>/svg',
 				wrk:'<%= project.dist %>/svg',
-				dist:'<%= project.dist %>/css',
+				dist:'<%= project.dist %>/css'
+			}
+		},
+		copy:{
+			css:{
+				files:[
+					{expand: true, src: ['<%= project.css.src %>/**'], dest: '<%= project.css.dist %>/'}
+				]
 			}
 		},
 		concat : {
@@ -43,7 +54,7 @@ module.exports = function(grunt) {
 				'<%= project.js.dist %>/<%= project.js.combfile %>': [
 				    '<%= project.js.src %>/FileFilter.js',
 				    '<%= project.js.src %>/**/*Module.js',
-				    '<%= project.js.src %>/**/*.js',
+				    '<%= project.js.src %>/**/*.js'
 				    ]
 			  }
 			}
@@ -68,6 +79,9 @@ module.exports = function(grunt) {
 			},
             js: {
                 src: ['<%= project.js.dist %>/**/*' ]
+            },
+            css: {
+                src: ['<%= project.css.dist %>/**/*.css' ]
             }
         },
         
@@ -113,9 +127,10 @@ module.exports = function(grunt) {
         }
     });
 	//std build tasks 
-    grunt.registerTask('build',['build-svg','build-js']);
+    grunt.registerTask('build',['build-css','build-svg','build-js']);
     grunt.registerTask('build-svg',['clean:svg','svgmin','svgstore','clean:svgmin']);
 	grunt.registerTask('build-js',['clean:js','concat:js','uglify:js']);
+	grunt.registerTask('build-css',['clean:css','copy:css']);
 	
 	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
 		try{

@@ -1,0 +1,149 @@
+html,body{height: 100%;}
+body, div { margin:0;  font: 15px arial, sans-serif;}
+.main-container { width:100%; height:100%;}
+.main-container:before { content: '';
+    float: left;
+    height: 100%; 
+}
+.top-container {
+	box-sizing: border-box; 
+	background-color:#000033; 
+	color:#dddddd;
+}
+.file-details { 
+	width:50%; 
+	display:inline-block;
+	padding:10px; 
+	box-sizing: border-box;
+}
+.paging-details { 
+	width:50%; 
+	padding:10px;
+	display:inline-block; 
+	text-align: right; 
+	box-sizing: border-box;
+}
+.page-size { }
+.total-lines { }
+
+.pagination{
+	width:100%; 
+	height:54px;
+	border-top: 2px solid #002333; 
+	border-bottom: 2px solid #002333;
+	background-color: #000033; 
+	color:#dddddd;
+	padding:10px; 
+	box-sizing: border-box;
+}
+.current-page, .no-pages { 
+	display:inline-block;
+	height:20px;
+    width: 20px;
+}
+.main-content{
+	width:100%;
+	bottom:0;
+	position:relative;
+}
+.main-content:after
+{
+    content: '';
+    display: block;
+    clear: both;
+}
+.menu{
+	position:absolute;
+	top:0;
+	bottom:0;
+	width:50px;
+	background-color: #000033;
+}
+.page-content{
+	margin-left:50px;
+}
+table {border:none; border-spacing: 0;}
+tr{padding-top: 7px;}
+td,th{padding:5px 5px 0 5px;}
+.page-row{
+
+}
+.page-num{
+	border-bottom: 2px solid #616161;
+	background-color: #717171;
+	color:#dddddd;
+}
+.page-line{
+
+}
+
+.icon-slider {
+	width:560px
+}
+.icon{
+	padding:10px;
+}
+.icon-file{
+	
+	
+}
+
+svg.icon-file {
+	width:30px;
+	height:50px;
+}
+#icon-file g rect{
+	fill:#000033;
+	stroke:#ffffff;
+}
+#icon-file g path{
+	fill:#ffffff;
+	stroke:#ffffff;
+}
+.icon-file:hover{
+	opacity: .7;
+}
+.menu-file:hover {
+	opacity: .7;
+}
+
+svg.icon-prev25,svg.icon-next25 {
+	padding:0;
+	height:20px;
+	width:20px;
+	display:inline-block;
+}
+
+svg.icon-prev25:hover,svg.icon-next25:hover {
+	opacity: .7;
+}
+
+#icon-prev25,#icon-next25{
+	fill:#ffffff;
+	stroke:#ffffff;
+}
+
+.slider{
+	display:inline-block;
+	height:0px;
+	padding:10px;
+}
+input[type=range] {
+    -webkit-appearance: none;
+    margin:10px;
+    width: 100%;
+    height:0px;
+    border: 5px solid #ffffff;
+    border-radius: 2px;
+    box-sizing: border-box;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    
+    background-image: url(../svg/slider-ctrl.svg);
+
+    height: 25px;
+    width: 25px;
+    
+}
