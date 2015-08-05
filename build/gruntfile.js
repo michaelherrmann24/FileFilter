@@ -34,14 +34,18 @@ module.exports = function(grunt) {
 			},
 			svg: {
 				src:'<%= project.basedir %>/svg',
-				wrk:'<%= project.dist %>/svg',
-				dist:'<%= project.dist %>/css'
+				dist:'<%= project.dist %>/svg'
 			}
 		},
 		copy:{
 			css:{
 				files:[
 					{expand: true, src: ['<%= project.css.src %>/**'], dest: '<%= project.css.dist %>/'}
+				]
+			},
+			svg:{
+				files:[
+					{expand: true, src: ['<%= project.svg.src %>/**'], dest: '<%= project.svg.dist %>/'}
 				]
 			}
 		},
@@ -75,7 +79,7 @@ module.exports = function(grunt) {
 				src:['<%= project.svg.dist %>/**/*.svg']
 			},
 			svgmin:{
-				src:['<%= project.svg.src %>/**/*.min.svg']
+				src:['<%= project.svg.dist %>/**/*.min.svg']
 			},
             js: {
                 src: ['<%= project.js.dist %>/**/*' ]
@@ -96,7 +100,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: '<%= project.svg.src %>',
                 src: ['*.svg'],
-                dest: '<%= project.svg.src %>',
+                dest: '<%= project.svg.dist %>',
                 ext: '.min.svg'
             }
         },
@@ -110,7 +114,7 @@ module.exports = function(grunt) {
             },
             svg : {
             	files: {
-                    '<%= project.svg.dist %>/svg-defs.svg':  ['<%= project.svg.src %>/**/*.min.svg']
+                    '<%= project.svg.dist %>/svg-defs.svg':  ['<%= project.svg.dist %>/**/*.min.svg']
                   }
             }
         },
@@ -120,15 +124,19 @@ module.exports = function(grunt) {
                 tasks: ['build-js']
         	},
         	svg:{
-        		files:['<%= project.svg.src %>/**/*.svg','!<%= project.svg.src %>/**/*.min.svg'],
+        		files:['<%= project.svg.src %>/**/*.svg'],
         		tasks: ['build-svg']
+        	},
+        	css:{
+        		files:['<%= project.css.src %>/**/*.css'],
+        		tasks: ['copy:css']
         	}
         	
         }
     });
 	//std build tasks 
     grunt.registerTask('build',['build-css','build-svg','build-js']);
-    grunt.registerTask('build-svg',['clean:svg','svgmin','svgstore','clean:svgmin']);
+    grunt.registerTask('build-svg',['clean:svg','svgmin','svgstore']);
 	grunt.registerTask('build-js',['clean:js','concat:js','uglify:js']);
 	grunt.registerTask('build-css',['clean:css','copy:css']);
 	

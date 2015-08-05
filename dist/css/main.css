@@ -141,7 +141,7 @@ input[type=range] {
 input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
     
-    background-image: url(../svg/slider-ctrl.svg);
+    background-image: url(../svg/slider-ctrl.min.svg);
 
     height: 25px;
     width: 25px;

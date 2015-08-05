@@ -111,7 +111,7 @@
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './dist/css/svg-defs.svg',
+			templateUrl : './dist/svg/svg-defs.svg',
 			replace:true,
 			scope : {}
 		};
