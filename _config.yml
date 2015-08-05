@@ -1,2 +1,2 @@
-name: Michael Herrmann, File Filter
-markdown: kramdown
+markdown: redcarpet
+baseurl: FileFilter
