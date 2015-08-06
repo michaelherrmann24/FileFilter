@@ -2,11 +2,9 @@
 	<svg class="icon icon-prev25" data-first>
 		<use xlink:href="#icon-prev25"></use>
 	</svg>
-	<div class="current-page">{{pageView.model.currentPage}}</div>
 	<div class="slider">
-		<input type="range" data-ng-model="pageView.model.currentPage" min="1" max="{{pageView.model.totalPages}}" step="1">
+		<input type="number" data-ng-model="pageView.model.currentPage" min="1" max="{{pageView.model.totalPages}}" size="{{pageView.model.totalPages.toString().length}}" maxlength="{{pageView.model.totalPages.toString().length}}"> of {{pageView.model.totalPages}}
 	</div>
-	<div class="no-pages">{{pageView.model.totalPages}}</div>
 	<svg class="icon icon-next25" data-last>
 		<use xlink:href="#icon-next25"></use>
 	</svg>
