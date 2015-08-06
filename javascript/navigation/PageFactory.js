@@ -22,7 +22,7 @@
 					return currentPage;
 				},
 				set:function(value){
-					currentPage = value;
+					currentPage = value;	
 				}
 			});
 
