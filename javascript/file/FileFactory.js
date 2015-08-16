@@ -39,7 +39,6 @@
 			if(currentIndex < fileModel.file.size){
 				
 				return fileModel.fileReader.read(currentIndex,(currentIndex+GENMAP_BUFFER_SIZE)).then(function(chunk){
-					debugger;
 					var working = chunk;
 					var cp = currentIndex;
 

@@ -24,7 +24,8 @@ module.exports = function(grunt) {
 			dist: '<%= project.basedir %>/dist',
 			css:{
 				src:'<%= project.basedir %>/css',
-				dist:'<%= project.dist %>/css'
+				dist:'<%= project.dist %>/css',
+				combfile: 'main.css',
 			},
 			js :{
 				src: '<%= project.basedir %>/javascript',
@@ -38,11 +39,6 @@ module.exports = function(grunt) {
 			}
 		},
 		copy:{
-			css:{
-				files:[
-					{expand: true, src: ['<%= project.css.src %>/**'], dest: '<%= project.css.dist %>/'}
-				]
-			},
 			svg:{
 				files:[
 					{expand: true, src: ['<%= project.svg.src %>/**'], dest: '<%= project.svg.dist %>/'}
@@ -51,7 +47,7 @@ module.exports = function(grunt) {
 		},
 		concat : {
 			options: {
-				separator: ';'
+				separator: ' '
 			},
 			js: {
 			  files: {
@@ -60,6 +56,11 @@ module.exports = function(grunt) {
 				    '<%= project.js.src %>/**/*Module.js',
 				    '<%= project.js.src %>/**/*.js'
 				    ]
+			  }
+			},
+			css : {
+				files: {
+				'<%= project.css.dist %>/<%= project.css.combfile %>': ['<%= project.css.src %>/**/*.css']
 			  }
 			}
 		},
@@ -79,7 +80,7 @@ module.exports = function(grunt) {
 				src:['<%= project.svg.dist %>/**/*.svg']
 			},
 			svgmin:{
-				src:['<%= project.svg.dist %>/**/*.min.svg']
+				src:['<%= project.svg.src %>/**/*.min.svg']
 			},
             js: {
                 src: ['<%= project.js.dist %>/**/*' ]
@@ -129,16 +130,16 @@ module.exports = function(grunt) {
         	},
         	css:{
         		files:['<%= project.css.src %>/**/*.css'],
-        		tasks: ['copy:css']
+        		tasks: ['build-css']
         	}
         	
         }
     });
 	//std build tasks 
     grunt.registerTask('build',['build-css','build-svg','build-js']);
-    grunt.registerTask('build-svg',['clean:svg','svgmin','svgstore']);
+    grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgmin','svgstore']);
 	grunt.registerTask('build-js',['clean:js','concat:js','uglify:js']);
-	grunt.registerTask('build-css',['clean:css','copy:css']);
+	grunt.registerTask('build-css',['clean:css','concat:css']);
 	
 	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
 		try{

@@ -23,26 +23,26 @@
 		angular.bootstrap(document, [APP.NAME]);
 		
 	});
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.COMMON,[]);
 })();
-;(function(){
+ (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE,[]);
-})();;(function(){
+})(); (function(){
 	"use strict"
 	angular.module(APP.MODULE.FILTERS,[]);
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.MAIN,[]);
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.MENU,[]);
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV,[]);
-})();;(function(){
+})(); (function(){
     "use strict";
     angular.module(APP.MODULE.COMMON).config(['$provide', '$logProvider',logConfig]);
 
@@ -101,14 +101,14 @@
         };
     };
 
-})();;(function(){
+})(); (function(){
 	"use script";
 	angular.module(APP.MODULE.COMMON).config(['$compileProvider',config]);
 
 	function config($compileProvider){
 		//$compileProvider.debugInfoEnabled(false);
 	};
-})();;(function(){
+})(); (function(){
 	"use strict"
 	angular.module(APP.MODULE.COMMON).directive("svgInclude",[svgInclude]);
 	
@@ -124,7 +124,7 @@
 		};
 	}
 
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView",fileContent]);
 	function fileContent($log,fileView,pageView){
@@ -139,7 +139,7 @@
 			}
 		};
 	};
-})();;(function(){
+})(); (function(){
 	angular.module(APP.MODULE.FILE).directive("fileDetails",['fileView',fileDetails]);
 	
 	function fileDetails(fileView){
@@ -163,7 +163,7 @@
 			$scope.fileView = fileView;
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE).service("fileFactory",['$q','$log','fileReaderSrvc',FileFactory]); //
 	
@@ -204,7 +204,6 @@
 			if(currentIndex < fileModel.file.size){
 				
 				return fileModel.fileReader.read(currentIndex,(currentIndex+GENMAP_BUFFER_SIZE)).then(function(chunk){
-					debugger;
 					var working = chunk;
 					var cp = currentIndex;
 
@@ -255,7 +254,7 @@
 		
 		return FileModel;
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE).directive("fileLine",["$log","fileView",fileLine]);
 	
@@ -271,7 +270,7 @@
 		};
 	};
 })();
-;(function () {
+ (function () {
 	"use strict";
 	angular.module(APP.MODULE.FILE).service("fileReaderSrvc",['$q',fileReaderSrvc]);
 	var notified = false; 
@@ -349,7 +348,7 @@
 		
 		return FileReaderService;
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','fileView','pageView','fileFactory','pageFactory',fileSelector]);
 	
@@ -404,7 +403,7 @@
 	};
 	
 })();
-;(function(){
+ (function(){
 	angular.module(APP.MODULE.FILE).filter("fileSizeFilter",["$filter",fileSizeFilter]);
 	
 	var SIZE = ["B","KB","MB","GB","TB"];
@@ -427,7 +426,7 @@
 			return input;
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILE).service("fileView",["$log",FileView]);
 
@@ -444,7 +443,7 @@
 			}
 		});	
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILTERS).directive("filters",[filters]);
 
@@ -465,7 +464,7 @@
 
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	var mainModule = angular.module(APP.MODULE.MAIN);
 	
@@ -485,7 +484,7 @@
 
 		$scope.$watch('countDigests()');
 	}	
-})();;(function(){
+})(); (function(){
 	"use strict"
 	//this is a service because there should only ever be 1 instance. 
 	angular.module(APP.MODULE.MAIN).service("mainModel",[mainModel]);
@@ -517,7 +516,7 @@
 		
 		return new MainModel();
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.MENU).directive("menu", [Menu]);
 	function Menu(){
@@ -538,7 +537,7 @@
 		};
 	};
 })(); 
-;(function(){
+ (function(){
 	"use strict";
 	
 	angular.module(APP.MODULE.NAV).directive("first",first);
@@ -552,7 +551,7 @@
 			}
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	
 	angular.module(APP.MODULE.NAV).directive("last",last);
@@ -566,7 +565,7 @@
 			}
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	
 	angular.module(APP.MODULE.NAV).directive("next",next);
@@ -580,7 +579,7 @@
 			}
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV).factory("pageFactory",["$log",pageFactory]);
 	
@@ -616,6 +615,7 @@
 				},
 				set:function(value){
 					linesPerPage = value;
+					currentPage = 1;
 					totalPages = calcPages();
 				}
 			});
@@ -658,7 +658,7 @@
 		return PageModel;
 	};
 })();
-;(function(){
+ (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV).service("pageView",['$log',pageView]);
 
@@ -675,7 +675,7 @@
 			}
 		});	
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory",pagination]);
 	function pagination($log,fileView,pageView,pageFactory){
@@ -699,31 +699,33 @@
 			$scope.pageView = pageView;	
 			
 			this.next = function(){
-				$log.debug("next", $scope.currentPage, $scope.totalPages);
-				
-				
+				if(pageView.model.currentPage < pageView.model.totalPages){
+					pageView.model.currentPage++;
+					$scope.$apply();
+				}
 			};
 			this.prev = function(){
-				$log.debug("prev");
-				
+				if(pageView.model.currentPage > 1){
+					pageView.model.currentPage--;
+					$scope.$apply();
+				}
 			};
 			
 			this.first = function(){
-				$log.debug("first");
 				pageView.model.currentPage = 1;
 				$scope.$apply();
 			};
 			
 			this.last = function(){
-				$log.debug("last");
 				pageView.model.currentPage = pageView.model.totalPages;
 				$scope.$apply();
 			};
 			
 			$scope.$watch(fileSizeWatcher,updatePage);
-			
+
 			function updatePage(calc,prevCalc){
 				if(calc != prevCalc){
+					console.debug("watch update page ");
 					pageView.model.totalLines = calc;
 				}
 			};
@@ -740,7 +742,7 @@
 			};
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV).directive("pagingDetails",['pageView',pagingDetails]);
 	function pagingDetails(pageView){
@@ -757,7 +759,7 @@
 			}
 		};
 	};
-})();;(function(){
+})(); (function(){
 	"use strict";
 	
 	angular.module(APP.MODULE.NAV).directive("prev",prev);

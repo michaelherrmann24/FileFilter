@@ -15,6 +15,7 @@
     "grunt-svgmin": "^2.0.1",
     "grunt-svgstore": "^0.5.0",
     "matchdep": "^0.3.0",
-    "svgmin": "^0.1.0"
+    "svgmin": "^0.1.0",
+    "node-sass": "^3.2.0"
   }
 }

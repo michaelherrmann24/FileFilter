@@ -34,6 +34,7 @@
 				},
 				set:function(value){
 					linesPerPage = value;
+					currentPage = 1;
 					totalPages = calcPages();
 				}
 			});

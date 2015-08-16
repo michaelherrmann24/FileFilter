@@ -22,31 +22,33 @@
 			$scope.pageView = pageView;	
 			
 			this.next = function(){
-				$log.debug("next", $scope.currentPage, $scope.totalPages);
-				
-				
+				if(pageView.model.currentPage < pageView.model.totalPages){
+					pageView.model.currentPage++;
+					$scope.$apply();
+				}
 			};
 			this.prev = function(){
-				$log.debug("prev");
-				
+				if(pageView.model.currentPage > 1){
+					pageView.model.currentPage--;
+					$scope.$apply();
+				}
 			};
 			
 			this.first = function(){
-				$log.debug("first");
 				pageView.model.currentPage = 1;
 				$scope.$apply();
 			};
 			
 			this.last = function(){
-				$log.debug("last");
 				pageView.model.currentPage = pageView.model.totalPages;
 				$scope.$apply();
 			};
 			
 			$scope.$watch(fileSizeWatcher,updatePage);
-			
+
 			function updatePage(calc,prevCalc){
 				if(calc != prevCalc){
+					console.debug("watch update page ");
 					pageView.model.totalLines = calc;
 				}
 			};
