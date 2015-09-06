@@ -1,12 +1,6 @@
 <div class="menu">
-	<div class="menu-file">
-		<svg class="icon icon-file" >
-			<use xlink:href="#icon-file"></use>
-		</svg>
-	</div>
-	<div class="menu-filters">
-		<svg class="icon icon-filter" >
-			<use xlink:href="#icon-filter"></use>
-		</svg>
+
+	<div class="menu-filters" data-ng-class="(selected)?'selected':''" menu-selector="filter">
+		<svg-icon data-icon="icon-filter" data-icon-class="(selected)?'selected':''"></svg-icon>
 	</div>
 </div>

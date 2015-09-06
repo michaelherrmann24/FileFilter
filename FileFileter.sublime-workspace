@@ -40,12 +40,11 @@
 	},
 	"expanded_folders":
 	[
-		"/D/workspace/FileFilter",
-		"/D/workspace/FileFilter/WebContent",
-		"/D/workspace/FileFilter/WebContent/build"
+		"/D/workspace/FileFilter"
 	],
 	"file_history":
 	[
+		"/D/workspace/FileFilter/FileFileter.sublime-project",
 		"/C/Users/michael/AppData/Roaming/Sublime Text 3/Packages/User/FileFilter.sublime-build",
 		"/D/workspace/FileFilter/WebContent/build/gruntfile.js",
 		"/D/workspace/FileFilter/WebContent/javascript/common/CommonModule.js",
@@ -123,7 +122,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 291.0
+		"height": 118.0
 	},
 	"output.find_results":
 	{

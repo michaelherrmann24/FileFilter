@@ -1,10 +1,10 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView",fileContent]);
-	function fileContent($log,fileView,pageView){
+	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView","SITE",fileContent]);
+	function fileContent($log,fileView,pageView,SITE){
 		return {
 			restrict : 'E',
-			templateUrl : './templates/fileContent.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/fileContent.htm',
 			replace:true,
 			scope : {},
 			link: function(scope,element,attr){

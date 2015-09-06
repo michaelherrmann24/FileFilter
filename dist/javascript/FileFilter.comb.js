@@ -102,12 +102,53 @@
     };
 
 })(); (function(){
-	"use script";
-	angular.module(APP.MODULE.COMMON).config(['$compileProvider',config]);
+	"use strict"
+	angular.module(APP.MODULE.COMMON).constant("SITE",{
+		HTML : {
+			BASE_DIR : "./dist/templates"
+		}
+	});
+})();  (function(){
+	"use strict"
+	angular.module(APP.MODULE.COMMON).directive("svgIcon",['$document',svgIcon]);
+	
+	function svgIcon($document){
+		/**
+		 * The SVG Icon directive will find the global icon and apply it inline. 
+		 * this will make the html larger (client side only) 
+		 * but will allow css to be applied to any svg elements in non global way
+		 */
+		return {
+			restrict : 'E',
+			templateUrl : './dist/templates/svgIcon.htm',
+			replace:true,
+			scope : {
+				icon:'@',
+				iconClass:'='
+			},
+			compile:compile
+		};
 
-	function config($compileProvider){
-		//$compileProvider.debugInfoEnabled(false);
-	};
+
+		function compile(tElem, tAttrs){
+			processCompile(tElem, tAttrs);
+			return {
+				pre:preLink,
+				post:postLink	
+			}
+		};
+
+		function processCompile(tElem, tAttrs){
+			console.debug("compile",tElem, tAttrs);
+		};
+		function preLink(scope,iElem,iAttrs){
+			console.debug("pre link",scope,iElem,iAttrs);
+		};
+		function postLink(scope,iElem,iAttrs){
+			console.debug("post link",scope,iElem,iAttrs);
+		};
+	}
+
 })(); (function(){
 	"use strict"
 	angular.module(APP.MODULE.COMMON).directive("svgInclude",[svgInclude]);
@@ -118,7 +159,7 @@
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './dist/svg/svg-defs.svg',
+			templateUrl : './dist/svg/svg-defs.comb.min.svg',
 			replace:true,
 			scope : {}
 		};
@@ -126,11 +167,11 @@
 
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView",fileContent]);
-	function fileContent($log,fileView,pageView){
+	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView","SITE",fileContent]);
+	function fileContent($log,fileView,pageView,SITE){
 		return {
 			restrict : 'E',
-			templateUrl : './templates/fileContent.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/fileContent.htm',
 			replace:true,
 			scope : {},
 			link: function(scope,element,attr){
@@ -140,15 +181,15 @@
 		};
 	};
 })(); (function(){
-	angular.module(APP.MODULE.FILE).directive("fileDetails",['fileView',fileDetails]);
+	angular.module(APP.MODULE.FILE).directive("fileDetails",['fileView','SITE',fileDetails]);
 	
-	function fileDetails(fileView){
+	function fileDetails(fileView,SITE){
 		/**
 		 * The directive. 
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './templates/fileDetails.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/fileDetails.htm',
 			replace:true,
 			transclude: true,
 			scope : {},
@@ -256,13 +297,13 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileLine",["$log","fileView",fileLine]);
+	angular.module(APP.MODULE.FILE).directive("fileLine",["$log","fileView","SITE",fileLine]);
 	
-	function fileLine($log,fileView){
+	function fileLine($log,fileView,SITE){
 		return {
 			restrict : 'A',
 			link:function(scope,element,attr){
-
+				
 				fileView.model.readLine(scope.line).then(function(result){
 					scope.lineContent = result;
 				});
@@ -350,20 +391,17 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','fileView','pageView','fileFactory','pageFactory',fileSelector]);
+	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
 	
-	function fileSelector($log,fileView,pageView,fileFactory,pageFactory){
+	function fileSelector($log,$timeout,fileView,pageView,fileFactory,pageFactory){
 		/**
 		 * The directive. 
 		 */
 		return {
 			restrict : 'A',
-			scope : {},
+			scope : {type:'@fileSelect'},
 			controller: ['$scope', '$element', '$attrs', FileSelectorController],
-			controllerAs: 'fileSelectCtrl',
-			link:function(){
-				$log.log("initialize file selector directive.");
-			}
+			controllerAs: 'fileSelectCtrl'
 		};
 		
 		/**
@@ -372,7 +410,7 @@
 		function FileSelectorController($scope, $element, $attrs){
 			//$element.bind('change',initFileManager);
 			$element.bind('dragover',handleDragOver);
-			$element.bind('drop',handleDrop);
+			$element.bind('drop',handleDrop);	
 
 			/**
 			  * grab the file from the input and initiate the file Manager.
@@ -399,6 +437,8 @@
 				pageView.model = pageFactory.newInstance(fileView.model);
 				$scope.$apply();
 			};
+
+			
 		};
 	};
 	
@@ -518,22 +558,143 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.MENU).directive("menu", [Menu]);
-	function Menu(){
+	angular.module(APP.MODULE.MENU).directive("menu", ["SITE",Menu]);
+	function Menu(SITE){
 		return {
 			restrict : 'E',
-			templateUrl:"./templates/menu.htm",
+			templateUrl: SITE.HTML.BASE_DIR + '/menu.htm',
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', MenuController],
 			controllerAs: 'menuCtrl',
-			link:function(){
-				console.debug("menu directive");
+			link:function(scope,element,attr){
+				console.debug("menu directive",scope,element,attr);
 			}
 		};
 
 		function MenuController($scope, $element, $attrs){
 
+		};
+	};
+})(); 
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.MENU).service("menuOptionFactory", ['menuOption','filterOption',menuOptionFactory]);
+	
+	function menuOptionFactory(menuOption,filterOption){
+		
+
+		function MenuOptionFactory(){
+
+		}
+
+		/*
+		* factory function to return the compile funtion to use for the menu selector. 
+		*
+		*/
+		MenuOptionFactory.getMenuOption = function(tElement,tAttrs){
+			console.debug("MenuOptionFactory.getMenuOption",tElement,tAttrs);
+			var rtn;
+
+			switch(tAttrs.menuSelector) {
+    			case "filter":
+        			rtn = filterOption.newInstance(tElement,tAttrs);
+       	 			break;
+    			default:
+        			rtn = menuOption.newInstance(tElement,tAttrs);
+			}
+
+			console.debug("menuOptionFactory",rtn);
+			return rtn;
+
+		}
+		return MenuOptionFactory;
+	};
+})(); 
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption',filterOption]);
+	
+	function filterOption(menuOption){
+		
+		
+		function FilterOption(tElement,tAttrs){
+			return menuOption.call(this,tElement,tAttrs);
+		}
+		
+		//use the prototype of the default msg
+		FilterOption.prototype = Object.create(menuOption.prototype);
+		//set the constructor back to the RetriableMsgObject 
+		FilterOption.prototype.constructor = FilterOption;
+
+		FilterOption.prototype.compile = function(tElement,tAttrs){
+			menuOption.prototype.compile.apply(this,[tElement,tAttrs]);
+		};
+		FilterOption.prototype.preLink = function(scope,iElement,iAttrs){
+			menuOption.prototype.preLink.apply(this,[scope,iElement,iAttrs]);
+		};
+		FilterOption.prototype.postLink = function(scope,iElement,iAttrs){
+			menuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
+			iElement.bind('click',function(event){
+				console.debug("click - toggle filter visibility");
+				
+			});
+		};
+		
+
+		FilterOption.newInstance = function(tElement,tAttrs){ 
+			return new FilterOption(tElement,tAttrs);
+		};
+	
+		return FilterOption;
+	};
+})(); (function(){
+	"use strict";
+	angular.module(APP.MODULE.NAV).factory("menuOption",[menuOption]);
+	
+	function menuOption(){
+		
+		
+		function MenuOption(tElement,tAttrs){
+			
+			console.debug("MenuOption",this);
+
+			this.compile(tElement,tAttrs);
+			return {
+				pre:this.preLink,
+				post:this.postLink
+			}
+		}
+		
+		MenuOption.prototype.compile = function(tElement,tAttrs){
+		};
+		MenuOption.prototype.preLink = function(scope,iElement,iAttrs){
+		};
+		MenuOption.prototype.postLink = function(scope,iElement,iAttrs){
+			scope.selected = false;
+			iElement.bind('click',function(event){
+				scope.selected = !scope.selected;
+				scope.$applyAsync();
+			});
+			
+		};
+		
+
+		MenuOption.newInstance = function(tElement,tAttrs){ 
+			return new MenuOption(tElement,tAttrs);
+		};
+	
+		return MenuOption;
+	};
+})();
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.MENU).directive("menuSelector", ['menuOptionFactory',MenuSelector]);
+	function MenuSelector(menuOptionFactory){
+		return {
+			restrict : 'A',
+			compile:menuOptionFactory.getMenuOption
+			
 		};
 	};
 })(); 
@@ -677,8 +838,8 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory",pagination]);
-	function pagination($log,fileView,pageView,pageFactory){
+	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory","SITE",pagination]);
+	function pagination($log,fileView,pageView,pageFactory,SITE){
 	
 		
 		
@@ -687,7 +848,7 @@
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './templates/pagination.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/pagination.htm',
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', PaginationController],
@@ -744,14 +905,14 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagingDetails",['pageView',pagingDetails]);
-	function pagingDetails(pageView){
+	angular.module(APP.MODULE.NAV).directive("pagingDetails",['pageView',"SITE",pagingDetails]);
+	function pagingDetails(pageView,SITE){
 		/**
 		 * The directive. 
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './templates/pagingDetails.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/pagingDetails.htm',
 			replace:true,
 			scope : {},
 			link:function($scope){

@@ -1,19 +1,16 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','fileView','pageView','fileFactory','pageFactory',fileSelector]);
+	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
 	
-	function fileSelector($log,fileView,pageView,fileFactory,pageFactory){
+	function fileSelector($log,$timeout,fileView,pageView,fileFactory,pageFactory){
 		/**
 		 * The directive. 
 		 */
 		return {
 			restrict : 'A',
-			scope : {},
+			scope : {type:'@fileSelect'},
 			controller: ['$scope', '$element', '$attrs', FileSelectorController],
-			controllerAs: 'fileSelectCtrl',
-			link:function(){
-				$log.log("initialize file selector directive.");
-			}
+			controllerAs: 'fileSelectCtrl'
 		};
 		
 		/**
@@ -22,7 +19,7 @@
 		function FileSelectorController($scope, $element, $attrs){
 			//$element.bind('change',initFileManager);
 			$element.bind('dragover',handleDragOver);
-			$element.bind('drop',handleDrop);
+			$element.bind('drop',handleDrop);	
 
 			/**
 			  * grab the file from the input and initiate the file Manager.
@@ -49,6 +46,8 @@
 				pageView.model = pageFactory.newInstance(fileView.model);
 				$scope.$apply();
 			};
+
+			
 		};
 	};
 	

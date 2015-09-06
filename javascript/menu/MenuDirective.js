@@ -1,16 +1,16 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.MENU).directive("menu", [Menu]);
-	function Menu(){
+	angular.module(APP.MODULE.MENU).directive("menu", ["SITE",Menu]);
+	function Menu(SITE){
 		return {
 			restrict : 'E',
-			templateUrl:"./templates/menu.htm",
+			templateUrl: SITE.HTML.BASE_DIR + '/menu.htm',
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', MenuController],
 			controllerAs: 'menuCtrl',
-			link:function(){
-				console.debug("menu directive");
+			link:function(scope,element,attr){
+				console.debug("menu directive",scope,element,attr);
 			}
 		};
 

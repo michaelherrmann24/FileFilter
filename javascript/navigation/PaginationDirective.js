@@ -1,7 +1,7 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory",pagination]);
-	function pagination($log,fileView,pageView,pageFactory){
+	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory","SITE",pagination]);
+	function pagination($log,fileView,pageView,pageFactory,SITE){
 	
 		
 		
@@ -10,7 +10,7 @@
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './templates/pagination.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/pagination.htm',
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', PaginationController],

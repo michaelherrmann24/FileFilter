@@ -26,6 +26,7 @@ module.exports = function(grunt) {
 				src:'<%= project.basedir %>/css',
 				dist:'<%= project.dist %>/css',
 				combfile: 'main.css',
+				minfile: 'main.min.css',
 			},
 			js :{
 				src: '<%= project.basedir %>/javascript',
@@ -35,7 +36,13 @@ module.exports = function(grunt) {
 			},
 			svg: {
 				src:'<%= project.basedir %>/svg',
-				dist:'<%= project.dist %>/svg'
+				dist:'<%= project.dist %>/svg',
+				combfile: 'svg-defs.comb.svg',
+				minfile: 'svg-defs.comb.min.svg'
+			},
+			html: {
+				src:'<%= project.basedir %>/templates',
+				dist:'<%= project.dist %>/templates'
 			}
 		},
 		copy:{
@@ -71,6 +78,34 @@ module.exports = function(grunt) {
 		        }
 		      }
 		},
+		cssmin: {
+		  options: {
+		    shorthandCompacting: false,
+		    roundingPrecision: -1
+		  },
+		  css: {
+		    files: {
+		      '<%= project.css.dist %>/<%= project.css.minfile %>': ['<%= project.css.dist %>/<%= project.css.combfile %>']
+		    }
+		  }
+		},
+
+		htmlmin: {                                    
+    		html: {                                     
+      			options: {                                
+       				removeComments: true,
+        			collapseWhitespace: true
+      			},
+      			files: [
+      				{
+      					expand: true,
+			          	src: '<%= project.html.src %>/**/*.htm',
+			          	dest: '<%= project.html.dist %>',
+			        },
+			    ],
+    		}
+    	},
+
         clean: {
 			options: { force: 'true' },
 			all:{
@@ -80,13 +115,16 @@ module.exports = function(grunt) {
 				src:['<%= project.svg.dist %>/**/*.svg']
 			},
 			svgmin:{
-				src:['<%= project.svg.src %>/**/*.min.svg']
+				src:['<%= project.svg.dist %>/**/*.min.svg']
 			},
             js: {
                 src: ['<%= project.js.dist %>/**/*' ]
             },
             css: {
                 src: ['<%= project.css.dist %>/**/*.css' ]
+            },
+            html: {
+                src: ['<%= project.html.dist %>' ]
             }
         },
         
@@ -115,7 +153,7 @@ module.exports = function(grunt) {
             },
             svg : {
             	files: {
-                    '<%= project.svg.dist %>/svg-defs.svg':  ['<%= project.svg.dist %>/**/*.min.svg']
+                    '<%= project.svg.dist %>/svg-defs.comb.min.svg':  ['<%= project.svg.dist %>/**/*.min.svg']
                   }
             }
         },
@@ -131,15 +169,19 @@ module.exports = function(grunt) {
         	css:{
         		files:['<%= project.css.src %>/**/*.css'],
         		tasks: ['build-css']
+        	},
+        	html:{
+        		files:['<%= project.html.src %>/**/*.htm'],
+        		tasks: ['build-html']
         	}
-        	
         }
     });
 	//std build tasks 
-    grunt.registerTask('build',['build-css','build-svg','build-js']);
+    grunt.registerTask('build',['build-css','build-svg','build-js','build-html']);
     grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgmin','svgstore']);
 	grunt.registerTask('build-js',['clean:js','concat:js','uglify:js']);
-	grunt.registerTask('build-css',['clean:css','concat:css']);
+	grunt.registerTask('build-css',['clean:css','concat:css','cssmin:css']);
+	grunt.registerTask('build-html',['clean:html','htmlmin:html']);
 	
 	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
 		try{

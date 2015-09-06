@@ -1,52 +1,20 @@
+
 .icon{
 	padding:10px;
 }
 
-svg.icon-prev25,svg.icon-next25 {
+svg.icon-prev25,svg.icon-next25,svg.icon-prev,svg.icon-next{
 	padding:0;
 	height:20px;
 	width:20px;
 	display:inline-block;
 }
-
-svg.icon-prev25:hover,svg.icon-next25:hover {
-	opacity: .7;
-}
-
-#icon-prev25,#icon-next25{
+svg.icon-prev25 use,svg.icon-next25 use,svg.icon-prev use,svg.icon-next use{
 	fill:#ffffff;
 	stroke:#ffffff;
 }
 
-svg.icon-prev,svg.icon-next {
-	padding:0;
-	height:20px;
-	width:20px;
-	display:inline-block;
-}
-
-svg.icon-prev:hover,svg.icon-next:hover {
-	opacity: .7;
-}
-
-#icon-prev,#icon-next{
-	fill:#ffffff;
-	stroke:#ffffff;
-}
-
-svg.icon-file {
-	width:30px;
-	height:50px;
-}
-#icon-file g rect{
-	fill:#000033;
-	stroke:#ffffff;
-}
-#icon-file g path{
-	fill:#ffffff;
-	stroke:#ffffff;
-}
-.icon-file:hover{
+svg.icon-prev:hover,svg.icon-next:hover svg.icon-prev25:hover,svg.icon-next25:hover{
 	opacity: .7;
 }
 
@@ -54,14 +22,19 @@ svg.icon-filter {
 	width:30px;
 	height:50px;
 }
-#icon-filter g rect{
+
+
+
+svg.icon-filter use {
 	fill:none;
 	stroke:#ffffff;
+	stroke-width:12px;
 }
-#icon-filter g path{
-	fill:none;
-	stroke:#ffffff;
+
+svg.icon-filter use.selected{
+	stroke:#000033;
 }
+
 .icon-filter:hover{
 	opacity: .7;
 }

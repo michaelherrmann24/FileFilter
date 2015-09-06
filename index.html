@@ -3,22 +3,20 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>File Filter</title>
-		<link rel="stylesheet" href="./dist/css/main.css">
+		<link rel="stylesheet" href="./dist/css/main.min.css">
 		<script src="./lib/angular/angular.min.js"></script>
     	<script src="./dist/javascript/FileFilter.comb.js"></script>
 	</head>
 	<body data-file-select>
 		<svg-include></svg-include>
 		<div class="main-container" >
+			<menu></menu>
 			<div class="top-container">
 				<file-details></file-details><!-- hack for inline-block
-		--><paging-details></paging-details>
+				--><paging-details></paging-details>
 			</div>
 			<pagination></pagination>
-			<div class="main-content" >
-				<menu></menu>
-				<file-content></file-content>
-			</div>
+			<file-content></file-content>
 		</div>
 	</body>
 </html>

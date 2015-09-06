@@ -1,13 +1,13 @@
 (function(){
-	angular.module(APP.MODULE.FILE).directive("fileDetails",['fileView',fileDetails]);
+	angular.module(APP.MODULE.FILE).directive("fileDetails",['fileView','SITE',fileDetails]);
 	
-	function fileDetails(fileView){
+	function fileDetails(fileView,SITE){
 		/**
 		 * The directive. 
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './templates/fileDetails.htm',
+			templateUrl : SITE.HTML.BASE_DIR + '/fileDetails.htm',
 			replace:true,
 			transclude: true,
 			scope : {},

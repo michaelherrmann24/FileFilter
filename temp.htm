@@ -1,44 +1,17 @@
-
-<!--
-<div class="pagination">
-	<div class="page-size">
-		<span >Showing 
-		<input type="number" size="3" min="1" max="9999" data-ng-model="linesPerPage"/> lines of {{pagingCtrl.model.fileModel.fileMap.length || 0}} </span>
-	</div>
-	<div class="navigation">
-		<div class="page-prev">
-			<svg class="icon-wide icon-page-start" data-first>
-				<use xlink:href="#icon-page-start"></use>
-			</svg>
-			<svg class="icon icon-prev" data-prev>
-				<use xlink:href="#icon-prev"></use>
-			</svg>
-		</div>
-		<div class="pageDetails">
-			<span class="current-page">Page:{{currentPage}}/{{totalPages}}</span>
-		</div>
-		<div class="page-next" >
-			<svg class="icon icon-next" data-next>
-				<use xlink:href="#icon-next"></use>
-			</svg>
-			<svg class="icon-wide icon-page-end" data-last>
-				<use xlink:href="#icon-page-end"></use>
-			</svg>
-		</div>
-	</div>	
-</div>
-
-
-<table>
-	<tr class="page-row">
-		<td class="page-num">1</td>
-		<td class="page-line">asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf</td>
-	</tr>
-	<tr class="page-row">
-		<td class="page-num">2</td>
-		<td class="page-line">asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffdsafsadfasdfgfggfdasdfasdf asdfffd
-		</td>
-	</tr>	
-</table>
-
--->
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style>
+    .classA { fill:red;stroke:blue;}
+  </style> 
+  <symbol>
+    <g id="Port">
+      <circle style="fill:inherit" r="10"/>
+    </g>
+  </symbol>
+ 
+  <text y="15">black</text>
+  <use x="50" y="10" xlink:href="#Port" />
+  <text y="35">red</text>
+  <use x="50" y="30" xlink:href="#Port" class="classA"/>
+  <text y="55">blue</text>
+  <use x="50" y="50" xlink:href="#Port" style="fill:blue;stroke:green;"/>
+ </svg>
