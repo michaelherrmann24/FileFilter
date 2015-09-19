@@ -13,11 +13,20 @@
 } .filters{
 	width:100%;
 	padding:10px;
-} 
+}
+.filter-group{
+	border:solid black 1px;
+	display:inline-block;
+}
+.filter-group input{
+	display:inline-block;
+}
+
+
+ 
 .icon{
 	padding:10px;
 }
-
 svg.icon-prev25,svg.icon-next25,svg.icon-prev,svg.icon-next{
 	padding:0;
 	height:20px;
@@ -28,32 +37,41 @@ svg.icon-prev25 use,svg.icon-next25 use,svg.icon-prev use,svg.icon-next use{
 	fill:#ffffff;
 	stroke:#ffffff;
 }
-
 svg.icon-prev:hover,svg.icon-next:hover svg.icon-prev25:hover,svg.icon-next25:hover{
 	opacity: .7;
 }
-
 svg.icon-filter {
 	width:30px;
 	height:50px;
 }
-
-
-
 svg.icon-filter use {
 	fill:none;
 	stroke:#ffffff;
 	stroke-width:12px;
 }
-
 svg.icon-filter use.selected{
 	stroke:#000033;
 }
-
 .icon-filter:hover{
 	opacity: .7;
 }
- 
+
+svg.icon-and {
+	width:50px;
+	height:17.5px;
+	display:inline-block;
+}
+svg.icon-or {
+	width:35px;
+	height:17.25px;
+	display:inline-block;
+}
+svg.icon-or use, svg.icon-and use{
+	color:#000000;
+	stroke:#000000;
+	fill:none;
+	display:inline-block;
+} 
 .menu{
 	height:60px;
 	width:100%;
@@ -97,3 +115,5 @@ td,th{padding:5px 5px 0 5px;}
 .page-line{
 
 }
+
+/*# sourceMappingURL=main.css.map */

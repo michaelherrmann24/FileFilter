@@ -3,12 +3,8 @@
 	angular.module(APP.MODULE.NAV).factory("menuOption",[menuOption]);
 	
 	function menuOption(){
-		
-		
-		function MenuOption(tElement,tAttrs){
-			
-			console.debug("MenuOption",this);
 
+		function MenuOption(tElement,tAttrs){
 			this.compile(tElement,tAttrs);
 			return {
 				pre:this.preLink,

@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).service("fileFactory",['$q','$log','fileReaderSrvc',FileFactory]); //
+	angular.module(APP.MODULE.FILE).service("fileFactory",['$q','fileReaderSrvc',FileFactory]); //
 	
-	function FileFactory($q,$log,fileReaderSrvc){ //,fileReaderSVC
+	function FileFactory($q,fileReaderSrvc){ //,fileReaderSVC
 
 		var GENMAP_BUFFER_SIZE = 10 * 1024 * 1024; //10MB
 		
@@ -71,13 +71,13 @@
 				},handleError);
 				
 			}else{
-				$log.debug("file finished.",fileModel);
+				console.debug("file finished.",fileModel);
 			}
 			
 		};
 		
 		function handleError(error){
-			$log.error("Error Generating File Map",error);
+			console.error("Error Generating File Map",error);
 		};
 		/**
 		 * statically create a new instance of the File Manager. 

@@ -1,6 +1,6 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).service("pageView",['$log',pageView]);
+	angular.module(APP.MODULE.NAV).service("pageView",[pageView]);
 
 	function pageView(){
 		var model;

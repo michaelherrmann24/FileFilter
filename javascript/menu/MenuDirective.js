@@ -9,9 +9,6 @@
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', MenuController],
 			controllerAs: 'menuCtrl',
-			link:function(scope,element,attr){
-				console.debug("menu directive",scope,element,attr);
-			}
 		};
 
 		function MenuController($scope, $element, $attrs){

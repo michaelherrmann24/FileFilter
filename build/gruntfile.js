@@ -54,7 +54,8 @@ module.exports = function(grunt) {
 		},
 		concat : {
 			options: {
-				separator: ' '
+				separator: ' ',
+				sourceMap:true,
 			},
 			js: {
 			  files: {
@@ -72,6 +73,10 @@ module.exports = function(grunt) {
 			}
 		},
 		uglify : {
+			options:{
+				sourceMap:true,
+				sourceMapIn:'<%= project.js.dist %>/<%= project.js.combfile %>.map'
+			},
 			js: {
 		        files: {
 		        	'<%= project.js.dist %>/<%= project.js.minfile %>': ['<%= project.js.dist %>/<%= project.js.combfile %>']
@@ -81,7 +86,9 @@ module.exports = function(grunt) {
 		cssmin: {
 		  options: {
 		    shorthandCompacting: false,
-		    roundingPrecision: -1
+		    roundingPrecision: -1,
+		    sourceMap:true,
+		    sourceMapIn:'<%= project.css.dist %>/<%= project.css.combfile %>.map'
 		  },
 		  css: {
 		    files: {
@@ -121,7 +128,7 @@ module.exports = function(grunt) {
                 src: ['<%= project.js.dist %>/**/*' ]
             },
             css: {
-                src: ['<%= project.css.dist %>/**/*.css' ]
+                src: ['<%= project.css.dist %>/**/*.css','<%= project.css.dist %>/**/*.css.map' ]
             },
             html: {
                 src: ['<%= project.html.dist %>' ]

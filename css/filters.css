@@ -2,3 +2,12 @@
 	width:100%;
 	padding:10px;
 }
+.filter-group{
+	border:solid black 1px;
+	display:inline-block;
+}
+.filter-group input{
+	display:inline-block;
+}
+
+

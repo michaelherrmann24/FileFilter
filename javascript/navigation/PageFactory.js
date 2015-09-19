@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("pageFactory",["$log",pageFactory]);
+	angular.module(APP.MODULE.NAV).factory("pageFactory",[pageFactory]);
 	
-	function pageFactory($log){
+	function pageFactory(){
 		
 		var DEFAULT_LINES_PER_PAGE = 200;
 		var MIN_PAGE = 1;

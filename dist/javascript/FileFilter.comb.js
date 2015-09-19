@@ -7,7 +7,7 @@
 			FILE : "FF_File",
 			COMMON : "FF_Common",
 			NAV : "FF_Nav",
-			NAV : "FF_Filters",
+			FILTERS : "FF_Filters",
 			MENU : "FF_MENU"
 		}
 	};
@@ -17,7 +17,7 @@
 	angular.element(document).ready(function() {
 		
 		//initialise the module.    
-		angular.module(APP.NAME,[APP.MODULE.MAIN,APP.MODULE.FILE ,APP.MODULE.COMMON,APP.MODULE.NAV,APP.MODULE.MENU]);
+		angular.module(APP.NAME,[APP.MODULE.MAIN,APP.MODULE.FILE ,APP.MODULE.COMMON,APP.MODULE.NAV,APP.MODULE.MENU,APP.MODULE.FILTERS]);
 		
 		//bootstrap the module.
 		angular.bootstrap(document, [APP.NAME]);
@@ -42,65 +42,6 @@
 })(); (function(){
 	"use strict";
 	angular.module(APP.MODULE.NAV,[]);
-})(); (function(){
-    "use strict";
-    angular.module(APP.MODULE.COMMON).config(['$provide', '$logProvider',logConfig]);
-
-    function logConfig($provide, $logProvider) {
-        $provide.decorator('$log', function ($delegate) {
-            var originalFns = {};
-
-            // Store the original log functions
-            angular.forEach($delegate, function (originalFunction, functionName) {
-                originalFns[functionName] = originalFunction;
-            });
-
-            var functionsToDecorate = ['log','info','debug', 'warn'];
-
-            // Apply the decorations
-            angular.forEach(functionsToDecorate, function (functionName) {
-                $delegate[functionName] = logDecorator(originalFns[functionName]);
-            });
-
-            return $delegate;
-        });
-    };
-
-
-    function logDecorator(fn) {
-        return function () {
-            var args = [].slice.call(arguments);
-
-            // Insert a separator between the existing log message(s) and what we're adding.
-
-            // Use (instance of Error)'s stack to get the current line.
-            var stack = (new Error()).stack.split('\n').slice(1);
-
-            // Throw away the first item because it is the `$log.fn()` function, 
-            // but we want the code that called `$log.fn()`.
-            stack.shift();
-            
-            var callerStackline = stack[0].trim();
-
-            //var regex = new RegExp (/\(([^()]+)\)/g);
-            
-            var callingFile = callerStackline.match(/\(([^()]+)\)/g);
-            //extract what we want. 
-            var splitLine = callerStackline.split(" "); 
-            var callingFunction = splitLine[1]; 
-            var a = callingFile[0].split(":");
-            
-            var splitFilePath = a[1].split("/");
-            var file = splitFilePath[splitFilePath.length-1];
-            var line = a[2];
-
-            args.unshift(file+":"+line+":"+callingFunction);
-
-            // Call the original function with the new args.
-            fn.apply(fn, args);
-        };
-    };
-
 })(); (function(){
 	"use strict"
 	angular.module(APP.MODULE.COMMON).constant("SITE",{
@@ -167,8 +108,8 @@
 
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileContent",["$log","fileView","pageView","SITE",fileContent]);
-	function fileContent($log,fileView,pageView,SITE){
+	angular.module(APP.MODULE.FILE).directive("fileContent",["fileView","pageView","SITE",fileContent]);
+	function fileContent(fileView,pageView,SITE){
 		return {
 			restrict : 'E',
 			templateUrl : SITE.HTML.BASE_DIR + '/fileContent.htm',
@@ -206,9 +147,9 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).service("fileFactory",['$q','$log','fileReaderSrvc',FileFactory]); //
+	angular.module(APP.MODULE.FILE).service("fileFactory",['$q','fileReaderSrvc',FileFactory]); //
 	
-	function FileFactory($q,$log,fileReaderSrvc){ //,fileReaderSVC
+	function FileFactory($q,fileReaderSrvc){ //,fileReaderSVC
 
 		var GENMAP_BUFFER_SIZE = 10 * 1024 * 1024; //10MB
 		
@@ -277,13 +218,13 @@
 				},handleError);
 				
 			}else{
-				$log.debug("file finished.",fileModel);
+				console.debug("file finished.",fileModel);
 			}
 			
 		};
 		
 		function handleError(error){
-			$log.error("Error Generating File Map",error);
+			console.error("Error Generating File Map",error);
 		};
 		/**
 		 * statically create a new instance of the File Manager. 
@@ -297,9 +238,9 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileLine",["$log","fileView","SITE",fileLine]);
+	angular.module(APP.MODULE.FILE).directive("fileLine",["fileView","SITE",fileLine]);
 	
-	function fileLine($log,fileView,SITE){
+	function fileLine(fileView,SITE){
 		return {
 			restrict : 'A',
 			link:function(scope,element,attr){
@@ -391,9 +332,9 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
+	angular.module(APP.MODULE.FILE).directive("fileSelect",['$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
 	
-	function fileSelector($log,$timeout,fileView,pageView,fileFactory,pageFactory){
+	function fileSelector($timeout,fileView,pageView,fileFactory,pageFactory){
 		/**
 		 * The directive. 
 		 */
@@ -468,9 +409,9 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).service("fileView",["$log",FileView]);
+	angular.module(APP.MODULE.FILE).service("fileView",[FileView]);
 
-	function FileView($log){
+	function FileView(){
 		var model;
 		Object.defineProperty(this,'model',{
 			configurable:false,
@@ -485,9 +426,144 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTERS).directive("filters",[filters]);
+	angular.module(APP.MODULE.FILTERS).service("filterFactory",['$q',FilterFactory]); 
+	
+	function FilterFactory($q){ //,fileReaderSVC
 
-	function filters(){
+		/**
+		 * constructor for a filter object
+		 */
+		function FilterFactory(file){
+
+		};
+		
+		
+		FilterFactory.getFilter = function(type){
+
+		}
+		
+		return FilterFactory;
+
+	};
+})(); (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTERS).service("baseFilter",[baseFilter]); 
+	
+	function baseFilter(){
+
+		function BaseFilter(parent){
+			
+			var filter;
+			this.parent = parent;
+			this.fileMap;
+
+			Object.defineProperty(this,'filter',{
+				configurable:false,
+				enumerable:false,
+				get:function(){
+					return filter;
+				},
+				set:function(value){
+					filter = value;
+				}
+			});
+		};
+
+		BaseFilter.prototype.addFilter = function(filter){
+			this.filter = filter;
+		}
+		BaseFilter.prototype.removeFilter = function(filter){
+			
+			if(filter){
+				this.filter = filter.filter;
+				generateFileMap(parent.fileMap);
+			}
+		}
+		BaseFilter.prototype.generateFileMap = function(fileMap){
+
+			if(filter){
+				filter.generateFileMap(this.fileMap);
+			}
+		}
+		BaseFilter.prototype.getFileMap = function(){
+
+			if(filter){
+				return filter.getFileMap();
+			}else{
+				return this.fileMap;
+			}
+		}
+		
+		BaseFilter.prototype.notifyParent = function(){
+			if(this.parent && this.parent instanceof BaseFilter){
+				this.parent.notifyParent();
+			}
+		}
+
+		return BaseFilter
+	}
+
+})(); (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTERS).factory("abstractFilter",['$q','baseFilter',orFilter]); 
+	
+
+	function orFilter($q,baseFilter){
+
+		function OrFilter(parent){
+			baseFilter.call(this,[parent]);
+			this.orFilterIndex = 0;
+			//for the or filter the child filter is a map
+			this.filter = {};
+		};
+
+		//use the prototype of the default msg
+		OrFilter.prototype = Object.create(baseFilter.prototype);
+		//set the constructor back to the RetriableMsgObject 
+		OrFilter.prototype.constructor = OrFilter;
+		
+		
+		OrFilter.prototype.generateFileMap = function(){
+
+			for(var fltr in this.filter){
+				
+			}
+		}
+
+		OrFilter.prototype.addFilter = function(filter){
+			filter.orIndex = this.orFilterIndex;
+			this.filter[this.orFilterIndex] = filter;
+			this.orFilterIndex++; 
+			
+		}
+		OrFilter.prototype.removeFilter = function(filter){
+			//this is ok because it is an object not an array.
+			delete this.filter[filter.orIndex];
+		}
+		OrFilter.prototype.getFileMap = function(){
+			return this.fileMap;
+		}
+
+		OrFilter.prototype.notifyParent = function(){
+
+			//a child has changed, we need to regenerate fileMap
+			this.generateFileMap();
+			baseFilter.prototype.notifyParent.apply(this,[]);
+		}
+
+
+
+
+		return OrFilter
+	}
+
+	
+
+})(); (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTERS).directive("filters",['filtersView',filters]);
+
+	function filters(filtersView){
 		/**
 		 * The directive. 
 		 */
@@ -497,29 +573,62 @@
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs',filtersController],
-			controllerAs: 'filterCtrl'
+			controllerAs: 'filteCrtrl'
 		};
 
 		function filtersController($scope,$element, $attrs){
-
+			this.view = filtersView;
 		};
+	};
+})(); (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTERS).service("filtersView",[FiltersView]);
+
+	function FiltersView(){
+		var model;
+		var visible = false;
+		Object.defineProperty(this,'model',{
+			configurable:false,
+			enumerable:false,
+			get:function(){
+				return model;
+			},
+			set:function(value){
+				model = value;
+			}
+		});	
+		Object.defineProperty(this,'visible',{
+			configurable:false,
+			enumerable:false,
+			get:function(){
+				return visible;
+			},
+			set:function(value){
+				visible = value;
+			}	
+		});
+
+		
+		return this;
+	};
+	FiltersView.prototype.toggleVisible = function(){
+		this.visible = !this.visible;
 	};
 })(); (function(){
 	"use strict";
 	var mainModule = angular.module(APP.MODULE.MAIN);
 	
-	mainModule.controller("mainController",['$scope','mainModel','$log',MainController]);
+	mainModule.controller("mainController",['$scope','mainModel',MainController]);
 	
 	/**
 	 * managers the root level of the application.
 	 */
-	function MainController($scope,mainModel,$log){
+	function MainController($scope,mainModel){
 		
-		//$log.info('Initialize main controller');
 		this.model = mainModel;
 
 		$scope.countDigests = function() {
-   		//	$log.info('Digest');
+
 		}
 
 		$scope.$watch('countDigests()');
@@ -567,9 +676,6 @@
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', MenuController],
 			controllerAs: 'menuCtrl',
-			link:function(scope,element,attr){
-				console.debug("menu directive",scope,element,attr);
-			}
 		};
 
 		function MenuController($scope, $element, $attrs){
@@ -613,9 +719,9 @@
 })(); 
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption',filterOption]);
+	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption','filtersView',filterOption]);
 	
-	function filterOption(menuOption){
+	function filterOption(menuOption,filtersView){
 		
 		
 		function FilterOption(tElement,tAttrs){
@@ -637,7 +743,7 @@
 			menuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
 			iElement.bind('click',function(event){
 				console.debug("click - toggle filter visibility");
-				
+				filtersView.toggleVisible();
 			});
 		};
 		
@@ -653,12 +759,8 @@
 	angular.module(APP.MODULE.NAV).factory("menuOption",[menuOption]);
 	
 	function menuOption(){
-		
-		
-		function MenuOption(tElement,tAttrs){
-			
-			console.debug("MenuOption",this);
 
+		function MenuOption(tElement,tAttrs){
 			this.compile(tElement,tAttrs);
 			return {
 				pre:this.preLink,
@@ -742,9 +844,9 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("pageFactory",["$log",pageFactory]);
+	angular.module(APP.MODULE.NAV).factory("pageFactory",[pageFactory]);
 	
-	function pageFactory($log){
+	function pageFactory(){
 		
 		var DEFAULT_LINES_PER_PAGE = 200;
 		var MIN_PAGE = 1;
@@ -821,7 +923,7 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).service("pageView",['$log',pageView]);
+	angular.module(APP.MODULE.NAV).service("pageView",[pageView]);
 
 	function pageView(){
 		var model;
@@ -838,8 +940,8 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory","SITE",pagination]);
-	function pagination($log,fileView,pageView,pageFactory,SITE){
+	angular.module(APP.MODULE.NAV).directive("pagination",["fileView","pageView","pageFactory","SITE",pagination]);
+	function pagination(fileView,pageView,pageFactory,SITE){
 	
 		
 		
@@ -935,3 +1037,4 @@
 		};
 	};
 })();
+//# sourceMappingURL=FileFilter.comb.js.map

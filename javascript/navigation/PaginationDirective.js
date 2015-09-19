@@ -1,7 +1,7 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagination",["$log","fileView","pageView","pageFactory","SITE",pagination]);
-	function pagination($log,fileView,pageView,pageFactory,SITE){
+	angular.module(APP.MODULE.NAV).directive("pagination",["fileView","pageView","pageFactory","SITE",pagination]);
+	function pagination(fileView,pageView,pageFactory,SITE){
 	
 		
 		

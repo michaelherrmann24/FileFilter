@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption',filterOption]);
+	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption','filtersView',filterOption]);
 	
-	function filterOption(menuOption){
+	function filterOption(menuOption,filtersView){
 		
 		
 		function FilterOption(tElement,tAttrs){
@@ -24,7 +24,7 @@
 			menuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
 			iElement.bind('click',function(event){
 				console.debug("click - toggle filter visibility");
-				
+				filtersView.toggleVisible();
 			});
 		};
 		

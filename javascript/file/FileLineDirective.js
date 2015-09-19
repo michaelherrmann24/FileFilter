@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileLine",["$log","fileView","SITE",fileLine]);
+	angular.module(APP.MODULE.FILE).directive("fileLine",["fileView","SITE",fileLine]);
 	
-	function fileLine($log,fileView,SITE){
+	function fileLine(fileView,SITE){
 		return {
 			restrict : 'A',
 			link:function(scope,element,attr){

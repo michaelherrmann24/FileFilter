@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileSelect",['$log','$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
+	angular.module(APP.MODULE.FILE).directive("fileSelect",['$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
 	
-	function fileSelector($log,$timeout,fileView,pageView,fileFactory,pageFactory){
+	function fileSelector($timeout,fileView,pageView,fileFactory,pageFactory){
 		/**
 		 * The directive. 
 		 */

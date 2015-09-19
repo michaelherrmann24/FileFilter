@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).service("fileView",["$log",FileView]);
+	angular.module(APP.MODULE.FILE).service("fileView",[FileView]);
 
-	function FileView($log){
+	function FileView(){
 		var model;
 		Object.defineProperty(this,'model',{
 			configurable:false,
