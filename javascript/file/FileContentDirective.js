@@ -1,7 +1,7 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileContent",["fileView","pageView","SITE",fileContent]);
-	function fileContent(fileView,pageView,SITE){
+	angular.module(APP.MODULE.FILE).directive("fileContent",["fileView","pageView","filtersView","SITE",fileContent]);
+	function fileContent(fileView,pageView,filtersView,SITE){
 		return {
 			restrict : 'E',
 			templateUrl : SITE.HTML.BASE_DIR + '/fileContent.htm',
@@ -9,7 +9,8 @@
 			scope : {},
 			link: function(scope,element,attr){
 				scope.pageView = pageView;
-				scope.fileView = fileView;
+
+				scope.displayView = fileView;
 			}
 		};
 	};

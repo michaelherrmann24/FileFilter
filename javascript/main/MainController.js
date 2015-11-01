@@ -10,11 +10,5 @@
 	function MainController($scope,mainModel){
 		
 		this.model = mainModel;
-
-		$scope.countDigests = function() {
-
-		}
-
-		$scope.$watch('countDigests()');
 	}	
 })();

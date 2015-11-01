@@ -1,0 +1,639 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"background-c",
+				"background-color"
+			],
+			[
+				"backgrou",
+				"background-color"
+			],
+			[
+				"gen",
+				"generateFileMap"
+			],
+			[
+				"fileMap",
+				"fileMap"
+			],
+			[
+				"inline",
+				"inline-block"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "javascript/common/generator/FileMapGenerator.js",
+			"settings":
+			{
+				"buffer_size": 2905,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "(function(){\n	\"use strict\";\n	angular.module(APP.MODULE.FILTERS).directive(\"filters\",['filterFactory','filtersView',filters]);\n\n	function filters(filterFactory,filtersView){\n		/**\n		 * The directive. \n		 */\n		return {\n			restrict : 'E',\n			templateUrl : './templates/filters/filters.htm',\n			replace:true,\n			scope : {},\n			controller: ['$scope', '$element', '$attrs',filtersController],\n			controllerAs: 'filtersCtrl'\n		};\n\n		function filtersController($scope,$element, $attrs){\n\n			console.debug(\"filtersView\",filtersView);\n			console.debug(\"filtersView,model\",filtersView.model);\n				\n				\n\n\n			this.view = filtersView;\n\n\n			this.addGroup = function(){\n				\n			};\n			this.removeGroup = function(group){\n				filtersView.removeFilter(group);\n			};\n			this.addFilter = function(group){\n				filtersView.addFilter(group);\n			};\n			this.removeFilter = function(filter){\n				filtersView.removeFilter(filter);\n			};\n\n		};\n	};\n})();\n",
+			"file": "javascript/filters/view/FiltersDirective.js",
+			"file_size": 913,
+			"file_write_time": 130896103182878542,
+			"settings":
+			{
+				"buffer_size": 926,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "javascript/filters/view/FilterDirective.js",
+			"settings":
+			{
+				"buffer_size": 1191,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "javascript/filters/view/FiltersView.js",
+			"settings":
+			{
+				"buffer_size": 961,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "templates/filters/filters.htm",
+			"settings":
+			{
+				"buffer_size": 174,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "javascript/filters/view/FilterGroupDirective.js",
+			"settings":
+			{
+				"buffer_size": 1310,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "javascript/common/generator/FilterMapGenerator.js",
+			"settings":
+			{
+				"buffer_size": 3264,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "javascript/filters/model/BaseFilter.js",
+			"settings":
+			{
+				"buffer_size": 2006,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "javascript/filters/FilterFactory.js",
+			"settings":
+			{
+				"buffer_size": 427,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 416.0
+	},
+	"console":
+	{
+		"height": 120.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/D/workspace/FileFilter",
+		"/D/workspace/FileFilter/javascript",
+		"/D/workspace/FileFilter/javascript/common",
+		"/D/workspace/FileFilter/javascript/common/generator",
+		"/D/workspace/FileFilter/javascript/filters",
+		"/D/workspace/FileFilter/javascript/filters/model",
+		"/D/workspace/FileFilter/javascript/filters/view",
+		"/D/workspace/FileFilter/templates",
+		"/D/workspace/FileFilter/templates/filters"
+	],
+	"file_history":
+	[
+		"/D/workspace/FileFilter/javascript/file/Model/FilteredFileModel.js",
+		"/D/workspace/FileFilter/javascript/common/generator/FilterMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/filters/model/BaseFilter.js",
+		"/D/workspace/FileFilter/templates/filters/filterGroup.htm",
+		"/D/workspace/FileFilter/javascript/filters/view/FilterGroupDirective.js",
+		"/D/workspace/FileFilter/css/filters.css",
+		"/D/workspace/FileFilter/javascript/file/FileSelectorDirective.js",
+		"/D/workspace/FileFilter/javascript/common/generator/FileMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/file/FileContentDirective.js",
+		"/D/workspace/FileFilter/javascript/file/FileLineDirective.js",
+		"/D/workspace/FileFilter/templates/fileContent.htm",
+		"/D/workspace/FileFilter/index.html",
+		"/D/workspace/FileFilter/javascript/navigation/PaginationDirective.js",
+		"/D/workspace/FileFilter/javascript/filters/view/FilterDirective.js",
+		"/D/workspace/FileFilter/javascript/filters/model/OrFilter.js",
+		"/D/workspace/FileFilter/javascript/file/Model/FileModel.js",
+		"/D/workspace/FileFilter/templates/filters/filters.htm",
+		"/D/workspace/FileFilter/templates/filters/filter.htm",
+		"/D/workspace/FileFilter/javascript/filters/view/FiltersDirective.js",
+		"/D/workspace/FileFilter/javascript/filters/view/FiltersView.js",
+		"/C/Users/michael/Desktop/swift/wcs1/colMenu",
+		"/D/workspace/FileFilter/dist/javascript/FileFilter.comb.js",
+		"/D/workspace/FileFilter/build/gruntfile.js",
+		"/D/workspace/FileFilter/javascript/filters/FilterFactory.js",
+		"/D/workspace/FileFilter/javascript/filters/FiltersModule.js",
+		"/D/workspace/FileFilter/javascript/main/MainModel.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptions/FilterOption.js",
+		"/D/workspace/FileFilter/javascript/main/FileMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/main/MainModule.js",
+		"/D/workspace/FileFilter/javascript/main/FilterMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/generator/GeneratorModule.js",
+		"/D/workspace/FileFilter/javascript/common/generator/AbstractGenerator.js",
+		"/D/workspace/FileFilter/javascript/main/MainController.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptionFactory.js",
+		"/D/workspace/FileFilter/javascript/filters/view/Filters.js",
+		"/D/workspace/FileFilter/javascript/FileFilter.js",
+		"/D/workspace/FileFilter/templates/filters.htm",
+		"/D/workspace/FileFilter/javascript/file/FileView.js",
+		"/C/Temp/ESCMcreateRelease_Fep8.sh",
+		"/C/Users/michael/Desktop/ucolprd1.xml",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptions/MenuOption.js",
+		"/D/workspace/FileFilter/dist/templates/fileContent.htm",
+		"/D/workspace/FileFilter/dist/templates/fileDetails.htm",
+		"/D/workspace/FileFilter/templates/menu.htm",
+		"/D/workspace/FileFilter/dist/javascript/FileFilter.min.js.map",
+		"/D/workspace/FileFilter/dist/templates/filters.htm",
+		"/D/workspace/FileFilter/dist/javascript/FileFilter.comb.js.map",
+		"/D/workspace/FileFilter/javascript/common/svg/SvgIcon.js",
+		"/D/workspace/FileFilter/javascript/file/FileFactory.js",
+		"/D/workspace/FileFilter/javascript/filters/Filters.js",
+		"/D/workspace/FileFilter/javascript/filters/FiltersFactory.js",
+		"/D/workspace/FileFilter/javascript/filters/FiltersView.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuDirective.js",
+		"/D/workspace/FileFilter/javascript/filters/model/AbstractFilter.js",
+		"/D/workspace/FileFilter/javascript/navigation/PageFactory.js",
+		"/D/workspace/FileFilter/javascript/navigation/PageView.js",
+		"/D/workspace/FileFilter/javascript/common/constants.js",
+		"/D/workspace/FileFilter/css/icons.css",
+		"/C/tools/Rest-Core/com/ibm/commerce/rest/search/handler/ProductViewHandler.java",
+		"/D/workspace/FileFilter/javascript/common/CommonModule.js",
+		"/C/tools/WebSphereCommerceServerExtensionsLogic/au/com/coles/commerce/rest/search/handler/ExtProductViewHandler.java",
+		"/C/Users/michael/Desktop/ExtProductViewHandler.java",
+		"/D/workspace/FileFilter/FileFileter.sublime-project",
+		"/C/Users/michael/AppData/Roaming/Sublime Text 3/Packages/User/FileFilter.sublime-build",
+		"/D/workspace/FileFilter/WebContent/build/gruntfile.js",
+		"/D/workspace/FileFilter/WebContent/javascript/common/CommonModule.js",
+		"/D/workspace/FileFilter/FileFilter.sublime-build",
+		"/C/Users/michael/AppData/Roaming/Sublime Text 3/Packages/User/grunt.sublime-build"
+	],
+	"find":
+	{
+		"height": 22.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"D:\\workspace\\FileFilter\\javascript",
+			"C:\\tools\\code\\,D:\\workspace\\FileFilter\\javascript"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"push",
+			"deployWCS_Swift",
+			"deployWCS_Swiftshop",
+			"$watch",
+			"})();",
+			"HD",
+			"CC",
+			"HD",
+			"</dms:ShiftId>",
+			"<dms:Id>",
+			"svntagsurl",
+			"console",
+			"FileFactory",
+			"fileFactory",
+			"		\n",
+			"})();",
+			"fileFactory",
+			"log",
+			"$log",
+			"})();",
+			"$log"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 6,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "javascript/common/generator/FileMapGenerator.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2905,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								316,
+								303
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "javascript/filters/view/FiltersDirective.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 926,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								479,
+								479
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 126.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "javascript/filters/view/FilterDirective.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1191,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1043,
+								1043
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 84.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "javascript/filters/view/FiltersView.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 961,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								255,
+								255
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "templates/filters/filters.htm",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 174,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								125,
+								125
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "javascript/filters/view/FilterGroupDirective.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1310,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								548,
+								548
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "javascript/common/generator/FilterMapGenerator.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3264,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								269,
+								269
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "javascript/filters/model/BaseFilter.js",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 2006,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								320,
+								327
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": -0.0,
+						"translation.y": 84.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "javascript/filters/FilterFactory.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 427,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								287,
+								397
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 22.0
+	},
+	"input":
+	{
+		"height": 30.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 197.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/grunt.sublime-build",
+	"project": "FileFilter.sublime-project",
+	"replace":
+	{
+		"height": 40.0
+	},
+	"save_all_on_build": false,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"filefilter.com",
+				"dist\\javascript\\FileFilter.comb.js"
+			],
+			[
+				"filefilter.comb.js",
+				"dist\\javascript\\FileFilter.comb.js"
+			],
+			[
+				"filtersview",
+				"javascript\\filters\\FiltersView.js"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 35.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 624.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 258.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

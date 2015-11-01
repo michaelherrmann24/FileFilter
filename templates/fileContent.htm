@@ -1,8 +1,8 @@
 <div class="page-content">
 	<table>
-		<tr class="line-wrapper" data-ng-repeat="line in fileView.model.fileMap | limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1)" data-file-line>
-			<td>{{(pageView.model.linesPerPage * (pageView.model.currentPage-1)) + $index}}</td>
+		<tr class="line-wrapper" data-ng-repeat="line in displayView.model.displayMap| limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1) track by $index" data-file-line>
+			<td>{{line.row}}</td>
 			<td>{{lineContent}}</td>
-		</tr>	
+		</tr>
 	</table>
 </div>

@@ -1,4 +1,0 @@
-{
-	"shell_cmd": "grunt dev"
-	"working_dir": "${project_path}/WebContent/build"
-}

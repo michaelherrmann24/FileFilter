@@ -6,9 +6,10 @@
 		return {
 			restrict : 'A',
 			link:function(scope,element,attr){
-				
+				//console.debug("line",scope.line);
 				fileView.model.readLine(scope.line).then(function(result){
 					scope.lineContent = result;
+					scope.lineNo = scope.line.lineNO;
 				});
 			}
 		};

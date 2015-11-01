@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption','filtersView',filterOption]);
+	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption','filtersView','orFilter','baseFilter','fileView',filterOption]);
 	
-	function filterOption(menuOption,filtersView){
+	function filterOption(menuOption,filtersView,orFilter,baseFilter,fileView){
 		
 		
 		function FilterOption(tElement,tAttrs){
@@ -22,8 +22,8 @@
 		};
 		FilterOption.prototype.postLink = function(scope,iElement,iAttrs){
 			menuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
+
 			iElement.bind('click',function(event){
-				console.debug("click - toggle filter visibility");
 				filtersView.toggleVisible();
 			});
 		};

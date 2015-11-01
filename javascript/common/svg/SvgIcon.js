@@ -28,15 +28,9 @@
 			}
 		};
 
-		function processCompile(tElem, tAttrs){
-			console.debug("compile",tElem, tAttrs);
-		};
-		function preLink(scope,iElem,iAttrs){
-			console.debug("pre link",scope,iElem,iAttrs);
-		};
-		function postLink(scope,iElem,iAttrs){
-			console.debug("post link",scope,iElem,iAttrs);
-		};
+		function processCompile(tElem, tAttrs){};
+		function preLink(scope,iElem,iAttrs){};
+		function postLink(scope,iElem,iAttrs){};
 	}
 
 })();

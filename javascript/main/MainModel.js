@@ -7,17 +7,16 @@
 	
 		function MainModel(){
 			this.fileModel;
-			this.filteredFileManager;
+			this.filterModel;
+			this.pageModel;
 		};
 		
 		MainModel.prototype.setFileModel = function(fileModel){
 			this.fileModel = fileModel;
-			this.fileModel.generateFileMap();
 		};
 		
-		MainModel.prototype.setFilteredFileModel = function(fileModel){
+		MainModel.prototype.setFilterModel = function(filterModel){
 			this.filteredFileModel = fileModel;
-			this.fileModel.generateFileMap();
 		}
 		
 		MainModel.prototype.setPageModel = function(pageModel){

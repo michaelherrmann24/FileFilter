@@ -55,7 +55,7 @@ module.exports = function(grunt) {
 		concat : {
 			options: {
 				separator: ' ',
-				sourceMap:true,
+				sourceMap:true
 			},
 			js: {
 			  files: {
@@ -191,13 +191,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('build-html',['clean:html','htmlmin:html']);
 	
 	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
-		try{
-			//grunt.task.run(['build']);
-			grunt.task.run(['build','watch']);
-		}catch(error){
-			//if there is an error run again in 10 seconds. 
-			setTimeout(watchCatcher, 10000);
-		}
+		grunt.task.run(['build','watch']);
 	});
 };
 

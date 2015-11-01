@@ -48,7 +48,6 @@
 
 			function updatePage(calc,prevCalc){
 				if(calc != prevCalc){
-					console.debug("watch update page ");
 					pageView.model.totalLines = calc;
 				}
 			};
@@ -58,8 +57,8 @@
 			 * @returns
 			 */
 			function fileSizeWatcher(){
-				if(angular.isDefined(fileView.model) && angular.isDefined(fileView.model.fileMap)){
-					return fileView.model.fileMap.length;
+				if(angular.isDefined(fileView.model) && angular.isDefined(fileView.model.displayMap)){
+					return fileView.model.displayMap.length;
 				} 
 				return 0;
 			};

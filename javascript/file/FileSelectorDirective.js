@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileSelect",['$timeout','fileView','pageView','fileFactory','pageFactory',fileSelector]);
+	angular.module(APP.MODULE.FILE).directive("fileSelect",['$timeout','fileView','pageView','filtersView','filteredFileModel','pageFactory','fileMapGenerator',fileSelector]);
 	
-	function fileSelector($timeout,fileView,pageView,fileFactory,pageFactory){
+	function fileSelector($timeout,fileView,pageView,filtersView,filteredFileModel,pageFactory,fileMapGenerator){
 		/**
 		 * The directive. 
 		 */
@@ -41,10 +41,25 @@
 				evt.stopPropagation();
 			    evt.preventDefault();
 			    
-				fileView.model = fileFactory.newInstance(evt.dataTransfer.files[0]);
-				fileView.model.generateFileMap();
-				pageView.model = pageFactory.newInstance(fileView.model);
-				$scope.$apply();
+				fileView.model = filteredFileModel.newInstance(evt.dataTransfer.files[0]);
+				pageView.model = pageFactory.newInstance();
+				filtersView.model = fileView.model.filter;
+
+				console.debug("filtersView.model",filtersView.model);
+
+				fileMapGenerator.generate(fileView.model).then(function(result){
+					console.debug("file map completed",result);
+					fileView.model = result;
+				},function(err){
+					console.debug("error",err);
+				},function(update){
+					console.debug("notify update",update);
+				}).finally(function(){
+					$scope.$applyAsync();
+				});
+				//fileView.model.generateFileMap();
+				
+				
 			};
 
 			

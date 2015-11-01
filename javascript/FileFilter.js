@@ -20,7 +20,7 @@
 		angular.module(APP.NAME,[APP.MODULE.MAIN,APP.MODULE.FILE ,APP.MODULE.COMMON,APP.MODULE.NAV,APP.MODULE.MENU,APP.MODULE.FILTERS]);
 		
 		//bootstrap the module.
-		angular.bootstrap(document, [APP.NAME]);
+		angular.bootstrap(document, [APP.NAME]); 
 		
 	});
 })();
