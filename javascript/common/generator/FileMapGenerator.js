@@ -9,8 +9,7 @@
 		var generate = {};
 
 		var generatorInterface = {
-			generate:generateFctn,
-			cancel:cancel
+			generate:generateFctn
 		};
 
 		function generateFctn(file){
@@ -119,9 +118,6 @@
 			generate.execute.cancel();
 			generate.deferred.reject("generate-cancelled");
 		};
-
-		
-			
 
 		return generatorInterface;
 	};
