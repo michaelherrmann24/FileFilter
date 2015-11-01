@@ -310,8 +310,13 @@
 		};
 
 		function cancel(){
-			generate.execute.cancel();
-			generate.deferred.reject("generate-cancelled");
+			if(generate.execute){
+				generate.execute.cancel();	
+			}
+			if(generate.deferred){
+				generate.deferred.reject("generate-cancelled");	
+			}
+			
 		};
 
 		return generatorInterface;
