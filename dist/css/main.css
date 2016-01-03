@@ -22,8 +22,6 @@
 	padding:2px;
 }
 .filter-group{
-	width:302px;
-	border:solid black 1px;
 	display:inline-block;
 }
 
@@ -101,6 +99,19 @@ svg.icon-or use, svg.icon-and use{
 	stroke:#000000;
 	fill:none;
 	display:inline-block;
+}
+svg.icon-gears{
+	width:30px;
+	height:30px;
+	display:inline-block;
+	vertical-align:middle;
+	padding:0 10px 0 10px;
+}
+svg.show-gears{
+	
+}
+svg.hide-gears{
+	display:none;
 } 
 .menu{
 	height:60px;

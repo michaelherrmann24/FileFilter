@@ -8,7 +8,7 @@
 		 */
 		return {
 			restrict : 'E',
-			templateUrl : './dist/svg/svg-defs.comb.min.svg',
+			templateUrl : './dist/svg/svg-defs.comb.svg',
 			replace:true,
 			scope : {}
 		};

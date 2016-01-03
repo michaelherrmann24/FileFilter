@@ -1,3 +1,3 @@
-<div class="filters" data-ng-show="filtersCtrl.view.visible">
-	<filter-group data-group="filtersCtrl.view.model" data-ng-if="filtersCtrl.view.model"></filter-group>
-</div>  
+<div class="filters" data-ng-show="view.visible">
+	<ff-filter-group data-group="group" data-ng-if="group" data-ng-repeat="group in view.model.groups track by $index"></ff-filter-group>
+</div>

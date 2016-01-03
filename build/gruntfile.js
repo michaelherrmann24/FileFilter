@@ -13,12 +13,12 @@ module.exports = function(grunt) {
      * Dynamically load npm tasks
      */
 	require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-	
+
 	// configure the tasks
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
-        
+
         project : {
         	basedir: '..',
 			dist: '<%= project.basedir %>/dist',
@@ -33,6 +33,12 @@ module.exports = function(grunt) {
 				dist:'<%= project.dist %>/javascript',
 				combfile: 'FileFilter.comb.js',
 				minfile: 'FileFilter.min.js'
+			},
+			worker :{
+				src: '<%= project.basedir %>/javascript',
+				dist:'<%= project.dist %>/javascript',
+				combfile: 'Worker.comb.js',
+				minfile: 'Worker.min.js'
 			},
 			svg: {
 				src:'<%= project.basedir %>/svg',
@@ -58,13 +64,27 @@ module.exports = function(grunt) {
 				sourceMap:true
 			},
 			js: {
-			  files: {
-				'<%= project.js.dist %>/<%= project.js.combfile %>': [
-				    '<%= project.js.src %>/FileFilter.js',
-				    '<%= project.js.src %>/**/*Module.js',
-				    '<%= project.js.src %>/**/*.js'
-				    ]
-			  }
+				files: {
+					'<%= project.js.dist %>/<%= project.js.combfile %>': [
+					'<%= project.js.src %>/FileFilter.js',
+					'<%= project.js.src %>/**/*Module.js',
+					'<%= project.js.src %>/**/*.js',
+					'!<%= project.js.src %>/worker/remote/**/*'
+
+					]
+				}
+			},
+			worker:{
+				files: {
+					'<%= project.worker.dist %>/<%= project.worker.combfile %>': [
+					'<%= project.worker.src %>/file/FileModule.js',
+					'<%= project.worker.src %>/worker/WorkerModule.js',
+					'<%= project.worker.src %>/file/factory/ChunkMapper.js',
+					'<%= project.worker.src %>/file/factory/Line.js',
+					'<%= project.worker.src %>/file/service/FileReaderService.js',
+					'<%= project.worker.src %>/worker/remote/**/*.js'
+					]
+				}
 			},
 			css : {
 				files: {
@@ -73,15 +93,24 @@ module.exports = function(grunt) {
 			}
 		},
 		uglify : {
-			options:{
-				sourceMap:true,
-				sourceMapIn:'<%= project.js.dist %>/<%= project.js.combfile %>.map'
+			js:{
+				options:{
+					sourceMap:true,
+					sourceMapIn:'<%= project.js.dist %>/<%= project.js.combfile %>.map'
+				},
+				files: {
+					'<%= project.js.dist %>/<%= project.js.minfile %>': ['<%= project.js.dist %>/<%= project.js.combfile %>']
+				}
 			},
-			js: {
-		        files: {
-		        	'<%= project.js.dist %>/<%= project.js.minfile %>': ['<%= project.js.dist %>/<%= project.js.combfile %>']
-		        }
-		      }
+			worker:{
+				options:{
+					sourceMap:true,
+					sourceMapIn:'<%= project.worker.dist %>/<%= project.worker.combfile %>.map'
+				},
+				files: {
+					'<%= project.worker.dist %>/<%= project.worker.minfile %>': ['<%= project.worker.dist %>/<%= project.worker.combfile %>']
+				}
+			}
 		},
 		cssmin: {
 		  options: {
@@ -97,9 +126,9 @@ module.exports = function(grunt) {
 		  }
 		},
 
-		htmlmin: {                                    
-    		html: {                                     
-      			options: {                                
+		htmlmin: {
+    		html: {
+      			options: {
        				removeComments: true,
         			collapseWhitespace: true
       			},
@@ -134,12 +163,14 @@ module.exports = function(grunt) {
                 src: ['<%= project.html.dist %>' ]
             }
         },
-        
+
         svgmin: { //minimize SVG files
             options: {
                 plugins: [
                     { removeViewBox: false },
-                    { removeUselessStrokeAndFill: true }
+                    { removeUselessStrokeAndFill: false },
+                    { collapseGroups: false },
+                    { removeUnknownsAndDefaults: false }
                 ]
             },
             svg: {
@@ -150,9 +181,9 @@ module.exports = function(grunt) {
                 ext: '.min.svg'
             }
         },
-        
+
         svgstore : {
-            options : { 
+            options : {
             	prefix : 'icon-',
             	svg:{
             		style:"display: none;"
@@ -160,7 +191,7 @@ module.exports = function(grunt) {
             },
             svg : {
             	files: {
-                    '<%= project.svg.dist %>/svg-defs.comb.min.svg':  ['<%= project.svg.dist %>/**/*.min.svg']
+                    '<%= project.svg.dist %>/svg-defs.comb.svg':  ['<%= project.svg.src %>/**/*.svg']
                   }
             }
         },
@@ -183,13 +214,14 @@ module.exports = function(grunt) {
         	}
         }
     });
-	//std build tasks 
+	//std build tasks
     grunt.registerTask('build',['build-css','build-svg','build-js','build-html']);
-    grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgmin','svgstore']);
-	grunt.registerTask('build-js',['clean:js','concat:js','uglify:js']);
+    //grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgmin','svgstore']);
+    grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgstore']);
+	grunt.registerTask('build-js',['clean:js','concat:js','concat:worker','uglify:js','uglify:worker']);
 	grunt.registerTask('build-css',['clean:css','concat:css','cssmin:css']);
 	grunt.registerTask('build-html',['clean:html','htmlmin:html']);
-	
+
 	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
 		grunt.task.run(['build','watch']);
 	});

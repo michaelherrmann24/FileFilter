@@ -1,1 +1,1 @@
-<div class="page-content"><table><tr class="line-wrapper" data-ng-repeat="line in displayView.model.displayMap| limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1) track by $index" data-file-line><td>{{line.row}}</td><td>{{lineContent}}</td></tr></table></div>
+<div class="page-content"><table><file-line data-ng-repeat="line in fileView.model.lines| limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1) track by line.row"></file-line></table></div>

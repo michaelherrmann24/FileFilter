@@ -47,3 +47,16 @@ svg.icon-or use, svg.icon-and use{
 	fill:none;
 	display:inline-block;
 }
+svg.icon-gears{
+	width:30px;
+	height:30px;
+	display:inline-block;
+	vertical-align:middle;
+	padding:0 10px 0 10px;
+}
+svg.show-gears{
+	
+}
+svg.hide-gears{
+	display:none;
+}

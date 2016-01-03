@@ -1,38 +1,31 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).factory("filterOption",['menuOption','filtersView','orFilter','baseFilter','fileView',filterOption]);
-	
-	function filterOption(menuOption,filtersView,orFilter,baseFilter,fileView){
-		
-		
+	angular.module(APP.MODULE.NAV).factory("FilterOption",['MenuOption','FiltersView',FilterOptionFactory]);
+
+	function FilterOptionFactory(MenuOption,FiltersView){
+
+
 		function FilterOption(tElement,tAttrs){
-			return menuOption.call(this,tElement,tAttrs);
+			return MenuOption.call(this,tElement,tAttrs);
 		}
-		
-		//use the prototype of the default msg
-		FilterOption.prototype = Object.create(menuOption.prototype);
-		//set the constructor back to the RetriableMsgObject 
+
+		FilterOption.prototype = Object.create(MenuOption.prototype);
 		FilterOption.prototype.constructor = FilterOption;
 
 		FilterOption.prototype.compile = function(tElement,tAttrs){
-			menuOption.prototype.compile.apply(this,[tElement,tAttrs]);
+			MenuOption.prototype.compile.apply(this,[tElement,tAttrs]);
 		};
 		FilterOption.prototype.preLink = function(scope,iElement,iAttrs){
-			menuOption.prototype.preLink.apply(this,[scope,iElement,iAttrs]);
+			MenuOption.prototype.preLink.apply(this,[scope,iElement,iAttrs]);
 		};
 		FilterOption.prototype.postLink = function(scope,iElement,iAttrs){
-			menuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
+			MenuOption.prototype.postLink.apply(this,[scope,iElement,iAttrs]);
 
 			iElement.bind('click',function(event){
-				filtersView.toggleVisible();
+				FiltersView.toggleVisible();
 			});
 		};
-		
 
-		FilterOption.newInstance = function(tElement,tAttrs){ 
-			return new FilterOption(tElement,tAttrs);
-		};
-	
 		return FilterOption;
 	};
 })();

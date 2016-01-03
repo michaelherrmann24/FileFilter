@@ -5,7 +5,7 @@
 		<title>File Filter</title>
 		<link rel="stylesheet" href="./dist/css/main.min.css">
 		<script src="./lib/angular/angular.min.js"></script>
-    	<script src="./dist/javascript/FileFilter.min.js"></script>
+    	<script src="./dist/javascript/FileFilter.comb.js"></script>
 	</head>
 	<body data-file-select>
 		<svg-include></svg-include>
@@ -15,9 +15,10 @@
 				<file-details></file-details><!-- hack for inline-block
 				--><paging-details></paging-details>
 			</div>
+			<ff-filters></ff-filters>
 			<pagination></pagination>
-			<filters></filters>
-			<file-content></file-content>	
+
+			<file-content></file-content>
 			<pagination></pagination>
 		</div>
 	</body>

@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"file",
+				"fileReader"
+			],
+			[
+				"re",
+				"reject"
+			],
+			[
 				"background-c",
 				"background-color"
 			],
@@ -28,77 +36,10 @@
 	"buffers":
 	[
 		{
-			"file": "javascript/common/generator/FileMapGenerator.js",
+			"file": "javascript/menu/MenuDirective.js",
 			"settings":
 			{
-				"buffer_size": 2905,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "(function(){\n	\"use strict\";\n	angular.module(APP.MODULE.FILTERS).directive(\"filters\",['filterFactory','filtersView',filters]);\n\n	function filters(filterFactory,filtersView){\n		/**\n		 * The directive. \n		 */\n		return {\n			restrict : 'E',\n			templateUrl : './templates/filters/filters.htm',\n			replace:true,\n			scope : {},\n			controller: ['$scope', '$element', '$attrs',filtersController],\n			controllerAs: 'filtersCtrl'\n		};\n\n		function filtersController($scope,$element, $attrs){\n\n			console.debug(\"filtersView\",filtersView);\n			console.debug(\"filtersView,model\",filtersView.model);\n				\n				\n\n\n			this.view = filtersView;\n\n\n			this.addGroup = function(){\n				\n			};\n			this.removeGroup = function(group){\n				filtersView.removeFilter(group);\n			};\n			this.addFilter = function(group){\n				filtersView.addFilter(group);\n			};\n			this.removeFilter = function(filter){\n				filtersView.removeFilter(filter);\n			};\n\n		};\n	};\n})();\n",
-			"file": "javascript/filters/view/FiltersDirective.js",
-			"file_size": 913,
-			"file_write_time": 130896103182878542,
-			"settings":
-			{
-				"buffer_size": 926,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "javascript/filters/view/FilterDirective.js",
-			"settings":
-			{
-				"buffer_size": 1191,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "javascript/filters/view/FiltersView.js",
-			"settings":
-			{
-				"buffer_size": 961,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "templates/filters/filters.htm",
-			"settings":
-			{
-				"buffer_size": 174,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "javascript/filters/view/FilterGroupDirective.js",
-			"settings":
-			{
-				"buffer_size": 1310,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "javascript/common/generator/FilterMapGenerator.js",
-			"settings":
-			{
-				"buffer_size": 3264,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "javascript/filters/model/BaseFilter.js",
-			"settings":
-			{
-				"buffer_size": 2006,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "javascript/filters/FilterFactory.js",
-			"settings":
-			{
-				"buffer_size": 427,
+				"buffer_size": 399,
 				"line_ending": "Windows"
 			}
 		}
@@ -110,16 +51,16 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 104.0,
 		"last_filter": "",
 		"selected_items":
 		[
 		],
-		"width": 416.0
+		"width": 472.0
 	},
 	"console":
 	{
-		"height": 120.0,
+		"height": 346.0,
 		"history":
 		[
 		]
@@ -138,56 +79,111 @@
 		"/D/workspace/FileFilter",
 		"/D/workspace/FileFilter/javascript",
 		"/D/workspace/FileFilter/javascript/common",
-		"/D/workspace/FileFilter/javascript/common/generator",
-		"/D/workspace/FileFilter/javascript/filters",
-		"/D/workspace/FileFilter/javascript/filters/model",
-		"/D/workspace/FileFilter/javascript/filters/view",
+		"/D/workspace/FileFilter/javascript/common/factory",
+		"/D/workspace/FileFilter/javascript/common/service",
+		"/D/workspace/FileFilter/javascript/file",
+		"/D/workspace/FileFilter/javascript/file/factory",
+		"/D/workspace/FileFilter/javascript/filter",
+		"/D/workspace/FileFilter/javascript/filter/directive",
+		"/D/workspace/FileFilter/javascript/filter/factory",
+		"/D/workspace/FileFilter/javascript/filter/service",
+		"/D/workspace/FileFilter/javascript/menu",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptions",
+		"/D/workspace/FileFilter/javascript/navigation",
+		"/D/workspace/FileFilter/javascript/navigation/factory",
+		"/D/workspace/FileFilter/javascript/navigation/service",
 		"/D/workspace/FileFilter/templates",
 		"/D/workspace/FileFilter/templates/filters"
 	],
 	"file_history":
 	[
-		"/D/workspace/FileFilter/javascript/file/Model/FilteredFileModel.js",
-		"/D/workspace/FileFilter/javascript/common/generator/FilterMapGenerator.js",
-		"/D/workspace/FileFilter/javascript/filters/model/BaseFilter.js",
-		"/D/workspace/FileFilter/templates/filters/filterGroup.htm",
-		"/D/workspace/FileFilter/javascript/filters/view/FilterGroupDirective.js",
-		"/D/workspace/FileFilter/css/filters.css",
-		"/D/workspace/FileFilter/javascript/file/FileSelectorDirective.js",
-		"/D/workspace/FileFilter/javascript/common/generator/FileMapGenerator.js",
-		"/D/workspace/FileFilter/javascript/file/FileContentDirective.js",
-		"/D/workspace/FileFilter/javascript/file/FileLineDirective.js",
-		"/D/workspace/FileFilter/templates/fileContent.htm",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptionFactory.js",
 		"/D/workspace/FileFilter/index.html",
-		"/D/workspace/FileFilter/javascript/navigation/PaginationDirective.js",
-		"/D/workspace/FileFilter/javascript/filters/view/FilterDirective.js",
-		"/D/workspace/FileFilter/javascript/filters/model/OrFilter.js",
-		"/D/workspace/FileFilter/javascript/file/Model/FileModel.js",
 		"/D/workspace/FileFilter/templates/filters/filters.htm",
-		"/D/workspace/FileFilter/templates/filters/filter.htm",
+		"/D/workspace/FileFilter/javascript/file/directive/FileSelectorDirective.js",
+		"/D/workspace/FileFilter/javascript/common/service/FilterMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/filter/factory/FilterMapper.js",
+		"/D/workspace/FileFilter/javascript/filter/directive/FilterDirective.js",
+		"/D/workspace/FileFilter/javascript/filter/factory/Filter.js",
+		"/D/workspace/FileFilter/templates/filters/filterGroup.htm",
+		"/D/workspace/FileFilter/javascript/filter/directive/FiltersDirective.js",
+		"/D/workspace/FileFilter/javascript/filter/factory/Filters.js",
+		"/D/workspace/FileFilter/javascript/file/factory/FileMapper.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptions/FilterOption.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuSelectDirective.js",
+		"/D/workspace/FileFilter/javascript/filter/FiltersModule.js",
+		"/D/workspace/FileFilter/javascript/filter/factory/FilterGroup.js",
+		"/D/workspace/FileFilter/javascript/filter/service/FiltersView.js",
+		"/D/workspace/FileFilter/javascript/filter/directive/FilterGroupDirective.js",
+		"/D/workspace/FileFilter/javascript/menu/MenuOptions/MenuOption.js",
+		"/D/workspace/FileFilter/javascript/FileFilter.js",
+		"/D/workspace/FileFilter/javascript/filter/FilterFactory.js",
+		"/D/workspace/FileFilter/javascript/filter/view/FiltersDirective.js",
+		"/D/workspace/FileFilter/javascript/common/factory/ChunkProcessor.js",
+		"/D/workspace/FileFilter/javascript/common/service/FileMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/file/directive/FileContentDirective.js",
+		"/D/workspace/FileFilter/dist/javascript/FileFilter.comb.js",
+		"/D/workspace/FileFilter/templates/fileContent.htm",
+		"/D/workspace/FileFilter/templates/fileLine.htm",
+		"/D/workspace/FileFilter/javascript/file/directive/FileLineDirective.js",
+		"/D/workspace/FileFilter/javascript/common/factory/FileMapper.js",
+		"/D/workspace/FileFilter/javascript/common/factory/WorkManager.js",
+		"/D/workspace/FileFilter/javascript/common/factory/ChunkMapper.js",
+		"/D/workspace/FileFilter/javascript/file/factory/Line.js",
+		"/D/workspace/FileFilter/javascript/navigation/PageFactory.js",
+		"/D/workspace/FileFilter/javascript/navigation/PaginationDirective.js",
+		"/D/workspace/FileFilter/javascript/file/factory/FileModel.js",
+		"/D/workspace/FileFilter/javascript/file/service/FileReaderService.js",
+		"/D/workspace/FileFilter/javascript/file/Model/Line.js",
+		"/D/workspace/FileFilter/javascript/file/FileContentDirective.js",
+		"/D/workspace/FileFilter/javascript/file/FileSelectorDirective.js",
+		"/D/workspace/FileFilter/javascript/file/FileReaderService.js",
+		"/C/Temp/flow.properties",
+		"/D/workspace/FileFilter/javascript/file/Model/FileModel.js",
+		"/D/workspace/FileFilter/javascript/common/ChunkMapper.js",
+		"/D/workspace/FileFilter/javascript/common/generator/FileMapGenerator.js",
+		"/C/Users/michael/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/michael/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/D/workspace/FileFilter/build/package.json",
 		"/D/workspace/FileFilter/javascript/filters/view/FiltersDirective.js",
 		"/D/workspace/FileFilter/javascript/filters/view/FiltersView.js",
-		"/C/Users/michael/Desktop/swift/wcs1/colMenu",
-		"/D/workspace/FileFilter/dist/javascript/FileFilter.comb.js",
+		"/D/workspace/FileFilter/css/filters.css",
+		"/D/workspace/FileFilter/css/icons.css",
+		"/D/workspace/FileFilter/templates/filters/filter.htm",
 		"/D/workspace/FileFilter/build/gruntfile.js",
+		"/D/workspace/FileFilter/javascript/common/svg/SvgInclude.js",
+		"/D/workspace/FileFilter/javascript/common/generator/FilterMapGenerator.js",
+		"/D/workspace/FileFilter/javascript/filters/view/FilterDirective.js",
+		"/C/Temp/stagecopy/stagecopy-live.sql",
+		"/C/Temp/stagecopy/stagecopy-stage.sql",
+		"/C/tools/code/WC/PageLayout-Server/com/ibm/commerce/pagelayout/facade/server/commands/ChangeLayoutPageLocationPartCmdImpl.java",
+		"/D/workspace/FileFilter/javascript/filters/model/OrFilter.js",
+		"/D/workspace/FileFilter/javascript/filters/model/BaseFilter.js",
+		"/C/Temp/trace.log.txt",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_Swiftshop",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_clearCache",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_copyEarFileToTheWebServer_FEP8",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_Swift",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_deploy_FEP8",
+		"/C/Users/michael/Desktop/swift/wcs1/deploy_WCS_FEP8",
+		"/D/workspace/FileFilter/javascript/filters/view/FilterGroupDirective.js",
 		"/D/workspace/FileFilter/javascript/filters/FilterFactory.js",
+		"/D/workspace/FileFilter/javascript/file/Model/FilteredFileModel.js",
+		"/D/workspace/FileFilter/javascript/file/FileLineDirective.js",
+		"/C/Users/michael/Desktop/swift/wcs1/colMenu",
 		"/D/workspace/FileFilter/javascript/filters/FiltersModule.js",
 		"/D/workspace/FileFilter/javascript/main/MainModel.js",
-		"/D/workspace/FileFilter/javascript/menu/MenuOptions/FilterOption.js",
 		"/D/workspace/FileFilter/javascript/main/FileMapGenerator.js",
 		"/D/workspace/FileFilter/javascript/main/MainModule.js",
 		"/D/workspace/FileFilter/javascript/main/FilterMapGenerator.js",
 		"/D/workspace/FileFilter/javascript/generator/GeneratorModule.js",
 		"/D/workspace/FileFilter/javascript/common/generator/AbstractGenerator.js",
 		"/D/workspace/FileFilter/javascript/main/MainController.js",
-		"/D/workspace/FileFilter/javascript/menu/MenuOptionFactory.js",
 		"/D/workspace/FileFilter/javascript/filters/view/Filters.js",
-		"/D/workspace/FileFilter/javascript/FileFilter.js",
 		"/D/workspace/FileFilter/templates/filters.htm",
 		"/D/workspace/FileFilter/javascript/file/FileView.js",
 		"/C/Temp/ESCMcreateRelease_Fep8.sh",
 		"/C/Users/michael/Desktop/ucolprd1.xml",
-		"/D/workspace/FileFilter/javascript/menu/MenuOptions/MenuOption.js",
 		"/D/workspace/FileFilter/dist/templates/fileContent.htm",
 		"/D/workspace/FileFilter/dist/templates/fileDetails.htm",
 		"/D/workspace/FileFilter/templates/menu.htm",
@@ -201,10 +197,8 @@
 		"/D/workspace/FileFilter/javascript/filters/FiltersView.js",
 		"/D/workspace/FileFilter/javascript/menu/MenuDirective.js",
 		"/D/workspace/FileFilter/javascript/filters/model/AbstractFilter.js",
-		"/D/workspace/FileFilter/javascript/navigation/PageFactory.js",
 		"/D/workspace/FileFilter/javascript/navigation/PageView.js",
 		"/D/workspace/FileFilter/javascript/common/constants.js",
-		"/D/workspace/FileFilter/css/icons.css",
 		"/C/tools/Rest-Core/com/ibm/commerce/rest/search/handler/ProductViewHandler.java",
 		"/D/workspace/FileFilter/javascript/common/CommonModule.js",
 		"/C/tools/WebSphereCommerceServerExtensionsLogic/au/com/coles/commerce/rest/search/handler/ExtProductViewHandler.java",
@@ -234,6 +228,24 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"){\n",
+			"console",
+			"resolve",
+			"line",
+			"export",
+			"ucolsit1",
+			"fetchCategoriesByIds",
+			"resolveStoreIds",
+			"validate",
+			"resolveObjectIds",
+			"function_clearCache",
+			"dataload",
+			"dataloadTy",
+			"dataloadType",
+			"deploy_WCS_dataload",
+			"console",
+			"){\n",
+			"console",
 			"push",
 			"deployWCS_Swift",
 			"deployWCS_Swiftshop",
@@ -272,201 +284,87 @@
 	"groups":
 	[
 		{
-			"selected": 6,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "javascript/common/generator/FileMapGenerator.js",
-					"semi_transient": false,
+					"file": "javascript/menu/MenuDirective.js",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 2905,
+						"buffer_size": 399,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								316,
-								303
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "javascript/filters/view/FiltersDirective.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 926,
-						"regions":
-						{
-						},
-						"selection":
-						[
+							"BracketHighlighterBusy": false,
+							"bh_regions":
 							[
-								479,
-								479
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 126.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 7,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "javascript/filters/view/FilterDirective.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1191,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1043,
-								1043
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 84.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "javascript/filters/view/FiltersView.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 961,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								255,
-								255
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "templates/filters/filters.htm",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 174,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								125,
-								125
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "javascript/filters/view/FilterGroupDirective.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1310,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								548,
-								548
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "javascript/common/generator/FilterMapGenerator.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3264,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								269,
-								269
-							]
-						],
-						"settings":
-						{
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content"
+							],
 							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
@@ -475,64 +373,6 @@
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "javascript/filters/model/BaseFilter.js",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 2006,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								320,
-								327
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 84.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "javascript/filters/FilterFactory.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 427,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								287,
-								397
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -571,7 +411,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 197.0
+		"height": 258.0
 	},
 	"output.find_results":
 	{
@@ -591,7 +431,15 @@
 		"selected_items":
 		[
 			[
+				"filefilter",
+				"dist\\javascript\\FileFilter.comb.js"
+			],
+			[
 				"filefilter.com",
+				"dist\\javascript\\FileFilter.comb.js"
+			],
+			[
+				"filefilter.c",
 				"dist\\javascript\\FileFilter.comb.js"
 			],
 			[
@@ -616,7 +464,7 @@
 	},
 	"select_symbol":
 	{
-		"height": 35.0,
+		"height": 392.0,
 		"last_filter": "",
 		"selected_items":
 		[
@@ -628,10 +476,10 @@
 	{
 	},
 	"show_minimap": true,
-	"show_open_files": false,
+	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 258.0,
+	"side_bar_width": 312.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

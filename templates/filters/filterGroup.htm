@@ -1,5 +1,5 @@
-<div class="filter-group"  >
+<div class="filter-group" >
 	<button class="remove-group">delete group</button>
-	<group-filter data-filter="filter" data-ng-repeat="filter in filters"></group-filter>
-	<button class="add-filter" data-ng-click="filterGroupCtrl.addFilter()">add filter</button>
+	<ff-filter data-fltr="fltr" data-ng-repeat="fltr in group.filters" data-ng-if="group.filters"></ff-filter>
+	<button class="add-filter">add filter</button>
 </div>

@@ -1,11 +1,11 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.MENU).directive("menuSelector", ['menuOptionFactory',MenuSelector]);
-	function MenuSelector(menuOptionFactory){
+	angular.module(APP.MODULE.MENU).directive("menuSelector", ['MenuOptionFactory',MenuSelector]);
+	function MenuSelector(MenuOptionFactory){
 		return {
 			restrict : 'A',
-			compile:menuOptionFactory.getMenuOption
-			
+			compile:MenuOptionFactory.getMenuOption
+
 		};
 	};
-})(); 
+})();
