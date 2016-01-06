@@ -67,6 +67,10 @@
 		},
 		WORK_MANAGER:{
 			THREADS:12
+		},
+		FILE:{
+			// 				1B 	1KB 	1MB
+			BUFFER_SIZE : 	1 *	1024 *	1024//1MB
 		}
 	});
 })();
@@ -171,23 +175,25 @@
 
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.COMMON).factory("FilterMapGenerator",['$q',FilterMapGenerator]);
+	angular.module(APP.MODULE.COMMON).factory("FilterMapGenerator",['$q','FilterMapper',FilterMapGenerator]);
 
-	function FilterMapGenerator($q){
+	function FilterMapGenerator($q,FilterMapper){
 
 		function Generator(fileModel,filter){
 			this.fileModel = fileModel;
 			this.filter = filter;
 
-			// this.filterMapper = new FilterMapper(fileModel,filter);
-			// this.deferred = $q.defer();
+		};
+		Generator.prototype.generate = function(){
+			var filterMapper = new FilterMapper(this.fileModel,this.filter);
+			var chunks = filterMapper.seperateIntoChunks();
 
-			// this.filterMapperExecuteComplete = false;
-			// this.noChunksProcessed = 0;
-			// this.notifyPostProcessor = new NotifyPostProcessor();
-		}
+		};
+		Generator.prototype.cancel = function(){
 
+		};
 
+		return Generator;
 	};
 })();
   (function(){
@@ -545,9 +551,10 @@
 				addLine(mergedLine,this.fileModel);
 			}
 
-			for(var i=0;i<partialFileMap.lines.length;i++){
-				addLine(partialFileMap.lines[i],this.fileModel);
-			}
+			var fModel = this.fileModel;
+			partialFileMap.lines.forEach(function(line){
+				addLine(line,fModel);
+			});
 
 			if(partialFileMap.lastLine){
 				addLine(partialFileMap.lastLine,this.fileModel);
@@ -590,12 +597,11 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).factory("FileMapper",['$q','WorkManager','ChunkMapper','ChunkProcessor',FileMapperFactory]);
+	angular.module(APP.MODULE.FILE).factory("FileMapper",['$q','SITE','WorkManager','ChunkMapper','ChunkProcessor',FileMapperFactory]);
 
-	function FileMapperFactory($q,WorkManager,ChunkMapper,ChunkProcessor){
+	function FileMapperFactory($q,SITE,WorkManager,ChunkMapper,ChunkProcessor){
 
-		// 					1B 	1KB 	1MB 	10MB
-		var BUFFER_SIZE = 	1 *	1024 *	1024 *	50; //10MB
+
 
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
@@ -621,7 +627,7 @@
 
 			var start = 0;
 			while(start<this.file.size){
-				var end = Math.min(this.file.size,start + BUFFER_SIZE);
+				var end = Math.min(this.file.size,start + SITE.FILE.BUFFER_SIZE);
 				chunks.push(new ChunkMapper(start,end,this.file));
 				chunks[chunks.length-1].index = chunks.length-1;
 				start = end + 1;
@@ -780,14 +786,13 @@
 			replace:true,
 			scope : {filter:'=fltr'},
 			controller: ['$scope','$element','$attrs',filterController],
-			controllerAs: 'filterCtrl'
-			// ,
-			// link:link
+			controllerAs: 'filterCtrl',
+			link:link
 		};
 
-		// function link(scope, element, attrs){
+		function link(scope, element, attrs){
 
-		// };
+		};
 
 		function filterController(scope,element, attrs){
 
@@ -859,20 +864,42 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("Filter",[FilterFactory]);
+	angular.module(APP.MODULE.FILTER).factory("Filter",['FilterMapGenerator',FilterFactory]);
 
 
-	function FilterFactory(){
+	function FilterFactory(FilterMapGenerator){
 
 		function Filter(index){
+			var pValue = "";
+			var generator;
 			this.index = index;
-			this.value;
 			this.type;
 			this.filterMap = [];
+			this.watchers = [];
+
+			Object.defineProperty(this,'value',{
+				configurable:false,
+				enumerable:true,
+				get:function(){
+					console.debug("get filter value",pValue);
+					return pValue;
+				},
+				set:function(val){
+					console.debug("set ilter value",pValue,val);
+					pValue = val;
+					// debounce then run
+					this._generateFilterMap();
+				}
+			});
 		};
 
-		Filter.prototype.filter = function(index, linestring){
+		Filter.prototype._generateFilterMap = function(){
+			 if(typeof(this.generator) !== 'undefined' && this.generator != null) {
+			 	this.generator.cancel();
+			 }
 
+			 this.generator = new FilterMapGenerator();
+			 this.generator.generate();
 		};
 
 		return Filter;
@@ -919,7 +946,7 @@
 
 	function FilterMapperFactory($q,WorkManager){
 
-		var ChunkLines = 1000;
+		var CHUNK_LINES = 1000;
 		//no Readers for the workmanager to use
 		var NO_READERS = 4;
 
@@ -932,16 +959,23 @@
 			this.filter = filter;
 		};
 
-		FileMapper.prototype.execute = function(){
+		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-			var worker = new WorkManager(chunks,NO_READERS);
 
-			return worker.start();
+			// return WorkManager.execute(chunks).then(function(result){
+			// 	return result;
+			// });
 
 		};
-		FileMapper.prototype.seperateIntoChunks = function(){
+		FilterMapper.prototype.seperateIntoChunks = function(){
 
 			var chunks  = [];
+			for(var i=0;i<this.fileModel.fileMap.length;i+=CHUNK_LINES){
+				var end = Math.min(i+CHUNK_LINES,this.fileModel.fileMap.length);
+				chunks.push(this.fileModel.fileMap.slice(i,end));
+			}
+
+			console.debug("chunks",chunks);
 
 			return chunks;
 		};
@@ -950,8 +984,8 @@
 		 * @param  {[type]} chunk [description]
 		 * @return {[type]}       [description]
 		 */
-		FileMapper.prototype.processChunk = function(chunk){
-			return this.processor.processChunk(chunk);
+		FilterMapper.prototype.processChunk = function(chunk){
+			//return this.processor.processChunk(chunk);
 		};
 
 		/**
@@ -959,7 +993,7 @@
 		 * @param  {[type]} result [description]
 		 * @return {[type]}        [description]
 		 */
-		FileMapper.postProcess = function(fileModel){
+		FilterMapper.postProcess = function(fileModel){
 			//console.debug(fileModel);
 			// for(var i=0;i<fileModel.lines.length;i++){
 			// 	fileModel.lines[i].row = i+1;
@@ -967,7 +1001,7 @@
 			// return $q.resolve(fileModel);
 		}
 
-		return FileMapper;
+		return FilterMapper;
 	};
 })();
  (function(){
@@ -1240,6 +1274,7 @@
 		function PaginationController($scope, $element, $attrs){
 
 			$scope.pageView = pageView;
+			var scrollTo = $attrs.scrollTo;
 
 			this.next = function(){
 				if(pageView.model.currentPage < pageView.model.totalPages){
@@ -1460,7 +1495,11 @@
 				}
 			};
 
-
+			/**
+			 * a scope for an individual item of work to be able to execute.
+			 * @param {[type]} work        [description]
+			 * @param {[type]} workManager [description]
+			 */
 			function ExecutionContext(work,workManager){
 				var ecWork = work;
 				var ecWorkManager = workManager;
@@ -1503,21 +1542,18 @@
 				//from the pool
 				var promises = [];
 				//get the promises of all the work.
-				for(var i=0; i<workArray.length;i++){
-					var work = workArray[i];
-					var prmse = new ExecutionContext(work,this).execute()
+				var wManager = this;
+				workArray.forEach(function(work){
+					var prmse = new ExecutionContext(work,wManager).execute()
 						.then(function(result){
 							deferred.notify(result);
 							return result;
 						});
 					promises.push(prmse);
-				}
+				});
 
 				$q.all(promises).then(function(result){
-				//$timeout(function(){
-						deferred.resolve(result);
-					//},0,false);
-
+					deferred.resolve(result);
 				});
 				return deferred.promise;
 			};
@@ -1567,7 +1603,6 @@
 					if(eventId === 'initDone') {
 						deferred.resolve("worker initialized");
 					}else{
-						//console.debug("rejecting worker init",e);
 						deferred.reject(e);
 					}
 				};
@@ -1720,9 +1755,10 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.WORKER).service("WorkerTemplate",[WorkerTemplate]);
+	angular.module(APP.MODULE.WORKER).service("WorkerTemplate",['$location',WorkerTemplate]);
 
-	var TEMPLATE_CONST = ["",
+	function template(url){
+		return ["",
 		"APP = {",
 			"NAME: 'Worker',",
 			"MODULE: {",
@@ -1748,10 +1784,8 @@
 				"};",
 			"}",
 		"};",
-
-		"importScripts('http://localhost/split/lib/angular/angular.min.js');",
-		"importScripts('http://localhost/split/dist/javascript/Worker.comb.js');",
-
+		"importScripts('"+url+"dist/lib/ng.min.js');",
+		"importScripts('"+url+"dist/javascript/Worker.min.js');",
 		"angular = window.angular;",
 
 		//initialise the module.
@@ -1759,19 +1793,26 @@
 
 		//bootstrap the module.
 		"angular.bootstrap(null, [APP.NAME]);"].join("\n");
+	};
 
-	function WorkerTemplate(){
+
+
+	function WorkerTemplate($location){
+		function getTemplate(){
+
+			var temp = template($location.absUrl());
+
+			console.debug("template",temp);
+
+			return temp;
+		}
 		return {
-			template : template
+			template : getTemplate
 		};
 	};
-	function template(){
-		// var tmpl = "";
-		// for(var i in TEMPLATE_CONST){
-		// 	tmpl = tmpl.concat([i]);
-		// }
-		return TEMPLATE_CONST;
-	};
+
+
+
 })();
 
 //# sourceMappingURL=FileFilter.comb.js.map

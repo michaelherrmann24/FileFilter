@@ -28,6 +28,11 @@ module.exports = function(grunt) {
 				combfile: 'main.css',
 				minfile: 'main.min.css',
 			},
+			ng :{
+				src: '<%= project.basedir %>/lib/angular',
+				dist:'<%= project.dist %>/lib',
+				combfile: 'ng.min.js'
+			},
 			js :{
 				src: '<%= project.basedir %>/javascript',
 				dist:'<%= project.dist %>/javascript',
@@ -62,6 +67,15 @@ module.exports = function(grunt) {
 			options: {
 				separator: ' ',
 				sourceMap:true
+			},
+			ng: {
+				files: {
+					'<%= project.ng.dist %>/<%= project.ng.combfile %>': [
+					'<%= project.ng.src %>/angular.min.js'
+					// ,
+					// '<%= project.ng.src %>/angular-route.min.js'
+					]
+				}
 			},
 			js: {
 				files: {
@@ -218,11 +232,11 @@ module.exports = function(grunt) {
     grunt.registerTask('build',['build-css','build-svg','build-js','build-html']);
     //grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgmin','svgstore']);
     grunt.registerTask('build-svg',['clean:svg','clean:svgmin','svgstore']);
-	grunt.registerTask('build-js',['clean:js','concat:js','concat:worker','uglify:js','uglify:worker']);
+	grunt.registerTask('build-js',['clean:js','concat:ng','concat:js','concat:worker','uglify:js','uglify:worker']);
 	grunt.registerTask('build-css',['clean:css','concat:css','cssmin:css']);
 	grunt.registerTask('build-html',['clean:html','htmlmin:html']);
 
-	grunt.registerTask('dev','runs build then watch and re-runs if there is a build issue', function(){
+	grunt.registerTask('default','runs build then watch and re-runs if there is a build issue', function(){
 		grunt.task.run(['build','watch']);
 	});
 };

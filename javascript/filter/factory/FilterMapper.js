@@ -4,7 +4,7 @@
 
 	function FilterMapperFactory($q,WorkManager){
 
-		var ChunkLines = 1000;
+		var CHUNK_LINES = 1000;
 		//no Readers for the workmanager to use
 		var NO_READERS = 4;
 
@@ -17,16 +17,23 @@
 			this.filter = filter;
 		};
 
-		FileMapper.prototype.execute = function(){
+		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-			var worker = new WorkManager(chunks,NO_READERS);
 
-			return worker.start();
+			// return WorkManager.execute(chunks).then(function(result){
+			// 	return result;
+			// });
 
 		};
-		FileMapper.prototype.seperateIntoChunks = function(){
+		FilterMapper.prototype.seperateIntoChunks = function(){
 
 			var chunks  = [];
+			for(var i=0;i<this.fileModel.fileMap.length;i+=CHUNK_LINES){
+				var end = Math.min(i+CHUNK_LINES,this.fileModel.fileMap.length);
+				chunks.push(this.fileModel.fileMap.slice(i,end));
+			}
+
+			console.debug("chunks",chunks);
 
 			return chunks;
 		};
@@ -35,8 +42,8 @@
 		 * @param  {[type]} chunk [description]
 		 * @return {[type]}       [description]
 		 */
-		FileMapper.prototype.processChunk = function(chunk){
-			return this.processor.processChunk(chunk);
+		FilterMapper.prototype.processChunk = function(chunk){
+			//return this.processor.processChunk(chunk);
 		};
 
 		/**
@@ -44,7 +51,7 @@
 		 * @param  {[type]} result [description]
 		 * @return {[type]}        [description]
 		 */
-		FileMapper.postProcess = function(fileModel){
+		FilterMapper.postProcess = function(fileModel){
 			//console.debug(fileModel);
 			// for(var i=0;i<fileModel.lines.length;i++){
 			// 	fileModel.lines[i].row = i+1;
@@ -52,6 +59,6 @@
 			// return $q.resolve(fileModel);
 		}
 
-		return FileMapper;
+		return FilterMapper;
 	};
 })();

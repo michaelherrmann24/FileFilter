@@ -13,14 +13,13 @@
 			replace:true,
 			scope : {filter:'=fltr'},
 			controller: ['$scope','$element','$attrs',filterController],
-			controllerAs: 'filterCtrl'
-			// ,
-			// link:link
+			controllerAs: 'filterCtrl',
+			link:link
 		};
 
-		// function link(scope, element, attrs){
+		function link(scope, element, attrs){
 
-		// };
+		};
 
 		function filterController(scope,element, attrs){
 

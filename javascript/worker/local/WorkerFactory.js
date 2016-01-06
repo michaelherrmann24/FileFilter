@@ -27,7 +27,6 @@
 					if(eventId === 'initDone') {
 						deferred.resolve("worker initialized");
 					}else{
-						//console.debug("rejecting worker init",e);
 						deferred.reject(e);
 					}
 				};

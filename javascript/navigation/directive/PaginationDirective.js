@@ -18,6 +18,7 @@
 		function PaginationController($scope, $element, $attrs){
 
 			$scope.pageView = pageView;
+			var scrollTo = $attrs.scrollTo;
 
 			this.next = function(){
 				if(pageView.model.currentPage < pageView.model.totalPages){

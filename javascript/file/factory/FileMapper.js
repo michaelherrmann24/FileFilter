@@ -1,11 +1,10 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).factory("FileMapper",['$q','WorkManager','ChunkMapper','ChunkProcessor',FileMapperFactory]);
+	angular.module(APP.MODULE.FILE).factory("FileMapper",['$q','SITE','WorkManager','ChunkMapper','ChunkProcessor',FileMapperFactory]);
 
-	function FileMapperFactory($q,WorkManager,ChunkMapper,ChunkProcessor){
+	function FileMapperFactory($q,SITE,WorkManager,ChunkMapper,ChunkProcessor){
 
-		// 					1B 	1KB 	1MB 	10MB
-		var BUFFER_SIZE = 	1 *	1024 *	1024 *	50; //10MB
+
 
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
@@ -31,7 +30,7 @@
 
 			var start = 0;
 			while(start<this.file.size){
-				var end = Math.min(this.file.size,start + BUFFER_SIZE);
+				var end = Math.min(this.file.size,start + SITE.FILE.BUFFER_SIZE);
 				chunks.push(new ChunkMapper(start,end,this.file));
 				chunks[chunks.length-1].index = chunks.length-1;
 				start = end + 1;

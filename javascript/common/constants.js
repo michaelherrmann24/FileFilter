@@ -6,6 +6,10 @@
 		},
 		WORK_MANAGER:{
 			THREADS:12
+		},
+		FILE:{
+			// 				1B 	1KB 	1MB
+			BUFFER_SIZE : 	1 *	1024 *	1024//1MB
 		}
 	});
 })();

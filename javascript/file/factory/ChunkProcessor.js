@@ -66,9 +66,10 @@
 				addLine(mergedLine,this.fileModel);
 			}
 
-			for(var i=0;i<partialFileMap.lines.length;i++){
-				addLine(partialFileMap.lines[i],this.fileModel);
-			}
+			var fModel = this.fileModel;
+			partialFileMap.lines.forEach(function(line){
+				addLine(line,fModel);
+			});
 
 			if(partialFileMap.lastLine){
 				addLine(partialFileMap.lastLine,this.fileModel);

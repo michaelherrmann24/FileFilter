@@ -41,7 +41,11 @@
 				}
 			};
 
-
+			/**
+			 * a scope for an individual item of work to be able to execute.
+			 * @param {[type]} work        [description]
+			 * @param {[type]} workManager [description]
+			 */
 			function ExecutionContext(work,workManager){
 				var ecWork = work;
 				var ecWorkManager = workManager;
@@ -84,21 +88,18 @@
 				//from the pool
 				var promises = [];
 				//get the promises of all the work.
-				for(var i=0; i<workArray.length;i++){
-					var work = workArray[i];
-					var prmse = new ExecutionContext(work,this).execute()
+				var wManager = this;
+				workArray.forEach(function(work){
+					var prmse = new ExecutionContext(work,wManager).execute()
 						.then(function(result){
 							deferred.notify(result);
 							return result;
 						});
 					promises.push(prmse);
-				}
+				});
 
 				$q.all(promises).then(function(result){
-				//$timeout(function(){
-						deferred.resolve(result);
-					//},0,false);
-
+					deferred.resolve(result);
 				});
 				return deferred.promise;
 			};

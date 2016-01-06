@@ -1,8 +1,9 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.WORKER).service("WorkerTemplate",[WorkerTemplate]);
+	angular.module(APP.MODULE.WORKER).service("WorkerTemplate",['$location',WorkerTemplate]);
 
-	var TEMPLATE_CONST = ["",
+	function template(url){
+		return ["",
 		"APP = {",
 			"NAME: 'Worker',",
 			"MODULE: {",
@@ -28,10 +29,8 @@
 				"};",
 			"}",
 		"};",
-
-		"importScripts('http://localhost/split/lib/angular/angular.min.js');",
-		"importScripts('http://localhost/split/dist/javascript/Worker.comb.js');",
-
+		"importScripts('"+url+"dist/lib/ng.min.js');",
+		"importScripts('"+url+"dist/javascript/Worker.min.js');",
 		"angular = window.angular;",
 
 		//initialise the module.
@@ -39,17 +38,24 @@
 
 		//bootstrap the module.
 		"angular.bootstrap(null, [APP.NAME]);"].join("\n");
+	};
 
-	function WorkerTemplate(){
+
+
+	function WorkerTemplate($location){
+		function getTemplate(){
+
+			var temp = template($location.absUrl());
+
+			console.debug("template",temp);
+
+			return temp;
+		}
 		return {
-			template : template
+			template : getTemplate
 		};
 	};
-	function template(){
-		// var tmpl = "";
-		// for(var i in TEMPLATE_CONST){
-		// 	tmpl = tmpl.concat([i]);
-		// }
-		return TEMPLATE_CONST;
-	};
+
+
+
 })();

@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<title>File Filter</title>
 		<link rel="stylesheet" href="./dist/css/main.min.css">
-		<script src="./lib/angular/angular.min.js"></script>
+		<script src="./dist/lib/ng.min.js"></script>
     	<script src="./dist/javascript/FileFilter.comb.js"></script>
 	</head>
 	<body data-file-select>
@@ -16,9 +16,9 @@
 				--><paging-details></paging-details>
 			</div>
 			<ff-filters></ff-filters>
-			<pagination></pagination>
+			<pagination data-scroll-to="pagingTop"></pagination>
 
-			<file-content></file-content>
+			<file-content ></file-content>
 			<pagination></pagination>
 		</div>
 	</body>
