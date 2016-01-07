@@ -5,17 +5,21 @@
 	function WorkManagerProvider(){
 		//set the workmanager pool size
 		var poolSize = 1;
-
+		var useWorkers = false;
 		return {
 			setPoolSize:setPoolSize,
-			$get:['$q','$timeout','WorkerPool','FFWorker',WorkManagerService]
+			useWorker:setUseWorkers,
+			$get:['$q','$timeout','WorkerPool','FFLocalWorker','FFWorker',WorkManagerService]
 		};
 
 		function setPoolSize(noThreads){
 			poolSize = (noThreads>0)?noThreads:1;
 		};
+		function setUseWorkers(bool){
+			useWorkers = bool;
+		};
 
-		function WorkManagerService($q,$timeout,WorkerPool,FFWorker){
+		function WorkManagerService($q,$timeout,WorkerPool,FFLocalWorker,FFWorker){
 			/**
 			 * runs a collection of runnable ojbect with up to the specified number of asynchronous 'threads' when one thread completes the next is run.
 			 * the results should be stored by the runnable so they can be consumed later.
@@ -29,14 +33,15 @@
 
 			WorkManager.prototype.initialise = function(){
 				var pool = this.pool;
+				console.debug("initialising",pool);
 				for(var i=0;i<poolSize;i++){
 
 					(function(ffWorker){
 						ffWorker.initialise().then(function(){
-							//console.debug("returning ffWorker", ffWorker.getIdentifier());
+							console.debug("returning ffWorker", ffWorker.getIdentifier());
 							pool.returnWorker(ffWorker);
 						});
-					})(new FFWorker());
+					})((useWorkers)?new FFWorker():new FFLocalWorker());
 
 				}
 			};
@@ -54,21 +59,17 @@
 				var deferred;
 
 				var getWorker = function(){
-					//console.debug("fetching Worker",ecWorker);
 					return ecWorkManager.pool.getWorker();
 				};
 
 				var doWork = function(ffWorker){
 					ecWorker = ffWorker;
-					//console.debug("got Worker",ecWorker);
 					return ecWorker.execute(ecWork);
 				};
 				var processResult = function(result){
-					//console.debug("got result",result);
 					deferred.resolve(result);
 				};
 				var returnWorker = function(){
-					//console.debug("returning worker to pool");
 					ecWorkManager.pool.returnWorker(ecWorker);
 				};
 				this.execute = function(){
@@ -84,24 +85,43 @@
 
 			WorkManager.prototype.execute = function(workArray){
 				var deferred = $q.defer();
-				//console.debug("execute",workArray);
 				//from the pool
 				var promises = [];
 				//get the promises of all the work.
-				var wManager = this;
 				workArray.forEach(function(work){
-					var prmse = new ExecutionContext(work,wManager).execute()
+					var prmse = new ExecutionContext(work,this).execute()
 						.then(function(result){
 							deferred.notify(result);
 							return result;
 						});
 					promises.push(prmse);
-				});
+				}.bind(this));
 
 				$q.all(promises).then(function(result){
 					deferred.resolve(result);
 				});
 				return deferred.promise;
+			};
+
+			WorkManager.prototype.terminate = function(){
+				// var deferred = $q.defer();
+				// //console.debug("execute",workArray);
+				// //from the pool
+				// var promises = [];
+				// //get the promises of all the work.
+				// workArray.forEach(function(work){
+				// 	var prmse = new ExecutionContext(work,this).execute()
+				// 		.then(function(result){
+				// 			deferred.notify(result);
+				// 			return result;
+				// 		});
+				// 	promises.push(prmse);
+				// }.bind(this));
+
+				// $q.all(promises).then(function(result){
+				// 	deferred.resolve(result);
+				// });
+				// return deferred.promise;
 			};
 
 			return new WorkManager();

@@ -5,11 +5,12 @@
 			BASE_DIR : "./dist/templates"
 		},
 		WORK_MANAGER:{
-			THREADS:12
+			USE_WORKERS:true,
+			THREADS:8
 		},
 		FILE:{
-			// 				1B 	1KB 	1MB
-			BUFFER_SIZE : 	1 *	1024 *	1024//1MB
+			// 				1B 	1KB 	1MB		X MB
+			BUFFER_SIZE : 	1 *	1024 *	1024 *	5 // X MB
 		}
 	});
 })();

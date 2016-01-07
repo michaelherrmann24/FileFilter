@@ -14,12 +14,11 @@
 		}
 
 		Generator.prototype.generate = function(){
-			var generator = this;
 			console.debug("generate file map start ",new Date());
 			var fileMapperResults = this.fileMapper.execute().then(
-					generateFctnThen(generator),
-					generateFctnError(generator),
-					generateFctnNotify(generator,this.notifyPostProcessor)
+					this.thenFtn.bind(this),
+					this.errorFtn.bind(this),
+					this.notifyFtn.bind(this)
 				);
 
 			return this.deferred.promise;
@@ -35,27 +34,19 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnError(generator){
-			var gen = generator;
-			return function(error){
-				console.error("file read error",error);
-				return gen.deferred.reject(error);
-			};
-
+		Generator.prototype.errorFtn = function(error){
+			return this.deferred.reject(error);
 		};
 		/**
 		 * static private function for processing the result of the file mapper.
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnThen(generator){
-			var gen = generator;
-			return function(result){
+		Generator.prototype.thenFtn = function(result){
 				console.debug("generateFctnThen",new Date());
-				gen.noChunks = result.length;
-				gen.fileMapperExecuteComplete = true;
-				generateResolveIfComplete(gen,gen.file);
-			};
+				this.noChunks = result.length;
+				this.fileMapperExecuteComplete = true;
+				this.resolveIfComplete(this.file);
 		};
 
 		/**
@@ -63,19 +54,14 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnNotify(generator,postProcessor){
-			var gen = generator;
-			var pProcess = postProcessor
-			return function(notification){
-				//console.debug("notify",notification);
-				var notify = notification;
-				generator.fileMapper.processChunk(notification)
-				.then(function(result){
-					gen.deferred.notify(result);
-					gen.noChunksProcessed= gen.noChunksProcessed + 1;
-					generateResolveIfComplete(gen,notification);
-				});
-			};
+		Generator.prototype.notifyFtn = function(notification){
+			var notify = notification;
+			this.fileMapper.processChunk(notification)
+			.then(function(result){
+				this.deferred.notify(result);
+				this.noChunksProcessed= this.noChunksProcessed + 1;
+				this.resolveIfComplete(notification);
+			}.bind(this));
 		};
 
 		/**
@@ -83,12 +69,10 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateResolveIfComplete(generator,result){
-			var gen = generator;
-
-			if(gen.isComplete()){
+		Generator.prototype.resolveIfComplete = function(result){
+			if(this.isComplete()){
 				console.debug("generate file map end ",new Date());
-				gen.deferred.resolve(result);
+				this.deferred.resolve(result);
 			}
 		};
 

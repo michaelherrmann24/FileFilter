@@ -44,20 +44,15 @@
 				pageView.model = new Page();
 				FiltersView.model = new Filters();
 
-				//filtersView.model = fileView.model.filter;
 				$scope.$applyAsync();
-				//console.debug("filtersView.model",filtersView.model);
 				new FileMapGenerator(fileView.model).generate().then(function(result){
-					console.debug("file map completed",result,fileView.model);
 					fileView.model = result;
 				},function(err){
 					console.debug("error",err);
 				},function(update){
 					//console.debug(update);
 					pageView.model.totalLines = update.length;
-					//console.debug("notify update",new Date());
 				}).finally(function(){
-					console.debug("finally");
 					$scope.$applyAsync();
 				});
 			};

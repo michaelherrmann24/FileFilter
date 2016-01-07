@@ -4,8 +4,6 @@
 
 	function FileMapperFactory($q,SITE,WorkManager,ChunkMapper,ChunkProcessor){
 
-
-
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
 		 * @param {[type]} file [description]
@@ -18,7 +16,6 @@
 
 		FileMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-
 			return WorkManager.execute(chunks).then(function(result){
 				return result;
 			});

@@ -22,16 +22,13 @@
 		};
 
 		ChunkProcessor.prototype.processChunk = function(chunk){
-			console.debug()
 			var deferred = $q.defer();
-			var chu = chunk.properties;
-
-			if(chu.index === 0){
+			if(chunk.index === 0){
 				console.debug("first chunk notify",new Date());
 			}
 
-			var observer = new _Observer(chu,this,deferred);
-			this.observers[chu.index] = observer;
+			var observer = new _Observer(chunk,this,deferred);
+			this.observers[chunk.index] = observer;
 			this._triggerObserver();
 
 			return deferred.promise;

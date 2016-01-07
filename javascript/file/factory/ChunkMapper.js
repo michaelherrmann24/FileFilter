@@ -20,7 +20,7 @@
 			this.lines = [];
 			this.reader = new fileReaderSrvc(file);
 			this.deferred;
-
+			this.index;
 		};
 		/**
 		 * returns all the values requred to re-initialise this object. (required when sending this object to the web -workers)
@@ -42,40 +42,33 @@
 		ChunkMapper.prototype.execute = function(){
 			this.deferred = $q.defer();
 			//console.debug("execute this",this);
-			this.reader.readBytes(this.start,this.end).then(this.mapChunk(this));
+			this.reader.readBytes(this.start,this.end).then(this.mapChunk.bind(this));
 			return this.deferred.promise;
 		};
 		ChunkMapper.prototype.cancel = function(){
 			this.deferred.reject("CANCELLED");
 		};
-		ChunkMapper.prototype.mapChunk = function(cMapper){
-			//console.debug("chunk",cMapper);
-			var mapper = cMapper;
+		ChunkMapper.prototype.mapChunk = function(chunk){
 
-			return function(chunk){
-				//console.debug("chunk mapper",mapper);
-				//mapper.lines = [];
 				var view = new Uint8Array(chunk);
-				var startLine = mapper.start;
+				var startLine = this.start;
 				for (var i = 0; i < view.length; i++) {
 	            	if (view[i] === 10) {
-	            		var lineEnd = mapper.start + i;
-	                	if(!mapper.firstLine){
-	                		mapper.firstLine = new Line(startLine,lineEnd,true);
+	            		var lineEnd = this.start + i;
+	                	if(!this.firstLine){
+	                		this.firstLine = new Line(startLine,lineEnd,true);
 	                	}else{
 	                		var line = new Line(startLine,lineEnd,true);
-	                		mapper.lines.push(line);
+	                		this.lines.push(line);
 	                	}
 	                	startLine = lineEnd + 1;
 	            	}
 	        	}
 
-	        	if(startLine < mapper.start + view.length){
-	        		mapper.lastLine = new Line(startLine,mapper.start + view.length,false);
+	        	if(startLine < this.start + view.length){
+	        		this.lastLine = new Line(startLine,this.start + view.length,false);
 	        	}
-	        	//console.debug("chunk",mapper.serialize());
-				mapper.deferred.resolve(mapper.serialize());
-			};
+				this.deferred.resolve(this);
 		};
 
 		return ChunkMapper

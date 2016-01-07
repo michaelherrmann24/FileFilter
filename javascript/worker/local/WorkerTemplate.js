@@ -8,6 +8,7 @@
 			"NAME: 'Worker',",
 			"MODULE: {",
 				"FILE : 'FF_FILE',",
+				"FILTER : 'FF_FILTER',",
 				"COMMON : 'FF_COMMON',",
 				"FILTER : 'FF_FILTER',",
 				"WORKER : 'FF_WORKER'",
@@ -34,28 +35,20 @@
 		"angular = window.angular;",
 
 		//initialise the module.
-		"angular.module(APP.NAME,[APP.MODULE.WORKER,APP.MODULE.FILE]);",
+		"angular.module(APP.NAME,[APP.MODULE.WORKER,APP.MODULE.FILE,APP.MODULE.FILTER]);",
 
 		//bootstrap the module.
-		"angular.bootstrap(null, [APP.NAME]);"].join("\n");
+		"angular.bootstrap(null, [APP.NAME]);"].join("");
 	};
-
-
 
 	function WorkerTemplate($location){
 		function getTemplate(){
-
 			var temp = template($location.absUrl());
-
-			console.debug("template",temp);
-
 			return temp;
-		}
+		};
 		return {
 			template : getTemplate
 		};
 	};
-
-
 
 })();

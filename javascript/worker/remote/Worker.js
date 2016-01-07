@@ -1,5 +1,5 @@
 (function(){
-
+	"use strict";
 	angular.module(APP.MODULE.WORKER).run(['$q','$window','$injector',Runner]);
 
 	/**
@@ -9,19 +9,36 @@
 	 * @param {[type]} $injector [description]
 	 */
 	function Runner($q,$window,$injector){
-		angular.element($window).on('message',function(event){
+
+		onmessage=msgProcessor;
+		postMessage({event:'initDone'});
+
+		function postSuccess(result){
+			postMessage({event:"success",data:result.serialize()});
+		};
+
+		function postError(result){
+			postMessage({event:"error",data:result});
+		};
+
+		function postNotify(result){
+			postMessage({event:"notify",data:result});
+		};
+
+		function msgProcessor(event){
 
 			var input = event.data;
 			var output = $q.defer();
-
 			var promise = output.promise;
-			promise.then(postSuccess,postError,postNotify);
+			var executable;
+			var exec;
 
+			promise.then(postSuccess,postError,postNotify);
 			if($injector.has(input.executable)){
 				//get the executable from the injector
-				var executable = $injector.get(input.executable);
+				executable = $injector.get(input.executable);
 				//create a new instance of it. (assumes it is a factory)
-				var exec = Object.create(executable.prototype);
+				exec = Object.create(executable.prototype);
 				//adds the contextual data to the obejct (ie. calls the constructor with required arguments)
 				executable.apply(exec, input.parameters);
 
@@ -30,7 +47,7 @@
 				}
 
 				//executes the runnable. resolving its promise appropriately
-				if (typeof exec.execute == 'function') {
+				if (typeof(exec.execute) === 'function') {
 					exec.execute().then(resolveSuccess,resolveError,resolveNotify);
 				}else{
 					output.reject("executable does not contain an execute function");
@@ -50,21 +67,14 @@
 			function resolveNotify(result){
 				output.notify(result);
 			};
+			function resolveFinally(){
+				var input = null;
+				var output = null;
+				var promise = null;
+				var executable = null;
+				var exec = null;
+			};
 
-		});
-
-		postMessage({event:'initDone'});
-
-		function postSuccess(result){
-			postMessage({event:"success",data:result});
-		};
-
-		function postError(result){
-			postMessage({event:"error",data:result});
-		};
-
-		function postNotify(result){
-			postMessage({event:"notify",data:result});
 		};
 
 	};

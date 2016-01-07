@@ -92,10 +92,12 @@ module.exports = function(grunt) {
 				files: {
 					'<%= project.worker.dist %>/<%= project.worker.combfile %>': [
 					'<%= project.worker.src %>/file/FileModule.js',
+					'<%= project.worker.src %>/filter/FilterModule.js',
 					'<%= project.worker.src %>/worker/WorkerModule.js',
 					'<%= project.worker.src %>/file/factory/ChunkMapper.js',
 					'<%= project.worker.src %>/file/factory/Line.js',
 					'<%= project.worker.src %>/file/service/FileReaderService.js',
+					'<%= project.worker.src %>/filter/factory/FilterChunkProcessor.js',
 					'<%= project.worker.src %>/worker/remote/**/*.js'
 					]
 				}

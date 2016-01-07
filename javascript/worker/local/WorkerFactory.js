@@ -29,6 +29,8 @@
 					}else{
 						deferred.reject(e);
 					}
+					//unload the blob.
+					window.URL.revokeObjectURL(blobURL);
 				};
 
 				worker =  new Worker(blobURL);
@@ -71,7 +73,11 @@
 							deferred.reject(e);
 							break;;
 						case 'success':
-							deferred.resolve(data.data);
+							//de-serialize;
+							for(var i in data.data.properties){
+								executable[i] = data.data.properties[i];
+							}
+							deferred.resolve(executable);
 							break;;
 						case 'notify':
 							deferred.notify(data.data);

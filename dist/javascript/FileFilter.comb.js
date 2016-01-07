@@ -66,11 +66,12 @@
 			BASE_DIR : "./dist/templates"
 		},
 		WORK_MANAGER:{
-			THREADS:12
+			USE_WORKERS:true,
+			THREADS:8
 		},
 		FILE:{
-			// 				1B 	1KB 	1MB
-			BUFFER_SIZE : 	1 *	1024 *	1024//1MB
+			// 				1B 	1KB 	1MB		X MB
+			BUFFER_SIZE : 	1 *	1024 *	1024 *	5 // X MB
 		}
 	});
 })();
@@ -90,12 +91,11 @@
 		}
 
 		Generator.prototype.generate = function(){
-			var generator = this;
 			console.debug("generate file map start ",new Date());
 			var fileMapperResults = this.fileMapper.execute().then(
-					generateFctnThen(generator),
-					generateFctnError(generator),
-					generateFctnNotify(generator,this.notifyPostProcessor)
+					this.thenFtn.bind(this),
+					this.errorFtn.bind(this),
+					this.notifyFtn.bind(this)
 				);
 
 			return this.deferred.promise;
@@ -111,27 +111,19 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnError(generator){
-			var gen = generator;
-			return function(error){
-				console.error("file read error",error);
-				return gen.deferred.reject(error);
-			};
-
+		Generator.prototype.errorFtn = function(error){
+			return this.deferred.reject(error);
 		};
 		/**
 		 * static private function for processing the result of the file mapper.
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnThen(generator){
-			var gen = generator;
-			return function(result){
+		Generator.prototype.thenFtn = function(result){
 				console.debug("generateFctnThen",new Date());
-				gen.noChunks = result.length;
-				gen.fileMapperExecuteComplete = true;
-				generateResolveIfComplete(gen,gen.file);
-			};
+				this.noChunks = result.length;
+				this.fileMapperExecuteComplete = true;
+				this.resolveIfComplete(this.file);
 		};
 
 		/**
@@ -139,19 +131,14 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateFctnNotify(generator,postProcessor){
-			var gen = generator;
-			var pProcess = postProcessor
-			return function(notification){
-				//console.debug("notify",notification);
-				var notify = notification;
-				generator.fileMapper.processChunk(notification)
-				.then(function(result){
-					gen.deferred.notify(result);
-					gen.noChunksProcessed= gen.noChunksProcessed + 1;
-					generateResolveIfComplete(gen,notification);
-				});
-			};
+		Generator.prototype.notifyFtn = function(notification){
+			var notify = notification;
+			this.fileMapper.processChunk(notification)
+			.then(function(result){
+				this.deferred.notify(result);
+				this.noChunksProcessed= this.noChunksProcessed + 1;
+				this.resolveIfComplete(notification);
+			}.bind(this));
 		};
 
 		/**
@@ -159,12 +146,10 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		function generateResolveIfComplete(generator,result){
-			var gen = generator;
-
-			if(gen.isComplete()){
+		Generator.prototype.resolveIfComplete = function(result){
+			if(this.isComplete()){
 				console.debug("generate file map end ",new Date());
-				gen.deferred.resolve(result);
+				this.deferred.resolve(result);
 			}
 		};
 
@@ -175,20 +160,51 @@
 
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.COMMON).factory("FilterMapGenerator",['$q','FilterMapper',FilterMapGenerator]);
+	angular.module(APP.MODULE.COMMON).factory("FilterMapGenerator",['$q','FilterMapper','fileView',FilterMapGenerator]);
 
-	function FilterMapGenerator($q,FilterMapper){
+	function FilterMapGenerator($q,FilterMapper,fileView){
 
-		function Generator(fileModel,filter){
-			this.fileModel = fileModel;
+		function Generator(filter){
+			this.fileModel = fileView.model;
 			this.filter = filter;
 
 		};
 		Generator.prototype.generate = function(){
 			var filterMapper = new FilterMapper(this.fileModel,this.filter);
-			var chunks = filterMapper.seperateIntoChunks();
+			//var chunks = filterMapper.seperateIntoChunks();
+
+			return filterMapper.execute().then(
+				this.thenFtn.bind(this),
+				this.errorFtn.bind(this),
+				this.notifyFtn.bind(this)
+			);
 
 		};
+
+		Generator.prototype.errorFtn = function(error){
+			console.debug("filter Error",error);
+			return this.deferred.reject(error);
+		};
+		/**
+		 * static private function for processing the result of the file mapper.
+		 * @param  {[type]} generator [description]
+		 * @return {[type]}           [description]
+		 */
+		Generator.prototype.thenFtn = function(result){
+				console.debug("filter Then",new Date());
+				return result
+		};
+
+		/**
+		 * static private function to process the notification and propogate it when it is ready.
+		 * @param  {[type]} generator [description]
+		 * @return {[type]}           [description]
+		 */
+		var count = 0
+		Generator.prototype.notifyFtn = function(notification){
+			console.debug("notify",count++);
+		};
+
 		Generator.prototype.cancel = function(){
 
 		};
@@ -377,20 +393,15 @@
 				pageView.model = new Page();
 				FiltersView.model = new Filters();
 
-				//filtersView.model = fileView.model.filter;
 				$scope.$applyAsync();
-				//console.debug("filtersView.model",filtersView.model);
 				new FileMapGenerator(fileView.model).generate().then(function(result){
-					console.debug("file map completed",result,fileView.model);
 					fileView.model = result;
 				},function(err){
 					console.debug("error",err);
 				},function(update){
 					//console.debug(update);
 					pageView.model.totalLines = update.length;
-					//console.debug("notify update",new Date());
 				}).finally(function(){
-					console.debug("finally");
 					$scope.$applyAsync();
 				});
 			};
@@ -422,7 +433,7 @@
 			this.lines = [];
 			this.reader = new fileReaderSrvc(file);
 			this.deferred;
-
+			this.index;
 		};
 		/**
 		 * returns all the values requred to re-initialise this object. (required when sending this object to the web -workers)
@@ -444,40 +455,33 @@
 		ChunkMapper.prototype.execute = function(){
 			this.deferred = $q.defer();
 			//console.debug("execute this",this);
-			this.reader.readBytes(this.start,this.end).then(this.mapChunk(this));
+			this.reader.readBytes(this.start,this.end).then(this.mapChunk.bind(this));
 			return this.deferred.promise;
 		};
 		ChunkMapper.prototype.cancel = function(){
 			this.deferred.reject("CANCELLED");
 		};
-		ChunkMapper.prototype.mapChunk = function(cMapper){
-			//console.debug("chunk",cMapper);
-			var mapper = cMapper;
+		ChunkMapper.prototype.mapChunk = function(chunk){
 
-			return function(chunk){
-				//console.debug("chunk mapper",mapper);
-				//mapper.lines = [];
 				var view = new Uint8Array(chunk);
-				var startLine = mapper.start;
+				var startLine = this.start;
 				for (var i = 0; i < view.length; i++) {
 	            	if (view[i] === 10) {
-	            		var lineEnd = mapper.start + i;
-	                	if(!mapper.firstLine){
-	                		mapper.firstLine = new Line(startLine,lineEnd,true);
+	            		var lineEnd = this.start + i;
+	                	if(!this.firstLine){
+	                		this.firstLine = new Line(startLine,lineEnd,true);
 	                	}else{
 	                		var line = new Line(startLine,lineEnd,true);
-	                		mapper.lines.push(line);
+	                		this.lines.push(line);
 	                	}
 	                	startLine = lineEnd + 1;
 	            	}
 	        	}
 
-	        	if(startLine < mapper.start + view.length){
-	        		mapper.lastLine = new Line(startLine,mapper.start + view.length,false);
+	        	if(startLine < this.start + view.length){
+	        		this.lastLine = new Line(startLine,this.start + view.length,false);
 	        	}
-	        	//console.debug("chunk",mapper.serialize());
-				mapper.deferred.resolve(mapper.serialize());
-			};
+				this.deferred.resolve(this);
 		};
 
 		return ChunkMapper
@@ -507,16 +511,13 @@
 		};
 
 		ChunkProcessor.prototype.processChunk = function(chunk){
-			console.debug()
 			var deferred = $q.defer();
-			var chu = chunk.properties;
-
-			if(chu.index === 0){
+			if(chunk.index === 0){
 				console.debug("first chunk notify",new Date());
 			}
 
-			var observer = new _Observer(chu,this,deferred);
-			this.observers[chu.index] = observer;
+			var observer = new _Observer(chunk,this,deferred);
+			this.observers[chunk.index] = observer;
 			this._triggerObserver();
 
 			return deferred.promise;
@@ -601,8 +602,6 @@
 
 	function FileMapperFactory($q,SITE,WorkManager,ChunkMapper,ChunkProcessor){
 
-
-
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
 		 * @param {[type]} file [description]
@@ -615,7 +614,6 @@
 
 		FileMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-
 			return WorkManager.execute(chunks).then(function(result){
 				return result;
 			});
@@ -864,10 +862,13 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("Filter",['FilterMapGenerator',FilterFactory]);
+	angular.module(APP.MODULE.FILTER).factory("Filter",['$timeout','FilterMapGenerator',FilterFactory]);
 
 
-	function FilterFactory(FilterMapGenerator){
+	function FilterFactory($timeout,FilterMapGenerator){
+
+		var timeoutId = null;
+		var DEBOUNCE_TIME = 500;
 
 		function Filter(index){
 			var pValue = "";
@@ -881,14 +882,20 @@
 				configurable:false,
 				enumerable:true,
 				get:function(){
-					console.debug("get filter value",pValue);
 					return pValue;
 				},
 				set:function(val){
-					console.debug("set ilter value",pValue,val);
+
 					pValue = val;
 					// debounce then run
-					this._generateFilterMap();
+					if(timeoutId){
+						$timeout.cancel(timeoutId);
+					}
+					timeoutId = $timeout(function(){
+						timeoutId = null;
+						this._generateFilterMap();
+					}.bind(this),DEBOUNCE_TIME,false);
+
 				}
 			});
 		};
@@ -898,7 +905,7 @@
 			 	this.generator.cancel();
 			 }
 
-			 this.generator = new FilterMapGenerator();
+			 this.generator = new FilterMapGenerator(this);
 			 this.generator.generate();
 		};
 
@@ -906,6 +913,65 @@
 	}
 
 
+})();
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTER).factory("FilterChunkProcessor",['$q','fileReaderSrvc',FilterChunkProcessorFactory]);
+
+	function FilterChunkProcessorFactory($q,fileReaderSrvc){
+
+		/**
+		 * an executable for an individual chunk which can be put into the workmanager to be threaded.
+		 * [ChunkMapper description]
+		 * @param {[type]} start  [description]
+		 * @param {[type]} end    [description]
+		 * @param {[type]} reader [description]
+		 */
+		function FilterChunkProcessor(start,end,file,filter){
+			this.start = start;
+			this.end = end;
+			this.file = file;
+			this.filter = filter
+			this.result = [];
+			this.deferred;
+			this.index;
+
+		};
+		/**
+		 * returns all the values requred to re-initialise this object. (required when sending this object to the web -workers)
+		 * @return {[type]} [description]
+		 */
+		FilterChunkProcessor.prototype.serialize = function(){
+			return {
+				executable:"FilterChunkProcessor",
+				parameters:[this.start,this.end,this.file,this.filter],
+				properties:{
+					index:this.index,
+					result:this.result
+				}
+			};
+		};
+
+		FilterChunkProcessor.prototype.execute = function(){
+			this.deferred = $q.defer();
+			var reader = new fileReaderSrvc(this.file);
+			reader.read(this.start,this.end).then(this.mapChunk.bind(this));
+			return this.deferred.promise;
+		};
+		FilterChunkProcessor.prototype.cancel = function(){
+			this.deferred.reject("CANCELLED");
+		};
+		FilterChunkProcessor.prototype.mapChunk = function(chunk){
+			this.result = chunk.split(/[\r\n|\n]/).map(this.isVisible.bind(this));
+			this.deferred.resolve(this.serialize());
+		};
+
+		FilterChunkProcessor.prototype.isVisible = function(lineTxt){
+			return lineTxt.search(this.filter.value) !== -1;
+		};
+
+		return FilterChunkProcessor
+	};
 })();
  (function(){
 	"use strict";
@@ -942,13 +1008,9 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','WorkManager',FilterMapperFactory]);
+	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','SITE','WorkManager','FilterChunkProcessor',FilterMapperFactory]);
 
-	function FilterMapperFactory($q,WorkManager){
-
-		var CHUNK_LINES = 1000;
-		//no Readers for the workmanager to use
-		var NO_READERS = 4;
+	function FilterMapperFactory($q,SITE,WorkManager,FilterChunkProcessor){
 
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
@@ -961,21 +1023,34 @@
 
 		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-
-			// return WorkManager.execute(chunks).then(function(result){
-			// 	return result;
-			// });
+			//console.debug("filter chunks",chunks);
+			return WorkManager.execute(chunks).then(function(result){
+				//console.debug("returned results",result);
+				return result;
+			});
 
 		};
 		FilterMapper.prototype.seperateIntoChunks = function(){
 
 			var chunks  = [];
-			for(var i=0;i<this.fileModel.fileMap.length;i+=CHUNK_LINES){
-				var end = Math.min(i+CHUNK_LINES,this.fileModel.fileMap.length);
-				chunks.push(this.fileModel.fileMap.slice(i,end));
-			}
 
-			console.debug("chunks",chunks);
+			var currentStart = 0;
+			var bufferindex = SITE.FILE.BUFFER_SIZE;
+			for(var i=0;i<this.fileModel.lines.length;i++){
+				if(this.fileModel.lines[i].end > bufferindex ){
+					//buffer size reached
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i-1].end,this.fileModel.file,this.filter));
+					chunks[chunks.length-1].index = chunks.length-1;
+
+					currentStart = this.fileModel.lines[i].start;
+					bufferindex =currentStart + SITE.FILE.BUFFER_SIZE;
+
+				}else if(i===this.fileModel.lines.length-1){
+					//last line reached
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i].end,this.fileModel.file,this.filter));
+					chunks[chunks.length-1].index = chunks.length-1;
+				}
+			};
 
 			return chunks;
 		};
@@ -1449,6 +1524,7 @@
 
 	function ConfigWorkManager(SITE,WorkManagerProvider){
 		WorkManagerProvider.setPoolSize(SITE.WORK_MANAGER.THREADS);
+		//WorkManagerProvider.useWorker(true);
 	};
 
 })();
@@ -1459,17 +1535,21 @@
 	function WorkManagerProvider(){
 		//set the workmanager pool size
 		var poolSize = 1;
-
+		var useWorkers = false;
 		return {
 			setPoolSize:setPoolSize,
-			$get:['$q','$timeout','WorkerPool','FFWorker',WorkManagerService]
+			useWorker:setUseWorkers,
+			$get:['$q','$timeout','WorkerPool','FFLocalWorker','FFWorker',WorkManagerService]
 		};
 
 		function setPoolSize(noThreads){
 			poolSize = (noThreads>0)?noThreads:1;
 		};
+		function setUseWorkers(bool){
+			useWorkers = bool;
+		};
 
-		function WorkManagerService($q,$timeout,WorkerPool,FFWorker){
+		function WorkManagerService($q,$timeout,WorkerPool,FFLocalWorker,FFWorker){
 			/**
 			 * runs a collection of runnable ojbect with up to the specified number of asynchronous 'threads' when one thread completes the next is run.
 			 * the results should be stored by the runnable so they can be consumed later.
@@ -1483,14 +1563,15 @@
 
 			WorkManager.prototype.initialise = function(){
 				var pool = this.pool;
+				console.debug("initialising",pool);
 				for(var i=0;i<poolSize;i++){
 
 					(function(ffWorker){
 						ffWorker.initialise().then(function(){
-							//console.debug("returning ffWorker", ffWorker.getIdentifier());
+							console.debug("returning ffWorker", ffWorker.getIdentifier());
 							pool.returnWorker(ffWorker);
 						});
-					})(new FFWorker());
+					})((useWorkers)?new FFWorker():new FFLocalWorker());
 
 				}
 			};
@@ -1508,21 +1589,17 @@
 				var deferred;
 
 				var getWorker = function(){
-					//console.debug("fetching Worker",ecWorker);
 					return ecWorkManager.pool.getWorker();
 				};
 
 				var doWork = function(ffWorker){
 					ecWorker = ffWorker;
-					//console.debug("got Worker",ecWorker);
 					return ecWorker.execute(ecWork);
 				};
 				var processResult = function(result){
-					//console.debug("got result",result);
 					deferred.resolve(result);
 				};
 				var returnWorker = function(){
-					//console.debug("returning worker to pool");
 					ecWorkManager.pool.returnWorker(ecWorker);
 				};
 				this.execute = function(){
@@ -1538,24 +1615,43 @@
 
 			WorkManager.prototype.execute = function(workArray){
 				var deferred = $q.defer();
-				//console.debug("execute",workArray);
 				//from the pool
 				var promises = [];
 				//get the promises of all the work.
-				var wManager = this;
 				workArray.forEach(function(work){
-					var prmse = new ExecutionContext(work,wManager).execute()
+					var prmse = new ExecutionContext(work,this).execute()
 						.then(function(result){
 							deferred.notify(result);
 							return result;
 						});
 					promises.push(prmse);
-				});
+				}.bind(this));
 
 				$q.all(promises).then(function(result){
 					deferred.resolve(result);
 				});
 				return deferred.promise;
+			};
+
+			WorkManager.prototype.terminate = function(){
+				// var deferred = $q.defer();
+				// //console.debug("execute",workArray);
+				// //from the pool
+				// var promises = [];
+				// //get the promises of all the work.
+				// workArray.forEach(function(work){
+				// 	var prmse = new ExecutionContext(work,this).execute()
+				// 		.then(function(result){
+				// 			deferred.notify(result);
+				// 			return result;
+				// 		});
+				// 	promises.push(prmse);
+				// }.bind(this));
+
+				// $q.all(promises).then(function(result){
+				// 	deferred.resolve(result);
+				// });
+				// return deferred.promise;
 			};
 
 			return new WorkManager();
@@ -1605,6 +1701,8 @@
 					}else{
 						deferred.reject(e);
 					}
+					//unload the blob.
+					window.URL.revokeObjectURL(blobURL);
 				};
 
 				worker =  new Worker(blobURL);
@@ -1647,7 +1745,11 @@
 							deferred.reject(e);
 							break;;
 						case 'success':
-							deferred.resolve(data.data);
+							//de-serialize;
+							for(var i in data.data.properties){
+								executable[i] = data.data.properties[i];
+							}
+							deferred.resolve(executable);
 							break;;
 						case 'notify':
 							deferred.notify(data.data);
@@ -1682,9 +1784,66 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.WORKER).factory("WorkerPool",['$q',WorkerPoolFactory]);
+	angular.module(APP.MODULE.WORKER).factory("FFLocalWorker",['$q','$timeout',LocalWorkerFactory]);
 
-	function WorkerPoolFactory($q){
+	function LocalWorkerFactory($q,$timeout){
+
+
+		var id = 0;
+		function LocalWorker(){
+			var identifier = id;
+			id++;
+			var worker;
+			var lock = false;
+			this.getIdentifier = function(){return identifier;};
+			this.initialise = function(){
+				return $q.when("worker initialized");
+			};
+
+			/**
+			 * Executes an executable in a seperate thread.
+			 *
+			 * the executable object MUST to follow the following interface or it will be rejected by the Web Worker.
+			 *
+			 *	{
+			 *		execute: function(){ return promise }
+			 *		serialize: function(){
+			 *			return {
+			 *				executable:"name of object",
+			 *				parameters:[parameter values to instantiate the object],
+			 *				properties:{any extra properties you want assigned to the object}
+			 *			}
+			 *		}
+			 *	}
+			 *
+			 * @param  {[type]} executable [description]
+			 * @return returns a promise containing the result of the execute function.
+			 */
+			this.execute = function(executable){
+				if(lock){
+					return $q.reject("Worker is locked by another process");
+				}
+				var deferred = $q.defer();
+
+				executable.execute().then(function(result){
+					deferred.resolve(executable);
+				}.bind(this));
+
+				return deferred.promise;
+			};
+
+			this.terminate = function(){};
+		};
+
+		return LocalWorker;
+	};
+
+})();
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.WORKER).factory("WorkerPool",['$q','$timeout',WorkerPoolFactory]);
+
+	function WorkerPoolFactory($q,$timeout){
 		/**
 		 * Create a pool to manage the avaliable intances of the workers.
 		 *
@@ -1694,6 +1853,7 @@
 		function WorkerPool(){
 			this.pool = [];
 			this.queue = [];
+			this.terminate = false;
 		};
 
 		/**
@@ -1741,16 +1901,38 @@
 		 * @return {[type]} [description]
 		 */
 		WorkerPool.prototype.resolveRequest = function(){
-			if(this.queue.length > 0 && this.pool.length > 0){
+			if(this.terminate){
+				this._termiante();
+			}else if(this.queue.length > 0 && this.pool.length > 0){
 				var deferred = this.queue.shift();
-				deferred.resolve(this.pool.pop());
+				var wrker = this.pool.pop();
+				//put a timeout on the worker to see if that helps GC
+				//$timeout(function(){
+					deferred.resolve(wrker);
+				//},500,false)
+
 			}
+		};
+
+
+		WorkerPool.prototype.terminate  = function(){
+			this.terminate = true;
+		};
+
+		WorkerPool.prototype._terminate  = function(){
+			this.queue.forEach(function(req){
+				req.reject("terminated");
+			}.bind(this));
+			this.queue = [];
+
+			this.pool.forEach(function(wkr){
+				wkr.termiante();
+			}.bind(this));
+			this.pool = [];
 		};
 
 		return WorkerPool
 	};
-
-
 
 })();
  (function(){
@@ -1763,6 +1945,7 @@
 			"NAME: 'Worker',",
 			"MODULE: {",
 				"FILE : 'FF_FILE',",
+				"FILTER : 'FF_FILTER',",
 				"COMMON : 'FF_COMMON',",
 				"FILTER : 'FF_FILTER',",
 				"WORKER : 'FF_WORKER'",
@@ -1789,29 +1972,21 @@
 		"angular = window.angular;",
 
 		//initialise the module.
-		"angular.module(APP.NAME,[APP.MODULE.WORKER,APP.MODULE.FILE]);",
+		"angular.module(APP.NAME,[APP.MODULE.WORKER,APP.MODULE.FILE,APP.MODULE.FILTER]);",
 
 		//bootstrap the module.
-		"angular.bootstrap(null, [APP.NAME]);"].join("\n");
+		"angular.bootstrap(null, [APP.NAME]);"].join("");
 	};
-
-
 
 	function WorkerTemplate($location){
 		function getTemplate(){
-
 			var temp = template($location.absUrl());
-
-			console.debug("template",temp);
-
 			return temp;
-		}
+		};
 		return {
 			template : getTemplate
 		};
 	};
-
-
 
 })();
 

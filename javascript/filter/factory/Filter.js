@@ -1,9 +1,12 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("Filter",['FilterMapGenerator',FilterFactory]);
+	angular.module(APP.MODULE.FILTER).factory("Filter",['$timeout','FilterMapGenerator',FilterFactory]);
 
 
-	function FilterFactory(FilterMapGenerator){
+	function FilterFactory($timeout,FilterMapGenerator){
+
+		var timeoutId = null;
+		var DEBOUNCE_TIME = 500;
 
 		function Filter(index){
 			var pValue = "";
@@ -17,14 +20,20 @@
 				configurable:false,
 				enumerable:true,
 				get:function(){
-					console.debug("get filter value",pValue);
 					return pValue;
 				},
 				set:function(val){
-					console.debug("set ilter value",pValue,val);
+
 					pValue = val;
 					// debounce then run
-					this._generateFilterMap();
+					if(timeoutId){
+						$timeout.cancel(timeoutId);
+					}
+					timeoutId = $timeout(function(){
+						timeoutId = null;
+						this._generateFilterMap();
+					}.bind(this),DEBOUNCE_TIME,false);
+
 				}
 			});
 		};
@@ -34,7 +43,7 @@
 			 	this.generator.cancel();
 			 }
 
-			 this.generator = new FilterMapGenerator();
+			 this.generator = new FilterMapGenerator(this);
 			 this.generator.generate();
 		};
 

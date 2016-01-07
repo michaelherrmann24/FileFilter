@@ -2,6 +2,10 @@
 	"use strict";
 	angular.module(APP.MODULE.FILE,[]);
 })(); (function(){
+	"use strict"
+	angular.module(APP.MODULE.FILTER,[]);
+})();
+ (function(){
 	"use strict";
 	angular.module(APP.MODULE.WORKER,[]);
 })();
@@ -27,7 +31,7 @@
 			this.lines = [];
 			this.reader = new fileReaderSrvc(file);
 			this.deferred;
-
+			this.index;
 		};
 		/**
 		 * returns all the values requred to re-initialise this object. (required when sending this object to the web -workers)
@@ -49,40 +53,33 @@
 		ChunkMapper.prototype.execute = function(){
 			this.deferred = $q.defer();
 			//console.debug("execute this",this);
-			this.reader.readBytes(this.start,this.end).then(this.mapChunk(this));
+			this.reader.readBytes(this.start,this.end).then(this.mapChunk.bind(this));
 			return this.deferred.promise;
 		};
 		ChunkMapper.prototype.cancel = function(){
 			this.deferred.reject("CANCELLED");
 		};
-		ChunkMapper.prototype.mapChunk = function(cMapper){
-			//console.debug("chunk",cMapper);
-			var mapper = cMapper;
+		ChunkMapper.prototype.mapChunk = function(chunk){
 
-			return function(chunk){
-				//console.debug("chunk mapper",mapper);
-				//mapper.lines = [];
 				var view = new Uint8Array(chunk);
-				var startLine = mapper.start;
+				var startLine = this.start;
 				for (var i = 0; i < view.length; i++) {
 	            	if (view[i] === 10) {
-	            		var lineEnd = mapper.start + i;
-	                	if(!mapper.firstLine){
-	                		mapper.firstLine = new Line(startLine,lineEnd,true);
+	            		var lineEnd = this.start + i;
+	                	if(!this.firstLine){
+	                		this.firstLine = new Line(startLine,lineEnd,true);
 	                	}else{
 	                		var line = new Line(startLine,lineEnd,true);
-	                		mapper.lines.push(line);
+	                		this.lines.push(line);
 	                	}
 	                	startLine = lineEnd + 1;
 	            	}
 	        	}
 
-	        	if(startLine < mapper.start + view.length){
-	        		mapper.lastLine = new Line(startLine,mapper.start + view.length,false);
+	        	if(startLine < this.start + view.length){
+	        		this.lastLine = new Line(startLine,this.start + view.length,false);
 	        	}
-	        	//console.debug("chunk",mapper.serialize());
-				mapper.deferred.resolve(mapper.serialize());
-			};
+				this.deferred.resolve(this);
 		};
 
 		return ChunkMapper
@@ -175,7 +172,66 @@
 	};
 })();
  (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILTER).factory("FilterChunkProcessor",['$q','fileReaderSrvc',FilterChunkProcessorFactory]);
 
+	function FilterChunkProcessorFactory($q,fileReaderSrvc){
+
+		/**
+		 * an executable for an individual chunk which can be put into the workmanager to be threaded.
+		 * [ChunkMapper description]
+		 * @param {[type]} start  [description]
+		 * @param {[type]} end    [description]
+		 * @param {[type]} reader [description]
+		 */
+		function FilterChunkProcessor(start,end,file,filter){
+			this.start = start;
+			this.end = end;
+			this.file = file;
+			this.filter = filter
+			this.result = [];
+			this.deferred;
+			this.index;
+
+		};
+		/**
+		 * returns all the values requred to re-initialise this object. (required when sending this object to the web -workers)
+		 * @return {[type]} [description]
+		 */
+		FilterChunkProcessor.prototype.serialize = function(){
+			return {
+				executable:"FilterChunkProcessor",
+				parameters:[this.start,this.end,this.file,this.filter],
+				properties:{
+					index:this.index,
+					result:this.result
+				}
+			};
+		};
+
+		FilterChunkProcessor.prototype.execute = function(){
+			this.deferred = $q.defer();
+			var reader = new fileReaderSrvc(this.file);
+			reader.read(this.start,this.end).then(this.mapChunk.bind(this));
+			return this.deferred.promise;
+		};
+		FilterChunkProcessor.prototype.cancel = function(){
+			this.deferred.reject("CANCELLED");
+		};
+		FilterChunkProcessor.prototype.mapChunk = function(chunk){
+			this.result = chunk.split(/[\r\n|\n]/).map(this.isVisible.bind(this));
+			this.deferred.resolve(this.serialize());
+		};
+
+		FilterChunkProcessor.prototype.isVisible = function(lineTxt){
+			return lineTxt.search(this.filter.value) !== -1;
+		};
+
+		return FilterChunkProcessor
+	};
+})();
+ (function(){
+	"use strict";
 	angular.module(APP.MODULE.WORKER).run(['$q','$window','$injector',Runner]);
 
 	/**
@@ -185,19 +241,36 @@
 	 * @param {[type]} $injector [description]
 	 */
 	function Runner($q,$window,$injector){
-		angular.element($window).on('message',function(event){
+
+		onmessage=msgProcessor;
+		postMessage({event:'initDone'});
+
+		function postSuccess(result){
+			postMessage({event:"success",data:result.serialize()});
+		};
+
+		function postError(result){
+			postMessage({event:"error",data:result});
+		};
+
+		function postNotify(result){
+			postMessage({event:"notify",data:result});
+		};
+
+		function msgProcessor(event){
 
 			var input = event.data;
 			var output = $q.defer();
-
 			var promise = output.promise;
-			promise.then(postSuccess,postError,postNotify);
+			var executable;
+			var exec;
 
+			promise.then(postSuccess,postError,postNotify);
 			if($injector.has(input.executable)){
 				//get the executable from the injector
-				var executable = $injector.get(input.executable);
+				executable = $injector.get(input.executable);
 				//create a new instance of it. (assumes it is a factory)
-				var exec = Object.create(executable.prototype);
+				exec = Object.create(executable.prototype);
 				//adds the contextual data to the obejct (ie. calls the constructor with required arguments)
 				executable.apply(exec, input.parameters);
 
@@ -206,7 +279,7 @@
 				}
 
 				//executes the runnable. resolving its promise appropriately
-				if (typeof exec.execute == 'function') {
+				if (typeof(exec.execute) === 'function') {
 					exec.execute().then(resolveSuccess,resolveError,resolveNotify);
 				}else{
 					output.reject("executable does not contain an execute function");
@@ -226,21 +299,14 @@
 			function resolveNotify(result){
 				output.notify(result);
 			};
+			function resolveFinally(){
+				var input = null;
+				var output = null;
+				var promise = null;
+				var executable = null;
+				var exec = null;
+			};
 
-		});
-
-		postMessage({event:'initDone'});
-
-		function postSuccess(result){
-			postMessage({event:"success",data:result});
-		};
-
-		function postError(result){
-			postMessage({event:"error",data:result});
-		};
-
-		function postNotify(result){
-			postMessage({event:"notify",data:result});
 		};
 
 	};

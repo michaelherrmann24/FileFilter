@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.WORKER).factory("WorkerPool",['$q',WorkerPoolFactory]);
+	angular.module(APP.MODULE.WORKER).factory("WorkerPool",['$q','$timeout',WorkerPoolFactory]);
 
-	function WorkerPoolFactory($q){
+	function WorkerPoolFactory($q,$timeout){
 		/**
 		 * Create a pool to manage the avaliable intances of the workers.
 		 *
@@ -12,6 +12,7 @@
 		function WorkerPool(){
 			this.pool = [];
 			this.queue = [];
+			this.terminate = false;
 		};
 
 		/**
@@ -59,15 +60,37 @@
 		 * @return {[type]} [description]
 		 */
 		WorkerPool.prototype.resolveRequest = function(){
-			if(this.queue.length > 0 && this.pool.length > 0){
+			if(this.terminate){
+				this._termiante();
+			}else if(this.queue.length > 0 && this.pool.length > 0){
 				var deferred = this.queue.shift();
-				deferred.resolve(this.pool.pop());
+				var wrker = this.pool.pop();
+				//put a timeout on the worker to see if that helps GC
+				//$timeout(function(){
+					deferred.resolve(wrker);
+				//},500,false)
+
 			}
+		};
+
+
+		WorkerPool.prototype.terminate  = function(){
+			this.terminate = true;
+		};
+
+		WorkerPool.prototype._terminate  = function(){
+			this.queue.forEach(function(req){
+				req.reject("terminated");
+			}.bind(this));
+			this.queue = [];
+
+			this.pool.forEach(function(wkr){
+				wkr.termiante();
+			}.bind(this));
+			this.pool = [];
 		};
 
 		return WorkerPool
 	};
-
-
 
 })();
