@@ -43,6 +43,8 @@
 			 * Executes an executable in a seperate thread.
 			 *
 			 * the executable object MUST to follow the following interface or it will be rejected by the Web Worker.
+			 * Messaging doesnt really deal well with parsing complex objects, so the object values serialized should be primitive.
+			 * best to keep the worker dependencies simple.
 			 *
 			 *	{
 			 *		execute: function(){ return promise }
@@ -64,7 +66,6 @@
 				}
 				var deferred = $q.defer();
 				var msg = executable.serialize();
-
 				var msgHandler = function(e){
 					var data = e.data;
 					var eventId = e.data.event;

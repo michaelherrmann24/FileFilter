@@ -167,18 +167,21 @@
 		function Generator(filter){
 			this.fileModel = fileView.model;
 			this.filter = filter;
+			this.filterMapper = new FilterMapper(this.fileModel,this.filter);
+
+			this.deferred = $q.defer();
+
+			this.processingComplete = false;
+			this.noChunksProcessed = 0;
 
 		};
 		Generator.prototype.generate = function(){
-			var filterMapper = new FilterMapper(this.fileModel,this.filter);
-			//var chunks = filterMapper.seperateIntoChunks();
-
-			return filterMapper.execute().then(
+			this.filterMapper.execute().then(
 				this.thenFtn.bind(this),
 				this.errorFtn.bind(this),
 				this.notifyFtn.bind(this)
 			);
-
+			return this.deferred.promise;
 		};
 
 		Generator.prototype.errorFtn = function(error){
@@ -191,8 +194,11 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-				console.debug("filter Then",new Date());
-				return result
+			console.debug("filter Then",result.length,new Date());
+			this.noChunks = result.length;
+			this.processingComplete = true;
+			this.resolveIfComplete(this.filter);
+			return result
 		};
 
 		/**
@@ -200,9 +206,30 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		var count = 0
 		Generator.prototype.notifyFtn = function(notification){
-			console.debug("notify",count++);
+			return this.filterMapper.processChunk(notification).then(function(result){
+				this.deferred.notify(result);
+				this.noChunksProcessed+=1;
+				this.resolveIfComplete(notification);
+				return result;
+			}.bind(this));
+		};
+
+		Generator.prototype.isComplete = function(){
+			var isComplete = (this.processingComplete && this.noChunks === this.noChunksProcessed);
+			return isComplete;
+		}
+
+		/**
+		 * resolve the generation process promise if the process is complete
+		 * @param  {[type]} generator [description]
+		 * @return {[type]}           [description]
+		 */
+		Generator.prototype.resolveIfComplete = function(result){
+			if(this.isComplete()){
+				console.debug("generate filter map end ",new Date());
+				this.deferred.resolve(result);
+			}
 		};
 
 		Generator.prototype.cancel = function(){
@@ -872,11 +899,10 @@
 
 		function Filter(index){
 			var pValue = "";
-			var generator;
+			this.generator;
 			this.index = index;
 			this.type;
 			this.filterMap = [];
-			this.watchers = [];
 
 			Object.defineProperty(this,'value',{
 				configurable:false,
@@ -893,7 +919,12 @@
 					}
 					timeoutId = $timeout(function(){
 						timeoutId = null;
-						this._generateFilterMap();
+						if(typeof(pValue) === 'undefined' || pValue === null || pValue.trim() === ""){
+							this.filterMap = this.filterMap.map(function(){ return true;});
+						}else{
+							this._generateFilterMap();
+						}
+
 					}.bind(this),DEBOUNCE_TIME,false);
 
 				}
@@ -909,10 +940,96 @@
 			 this.generator.generate();
 		};
 
+		Filter.prototype.isVisible = function(idx){
+			if(idx >= this.filterMap.length){
+				return true;
+			}
+
+			var result = this.filterMap[idx];
+			//console.debug("Filter - isVisible",result);
+			return result;
+		};
+
 		return Filter;
 	}
 
 
+})();
+ (function(){
+	"use strict";
+	angular.module(APP.MODULE.FILE).factory("FilterChunkPostProcessor",['$q','$timeout','Line',FilterChunkPostProcessorFactory]);
+
+	function FilterChunkPostProcessorFactory($q,$timeout,Line){
+		/**
+		 * [ChunkProcessor description]
+		 */
+		function FilterChunkPostProcessor(filter){
+			var _currentIndex = 0;
+			this.filter = filter;
+			this.observers = []
+			Object.defineProperty(this,'currentIndex',{
+				get:function(){
+					return _currentIndex;
+				},
+				set:function(value){
+					_currentIndex = value
+					this._triggerObserver();
+				}
+			});
+		};
+
+		FilterChunkPostProcessor.prototype.processChunk = function(chunk){
+			var deferred = $q.defer();
+			if(chunk.index === 0){
+				console.debug("first filterd chunk notify",new Date());
+				this.filter.filterMap = [];
+			}
+			var observer = new _Observer(chunk,this,deferred);
+			this.observers[chunk.index] = observer;
+			this._triggerObserver();
+
+			return deferred.promise;
+		};
+
+		/**
+		 * function to cause the observer to be triggered for the current index and fire its call back
+		 *
+		 * @return {[type]} [description]
+		 */
+		FilterChunkPostProcessor.prototype._triggerObserver = function(){
+			var obs = this.observers[this.currentIndex];
+			if(obs){
+				obs.process();
+			}
+		};
+
+		/**
+		 * callback function for the observer. will resolve the promise and increment the current index.(which will fire the nex observer if it is existing yet.)
+		 * @param  {[type]} chunk    [description]
+		 * @param  {[type]} deferred [description]
+		 * @return {[type]}          [description]
+		 */
+		FilterChunkPostProcessor.prototype._processChunk = function(chunk,deferred){
+
+			this.filter.filterMap = this.filter.filterMap.concat(chunk.result);
+			this.currentIndex++;
+			deferred.resolve(this.filter.filterMap);
+		};
+
+		function _Observer(chunk,processor,deferred){
+			this.processor = processor;
+			this.deferred = deferred;
+			this.chunk = chunk;
+		}
+		_Observer.prototype.process = function(){
+			//stop observing to ensure this never runs twice for a chunk.
+			delete this.processor.observers[this.chunk.index];
+			//process this chunk;
+			this.processor._processChunk(this.chunk,this.deferred);
+		};
+
+		return FilterChunkPostProcessor
+	};
 })();
  (function(){
 	"use strict";
@@ -927,11 +1044,11 @@
 		 * @param {[type]} end    [description]
 		 * @param {[type]} reader [description]
 		 */
-		function FilterChunkProcessor(start,end,file,filter){
+		function FilterChunkProcessor(start,end,file,filterValue){
 			this.start = start;
 			this.end = end;
 			this.file = file;
-			this.filter = filter
+			this.filterValue = filterValue
 			this.result = [];
 			this.deferred;
 			this.index;
@@ -942,9 +1059,10 @@
 		 * @return {[type]} [description]
 		 */
 		FilterChunkProcessor.prototype.serialize = function(){
+			delete this.deferred;
 			return {
 				executable:"FilterChunkProcessor",
-				parameters:[this.start,this.end,this.file,this.filter],
+				parameters:[this.start,this.end,this.file,this.filterValue],
 				properties:{
 					index:this.index,
 					result:this.result
@@ -962,12 +1080,12 @@
 			this.deferred.reject("CANCELLED");
 		};
 		FilterChunkProcessor.prototype.mapChunk = function(chunk){
-			this.result = chunk.split(/[\r\n|\n]/).map(this.isVisible.bind(this));
-			this.deferred.resolve(this.serialize());
+			this.result = chunk.split(/\r\n|\n/).map(this.isVisible.bind(this));
+			this.deferred.resolve(this);
 		};
 
 		FilterChunkProcessor.prototype.isVisible = function(lineTxt){
-			return lineTxt.search(this.filter.value) !== -1;
+			return lineTxt.search(this.filterValue) !== -1;
 		};
 
 		return FilterChunkProcessor
@@ -1001,6 +1119,21 @@
 			this.filters.splice(filter.index,1);
 		};
 
+		FilterGroup.prototype.isVisible = function(idx){
+			if(typeof(this.filters) === 'undefined' || this.filters.length === 0){
+				return true;
+			}
+			//treats the filters as and.   all have to pass to remain visible.
+			for(var i=0;i<this.filters.length;i++){
+				if(!this.filters[i].isVisible(idx)){
+					//console.debug("FilterGroup - isVisible",false);
+					return false;
+				}
+			}
+			//console.debug("FilterGroup - isVisible",true);
+			return true;
+		};
+
 		return FilterGroup;
 	}
 
@@ -1008,9 +1141,9 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','SITE','WorkManager','FilterChunkProcessor',FilterMapperFactory]);
+	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','SITE','WorkManager','FilterChunkProcessor','FilterChunkPostProcessor',FilterMapperFactory]);
 
-	function FilterMapperFactory($q,SITE,WorkManager,FilterChunkProcessor){
+	function FilterMapperFactory($q,SITE,WorkManager,FilterChunkProcessor,FilterChunkPostProcessor){
 
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
@@ -1019,15 +1152,12 @@
 		function FilterMapper(fileModel,filter){
 			this.fileModel = fileModel;
 			this.filter = filter;
+			this.processor = new FilterChunkPostProcessor(this.filter);
 		};
 
 		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-			//console.debug("filter chunks",chunks);
-			return WorkManager.execute(chunks).then(function(result){
-				//console.debug("returned results",result);
-				return result;
-			});
+			return WorkManager.execute(chunks);
 
 		};
 		FilterMapper.prototype.seperateIntoChunks = function(){
@@ -1039,7 +1169,7 @@
 			for(var i=0;i<this.fileModel.lines.length;i++){
 				if(this.fileModel.lines[i].end > bufferindex ){
 					//buffer size reached
-					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i-1].end,this.fileModel.file,this.filter));
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i-1].end,this.fileModel.file,this.filter.value));
 					chunks[chunks.length-1].index = chunks.length-1;
 
 					currentStart = this.fileModel.lines[i].start;
@@ -1047,7 +1177,7 @@
 
 				}else if(i===this.fileModel.lines.length-1){
 					//last line reached
-					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i].end,this.fileModel.file,this.filter));
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i].end,this.fileModel.file,this.filter.value));
 					chunks[chunks.length-1].index = chunks.length-1;
 				}
 			};
@@ -1060,21 +1190,8 @@
 		 * @return {[type]}       [description]
 		 */
 		FilterMapper.prototype.processChunk = function(chunk){
-			//return this.processor.processChunk(chunk);
+			return this.processor.processChunk(chunk);
 		};
-
-		/**
-		 * generate all the line numbers for the file map
-		 * @param  {[type]} result [description]
-		 * @return {[type]}        [description]
-		 */
-		FilterMapper.postProcess = function(fileModel){
-			//console.debug(fileModel);
-			// for(var i=0;i<fileModel.lines.length;i++){
-			// 	fileModel.lines[i].row = i+1;
-			// }
-			// return $q.resolve(fileModel);
-		}
 
 		return FilterMapper;
 	};
@@ -1106,12 +1223,55 @@
 			this.groups.splice(filterGroup.index,1);
 		};
 
+		Filters.prototype.isVisible = function(index){
+
+			if(typeof(this.groups) === 'undefined' || this.groups.length === 0){
+				return true;
+			}
+
+			//treats each group as an or. (if 1 passes all pass. all have to fail to be not visible)
+			for(var i=0;i<this.groups.length;i++){
+				if(this.groups[i].isVisible(index)){
+					//console.debug("Filters - isVisible",true);
+					return true;
+				}
+			}
+			//console.debug("Filters - isVisible",false);
+			return false;
+		};
+
 		return Filters;
 	};
 
 
 })();
- (function(){
+  (function(){
+	"use strict"
+	angular.module(APP.MODULE.FILTER).filter("PageContent",['FiltersView',PageContentFilter]);
+
+	function PageContentFilter(FiltersView){
+
+		function PageContentFilter(lineList){
+
+			if(typeof(FiltersView.model) === 'undefined'){
+				return lineList;
+			}
+			var filteredList = lineList.filter(filterFunction);
+			//console.debug("PageContentFilter - filteredList",filteredList);
+			return filteredList;
+
+			function filterFunction(line,index){
+				var isVisible = FiltersView.model.isVisible(index);
+				//console.debug("PageContentFilter - isVisible",isVisible,index);
+				return isVisible
+			};
+		};
+
+		return PageContentFilter;
+
+	};
+})();
+  (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILTER).service("FiltersView",[filtersViewService]);
 
@@ -1524,7 +1684,7 @@
 
 	function ConfigWorkManager(SITE,WorkManagerProvider){
 		WorkManagerProvider.setPoolSize(SITE.WORK_MANAGER.THREADS);
-		//WorkManagerProvider.useWorker(true);
+		WorkManagerProvider.useWorker(SITE.WORK_MANAGER.USE_WORKERS);
 	};
 
 })();
@@ -1563,12 +1723,10 @@
 
 			WorkManager.prototype.initialise = function(){
 				var pool = this.pool;
-				console.debug("initialising",pool);
 				for(var i=0;i<poolSize;i++){
 
 					(function(ffWorker){
 						ffWorker.initialise().then(function(){
-							console.debug("returning ffWorker", ffWorker.getIdentifier());
 							pool.returnWorker(ffWorker);
 						});
 					})((useWorkers)?new FFWorker():new FFLocalWorker());
@@ -1634,24 +1792,7 @@
 			};
 
 			WorkManager.prototype.terminate = function(){
-				// var deferred = $q.defer();
-				// //console.debug("execute",workArray);
-				// //from the pool
-				// var promises = [];
-				// //get the promises of all the work.
-				// workArray.forEach(function(work){
-				// 	var prmse = new ExecutionContext(work,this).execute()
-				// 		.then(function(result){
-				// 			deferred.notify(result);
-				// 			return result;
-				// 		});
-				// 	promises.push(prmse);
-				// }.bind(this));
 
-				// $q.all(promises).then(function(result){
-				// 	deferred.resolve(result);
-				// });
-				// return deferred.promise;
 			};
 
 			return new WorkManager();
@@ -1715,6 +1856,8 @@
 			 * Executes an executable in a seperate thread.
 			 *
 			 * the executable object MUST to follow the following interface or it will be rejected by the Web Worker.
+			 * Messaging doesnt really deal well with parsing complex objects, so the object values serialized should be primitive.
+			 * best to keep the worker dependencies simple.
 			 *
 			 *	{
 			 *		execute: function(){ return promise }
@@ -1736,7 +1879,6 @@
 				}
 				var deferred = $q.defer();
 				var msg = executable.serialize();
-
 				var msgHandler = function(e){
 					var data = e.data;
 					var eventId = e.data.event;

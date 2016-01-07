@@ -33,12 +33,10 @@
 
 			WorkManager.prototype.initialise = function(){
 				var pool = this.pool;
-				console.debug("initialising",pool);
 				for(var i=0;i<poolSize;i++){
 
 					(function(ffWorker){
 						ffWorker.initialise().then(function(){
-							console.debug("returning ffWorker", ffWorker.getIdentifier());
 							pool.returnWorker(ffWorker);
 						});
 					})((useWorkers)?new FFWorker():new FFLocalWorker());
@@ -104,24 +102,7 @@
 			};
 
 			WorkManager.prototype.terminate = function(){
-				// var deferred = $q.defer();
-				// //console.debug("execute",workArray);
-				// //from the pool
-				// var promises = [];
-				// //get the promises of all the work.
-				// workArray.forEach(function(work){
-				// 	var prmse = new ExecutionContext(work,this).execute()
-				// 		.then(function(result){
-				// 			deferred.notify(result);
-				// 			return result;
-				// 		});
-				// 	promises.push(prmse);
-				// }.bind(this));
 
-				// $q.all(promises).then(function(result){
-				// 	deferred.resolve(result);
-				// });
-				// return deferred.promise;
 			};
 
 			return new WorkManager();

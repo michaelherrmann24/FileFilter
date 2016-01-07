@@ -10,11 +10,10 @@
 
 		function Filter(index){
 			var pValue = "";
-			var generator;
+			this.generator;
 			this.index = index;
 			this.type;
 			this.filterMap = [];
-			this.watchers = [];
 
 			Object.defineProperty(this,'value',{
 				configurable:false,
@@ -31,7 +30,12 @@
 					}
 					timeoutId = $timeout(function(){
 						timeoutId = null;
-						this._generateFilterMap();
+						if(typeof(pValue) === 'undefined' || pValue === null || pValue.trim() === ""){
+							this.filterMap = this.filterMap.map(function(){ return true;});
+						}else{
+							this._generateFilterMap();
+						}
+
 					}.bind(this),DEBOUNCE_TIME,false);
 
 				}
@@ -45,6 +49,16 @@
 
 			 this.generator = new FilterMapGenerator(this);
 			 this.generator.generate();
+		};
+
+		Filter.prototype.isVisible = function(idx){
+			if(idx >= this.filterMap.length){
+				return true;
+			}
+
+			var result = this.filterMap[idx];
+			//console.debug("Filter - isVisible",result);
+			return result;
 		};
 
 		return Filter;

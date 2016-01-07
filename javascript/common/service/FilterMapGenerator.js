@@ -7,18 +7,21 @@
 		function Generator(filter){
 			this.fileModel = fileView.model;
 			this.filter = filter;
+			this.filterMapper = new FilterMapper(this.fileModel,this.filter);
+
+			this.deferred = $q.defer();
+
+			this.processingComplete = false;
+			this.noChunksProcessed = 0;
 
 		};
 		Generator.prototype.generate = function(){
-			var filterMapper = new FilterMapper(this.fileModel,this.filter);
-			//var chunks = filterMapper.seperateIntoChunks();
-
-			return filterMapper.execute().then(
+			this.filterMapper.execute().then(
 				this.thenFtn.bind(this),
 				this.errorFtn.bind(this),
 				this.notifyFtn.bind(this)
 			);
-
+			return this.deferred.promise;
 		};
 
 		Generator.prototype.errorFtn = function(error){
@@ -31,8 +34,11 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-				console.debug("filter Then",new Date());
-				return result
+			console.debug("filter Then",result.length,new Date());
+			this.noChunks = result.length;
+			this.processingComplete = true;
+			this.resolveIfComplete(this.filter);
+			return result
 		};
 
 		/**
@@ -40,9 +46,30 @@
 		 * @param  {[type]} generator [description]
 		 * @return {[type]}           [description]
 		 */
-		var count = 0
 		Generator.prototype.notifyFtn = function(notification){
-			console.debug("notify",count++);
+			return this.filterMapper.processChunk(notification).then(function(result){
+				this.deferred.notify(result);
+				this.noChunksProcessed+=1;
+				this.resolveIfComplete(notification);
+				return result;
+			}.bind(this));
+		};
+
+		Generator.prototype.isComplete = function(){
+			var isComplete = (this.processingComplete && this.noChunks === this.noChunksProcessed);
+			return isComplete;
+		}
+
+		/**
+		 * resolve the generation process promise if the process is complete
+		 * @param  {[type]} generator [description]
+		 * @return {[type]}           [description]
+		 */
+		Generator.prototype.resolveIfComplete = function(result){
+			if(this.isComplete()){
+				console.debug("generate filter map end ",new Date());
+				this.deferred.resolve(result);
+			}
 		};
 
 		Generator.prototype.cancel = function(){

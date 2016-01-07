@@ -1,8 +1,8 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','SITE','WorkManager','FilterChunkProcessor',FilterMapperFactory]);
+	angular.module(APP.MODULE.FILTER).factory("FilterMapper",['$q','SITE','WorkManager','FilterChunkProcessor','FilterChunkPostProcessor',FilterMapperFactory]);
 
-	function FilterMapperFactory($q,SITE,WorkManager,FilterChunkProcessor){
+	function FilterMapperFactory($q,SITE,WorkManager,FilterChunkProcessor,FilterChunkPostProcessor){
 
 		/**
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
@@ -11,15 +11,12 @@
 		function FilterMapper(fileModel,filter){
 			this.fileModel = fileModel;
 			this.filter = filter;
+			this.processor = new FilterChunkPostProcessor(this.filter);
 		};
 
 		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
-			//console.debug("filter chunks",chunks);
-			return WorkManager.execute(chunks).then(function(result){
-				//console.debug("returned results",result);
-				return result;
-			});
+			return WorkManager.execute(chunks);
 
 		};
 		FilterMapper.prototype.seperateIntoChunks = function(){
@@ -31,7 +28,7 @@
 			for(var i=0;i<this.fileModel.lines.length;i++){
 				if(this.fileModel.lines[i].end > bufferindex ){
 					//buffer size reached
-					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i-1].end,this.fileModel.file,this.filter));
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i-1].end,this.fileModel.file,this.filter.value));
 					chunks[chunks.length-1].index = chunks.length-1;
 
 					currentStart = this.fileModel.lines[i].start;
@@ -39,7 +36,7 @@
 
 				}else if(i===this.fileModel.lines.length-1){
 					//last line reached
-					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i].end,this.fileModel.file,this.filter));
+					chunks.push(new FilterChunkProcessor(currentStart,this.fileModel.lines[i].end,this.fileModel.file,this.filter.value));
 					chunks[chunks.length-1].index = chunks.length-1;
 				}
 			};
@@ -52,21 +49,8 @@
 		 * @return {[type]}       [description]
 		 */
 		FilterMapper.prototype.processChunk = function(chunk){
-			//return this.processor.processChunk(chunk);
+			return this.processor.processChunk(chunk);
 		};
-
-		/**
-		 * generate all the line numbers for the file map
-		 * @param  {[type]} result [description]
-		 * @return {[type]}        [description]
-		 */
-		FilterMapper.postProcess = function(fileModel){
-			//console.debug(fileModel);
-			// for(var i=0;i<fileModel.lines.length;i++){
-			// 	fileModel.lines[i].row = i+1;
-			// }
-			// return $q.resolve(fileModel);
-		}
 
 		return FilterMapper;
 	};

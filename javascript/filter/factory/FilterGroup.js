@@ -26,6 +26,21 @@
 			this.filters.splice(filter.index,1);
 		};
 
+		FilterGroup.prototype.isVisible = function(idx){
+			if(typeof(this.filters) === 'undefined' || this.filters.length === 0){
+				return true;
+			}
+			//treats the filters as and.   all have to pass to remain visible.
+			for(var i=0;i<this.filters.length;i++){
+				if(!this.filters[i].isVisible(idx)){
+					//console.debug("FilterGroup - isVisible",false);
+					return false;
+				}
+			}
+			//console.debug("FilterGroup - isVisible",true);
+			return true;
+		};
+
 		return FilterGroup;
 	}
 

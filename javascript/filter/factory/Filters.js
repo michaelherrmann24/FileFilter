@@ -25,6 +25,23 @@
 			this.groups.splice(filterGroup.index,1);
 		};
 
+		Filters.prototype.isVisible = function(index){
+
+			if(typeof(this.groups) === 'undefined' || this.groups.length === 0){
+				return true;
+			}
+
+			//treats each group as an or. (if 1 passes all pass. all have to fail to be not visible)
+			for(var i=0;i<this.groups.length;i++){
+				if(this.groups[i].isVisible(index)){
+					//console.debug("Filters - isVisible",true);
+					return true;
+				}
+			}
+			//console.debug("Filters - isVisible",false);
+			return false;
+		};
+
 		return Filters;
 	};
 

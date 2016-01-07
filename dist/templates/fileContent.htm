@@ -1,1 +1,1 @@
-<div class="page-content"><table><file-line data-ng-repeat="line in fileView.model.lines| limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1) track by line.row"></file-line></table></div>
+<div class="page-content"><table><file-line data-ng-repeat="line in fileView.model.lines | PageContent | limitTo:pageView.model.linesPerPage:pageView.model.linesPerPage * (pageView.model.currentPage-1) track by line.row"></file-line></table></div>

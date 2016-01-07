@@ -4,7 +4,7 @@
 
 	function ConfigWorkManager(SITE,WorkManagerProvider){
 		WorkManagerProvider.setPoolSize(SITE.WORK_MANAGER.THREADS);
-		//WorkManagerProvider.useWorker(true);
+		WorkManagerProvider.useWorker(SITE.WORK_MANAGER.USE_WORKERS);
 	};
 
 })();

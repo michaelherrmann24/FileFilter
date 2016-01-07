@@ -184,11 +184,11 @@
 		 * @param {[type]} end    [description]
 		 * @param {[type]} reader [description]
 		 */
-		function FilterChunkProcessor(start,end,file,filter){
+		function FilterChunkProcessor(start,end,file,filterValue){
 			this.start = start;
 			this.end = end;
 			this.file = file;
-			this.filter = filter
+			this.filterValue = filterValue
 			this.result = [];
 			this.deferred;
 			this.index;
@@ -199,9 +199,10 @@
 		 * @return {[type]} [description]
 		 */
 		FilterChunkProcessor.prototype.serialize = function(){
+			delete this.deferred;
 			return {
 				executable:"FilterChunkProcessor",
-				parameters:[this.start,this.end,this.file,this.filter],
+				parameters:[this.start,this.end,this.file,this.filterValue],
 				properties:{
 					index:this.index,
 					result:this.result
@@ -219,12 +220,12 @@
 			this.deferred.reject("CANCELLED");
 		};
 		FilterChunkProcessor.prototype.mapChunk = function(chunk){
-			this.result = chunk.split(/[\r\n|\n]/).map(this.isVisible.bind(this));
-			this.deferred.resolve(this.serialize());
+			this.result = chunk.split(/\r\n|\n/).map(this.isVisible.bind(this));
+			this.deferred.resolve(this);
 		};
 
 		FilterChunkProcessor.prototype.isVisible = function(lineTxt){
-			return lineTxt.search(this.filter.value) !== -1;
+			return lineTxt.search(this.filterValue) !== -1;
 		};
 
 		return FilterChunkProcessor
