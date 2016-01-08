@@ -36,6 +36,7 @@
 							this.filterMap = [];
 						}else{
 							this.opt++;
+							this.filtering = true;
 							this._generateFilterMap(this.opt);
 						}
 
@@ -51,7 +52,9 @@
 			 }
 
 			 this.generator = new FilterMapGenerator(this, opt);
-			 this.generator.generate();
+			 this.generator.generate().then(function(){
+			 	this.filtering = false;
+			 }.bind(this));
 		};
 
 		Filter.prototype.isVisible = function(idx){

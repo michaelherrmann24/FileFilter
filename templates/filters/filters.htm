@@ -1,5 +1,6 @@
 <div class="filters" data-ng-show="view.visible">
 	<ff-filter-group
+		data-fltrs="view.model"
 		data-group="group"
 		data-ng-if="group"
 		data-ng-repeat="group in view.model.groups track by $index">

@@ -15,6 +15,7 @@
 
 		};
 		Generator.prototype.generate = function(){
+			console.info("FilterMap generate - start ",new Date());
 			this.filterMapper.execute().then(
 				this.thenFtn.bind(this),
 				this.errorFtn.bind(this),
@@ -24,7 +25,7 @@
 		};
 
 		Generator.prototype.errorFtn = function(error){
-			console.debug("filter Error",error);
+			//console.debug("filter Error",error);
 			return this.deferred.reject(error);
 		};
 		/**
@@ -33,7 +34,7 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-			console.debug("filter Then",result.length,new Date());
+			//console.debug("filter Then",result.length,new Date());
 			this.noChunks = result.length;
 			this.processingComplete = true;
 			this.resolveIfComplete(this.filter);
@@ -66,7 +67,7 @@
 		 */
 		Generator.prototype.resolveIfComplete = function(result){
 			if(this.isComplete()){
-				console.debug("generate filter map end ",new Date());
+				console.info("FilterMap generate - complete ",new Date());
 				this.deferred.resolve(result);
 			}
 		};

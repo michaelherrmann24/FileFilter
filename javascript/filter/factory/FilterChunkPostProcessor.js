@@ -25,7 +25,7 @@
 		FilterChunkPostProcessor.prototype.processChunk = function(chunk){
 			var deferred = $q.defer();
 			if(chunk.index === 0){
-				console.debug("first filterd chunk notify",new Date());
+				//console.debug("first filterd chunk notify",new Date());
 				this.filter.filterMap = [];
 			}
 			var observer = new _Observer(chunk,this,deferred);

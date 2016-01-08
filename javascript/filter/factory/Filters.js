@@ -22,7 +22,8 @@
 		 * @return void
 		 */
 		Filters.prototype.removeGroup = function(filterGroup){
-			this.groups.splice(filterGroup.index,1);
+			var indexes = this.groups.map(function(item){return item.index;});
+			this.groups.splice(indexes.indexOf(filterGroup.index),1);
 		};
 
 		Filters.prototype.isVisible = function(index){

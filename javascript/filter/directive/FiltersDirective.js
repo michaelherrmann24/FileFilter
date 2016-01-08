@@ -11,15 +11,9 @@
 			templateUrl : './templates/filters/filters.htm',
 			replace:true,
 			scope : {},
-			controller: ['$scope','$element', '$attrs',filtersController],
-			controllerAs: 'filtersCtrl',
 			link:function(scope,element,attr){
 				scope.view = FiltersView;
 			}
-		};
-
-		function filtersController($scope,$element, $attrs){
-
 		};
 	};
 })();

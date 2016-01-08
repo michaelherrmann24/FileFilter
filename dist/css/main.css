@@ -21,7 +21,7 @@
 	padding:2px;
 }
 .filter-group{
-	width:300px;
+	width:350px;
 	margin:2px;
 	display:inline-block;
 	vertical-align: top;
@@ -40,7 +40,7 @@
 
 .filter-group-input{
 	display:inline-block;
-
+	height:20px;
 }
 .filter-group-input input{
 	width:300px;
@@ -84,35 +84,25 @@ svg.icon-filter use.selected{
 	opacity: .7;
 }
 
-svg.icon-and {
-	width:50px;
-	height:17.5px;
+svg.icon-cancel28 use{
+	fill:#AA0000;
 	display:inline-block;
 }
-svg.icon-or {
-	width:35px;
-	height:17.25px;
-	display:inline-block;
-}
-svg.icon-or use, svg.icon-and use{
-	color:#000000;
-	stroke:#000000;
-	fill:none;
-	display:inline-block;
-}
-svg.icon-gears{
-	width:30px;
-	height:30px;
+svg.icon-gears,svg.icon-cancel28{
+	width:18px;
+	height:18px;
 	display:inline-block;
 	vertical-align:middle;
-	padding:0 10px 0 10px;
+	padding:0 10px 0 2px;
 }
 svg.show-gears{
-	
+
 }
-svg.hide-gears{
+svg.hide-gears,svg.hide-cancel28{
 	display:none;
-} 
+}
+
+ 
 .menu{
 	height:60px;
 	width:100%;

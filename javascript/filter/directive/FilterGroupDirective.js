@@ -11,19 +11,17 @@
 			restrict : 'E',
 			templateUrl : './templates/filters/filterGroup.htm',
 			replace:true,
-			scope : {group:'=group'},
+			scope : {group:'=group',filters:'=fltrs'},
 			controller: ['$scope', '$element', '$attrs',filterGroupController],
-			controllerAs: 'filterGroupCtrl',
-			link:link
+			controllerAs: 'filterGroupCtrl'
 		};
-
-		function link(scope, element, attrs){
-			console.debug("filter group directive link",scope.group);
-		}
 
 		function filterGroupController(scope,element, attrs){
 			this.removeGroup = function(){
-				FiltersView.model.removeGroup(scope.group);
+				scope.filters.removeGroup(scope.group);
+			};
+			this.addFilter = function(){
+				scope.group.addFilter();
 			};
 		};
 	};

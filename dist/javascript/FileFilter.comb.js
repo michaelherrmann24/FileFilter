@@ -91,7 +91,7 @@
 		}
 
 		Generator.prototype.generate = function(){
-			console.debug("generate file map start ",new Date());
+			console.info("FileMap generate - start ",new Date());
 			var fileMapperResults = this.fileMapper.execute().then(
 					this.thenFtn.bind(this),
 					this.errorFtn.bind(this),
@@ -120,7 +120,6 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-				console.debug("generateFctnThen",new Date());
 				this.noChunks = result.length;
 				this.fileMapperExecuteComplete = true;
 				this.resolveIfComplete(this.file);
@@ -148,7 +147,7 @@
 		 */
 		Generator.prototype.resolveIfComplete = function(result){
 			if(this.isComplete()){
-				console.debug("generate file map end ",new Date());
+				console.info("FileMap generate - complete ",new Date());
 				this.deferred.resolve(result);
 			}
 		};
@@ -175,6 +174,7 @@
 
 		};
 		Generator.prototype.generate = function(){
+			console.info("FilterMap generate - start ",new Date());
 			this.filterMapper.execute().then(
 				this.thenFtn.bind(this),
 				this.errorFtn.bind(this),
@@ -184,7 +184,7 @@
 		};
 
 		Generator.prototype.errorFtn = function(error){
-			console.debug("filter Error",error);
+			//console.debug("filter Error",error);
 			return this.deferred.reject(error);
 		};
 		/**
@@ -193,7 +193,7 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-			console.debug("filter Then",result.length,new Date());
+			//console.debug("filter Then",result.length,new Date());
 			this.noChunks = result.length;
 			this.processingComplete = true;
 			this.resolveIfComplete(this.filter);
@@ -226,7 +226,7 @@
 		 */
 		Generator.prototype.resolveIfComplete = function(result){
 			if(this.isComplete()){
-				console.debug("generate filter map end ",new Date());
+				console.info("FilterMap generate - complete ",new Date());
 				this.deferred.resolve(result);
 			}
 		};
@@ -538,9 +538,9 @@
 
 		ChunkProcessor.prototype.processChunk = function(chunk){
 			var deferred = $q.defer();
-			if(chunk.index === 0){
-				console.debug("first chunk notify",new Date());
-			}
+			//if(chunk.index === 0){
+				//console.debug("first chunk notify",new Date());
+			//}
 
 			var observer = new _Observer(chunk,this,deferred);
 			this.observers[chunk.index] = observer;
@@ -808,19 +808,20 @@
 			restrict : 'E',
 			templateUrl : './templates/filters/filter.htm',
 			replace:true,
-			scope : {filter:'=fltr'},
+			scope : {filter:'=fltr', group:'=group'},
 			controller: ['$scope','$element','$attrs',filterController],
-			controllerAs: 'filterCtrl',
-			link:link
+			controllerAs: 'filterCtrl'
 		};
 
 		function link(scope, element, attrs){
 			//if the value of the filter goes back to whitespace only then apply async to force the digest cycle again.
+			console.debug("scope filter",scope.group);
 		};
 
 		function filterController(scope,element, attrs){
-
-			console.debug("filter directive link",scope.filter);
+			this.removeFilter = function(){
+				scope.group.removeFilter(scope.filter);
+			};
 		};
 	};
 
@@ -839,19 +840,17 @@
 			restrict : 'E',
 			templateUrl : './templates/filters/filterGroup.htm',
 			replace:true,
-			scope : {group:'=group'},
+			scope : {group:'=group',filters:'=fltrs'},
 			controller: ['$scope', '$element', '$attrs',filterGroupController],
-			controllerAs: 'filterGroupCtrl',
-			link:link
+			controllerAs: 'filterGroupCtrl'
 		};
-
-		function link(scope, element, attrs){
-			console.debug("filter group directive link",scope.group);
-		}
 
 		function filterGroupController(scope,element, attrs){
 			this.removeGroup = function(){
-				FiltersView.model.removeGroup(scope.group);
+				scope.filters.removeGroup(scope.group);
+			};
+			this.addFilter = function(){
+				scope.group.addFilter();
 			};
 		};
 	};
@@ -871,15 +870,9 @@
 			templateUrl : './templates/filters/filters.htm',
 			replace:true,
 			scope : {},
-			controller: ['$scope','$element', '$attrs',filtersController],
-			controllerAs: 'filtersCtrl',
 			link:function(scope,element,attr){
 				scope.view = FiltersView;
 			}
-		};
-
-		function filtersController($scope,$element, $attrs){
-
 		};
 	};
 })();
@@ -921,6 +914,7 @@
 							this.filterMap = [];
 						}else{
 							this.opt++;
+							this.filtering = true;
 							this._generateFilterMap(this.opt);
 						}
 
@@ -936,7 +930,9 @@
 			 }
 
 			 this.generator = new FilterMapGenerator(this, opt);
-			 this.generator.generate();
+			 this.generator.generate().then(function(){
+			 	this.filtering = false;
+			 }.bind(this));
 		};
 
 		Filter.prototype.isVisible = function(idx){
@@ -981,7 +977,7 @@
 		FilterChunkPostProcessor.prototype.processChunk = function(chunk){
 			var deferred = $q.defer();
 			if(chunk.index === 0){
-				console.debug("first filterd chunk notify",new Date());
+				//console.debug("first filterd chunk notify",new Date());
 				this.filter.filterMap = [];
 			}
 			var observer = new _Observer(chunk,this,deferred);
@@ -1119,7 +1115,8 @@
 		 * @return void
 		 */
 		FilterGroup.prototype.removeFilter = function(filter){
-			this.filters.splice(filter.index,1);
+			var indexes = this.filters.map(function(item){return item.index;});
+			this.filters.splice(indexes.indexOf(filter.index),1);
 		};
 
 		FilterGroup.prototype.isVisible = function(idx){
@@ -1220,7 +1217,8 @@
 		 * @return void
 		 */
 		Filters.prototype.removeGroup = function(filterGroup){
-			this.groups.splice(filterGroup.index,1);
+			var indexes = this.groups.map(function(item){return item.index;});
+			this.groups.splice(indexes.indexOf(filterGroup.index),1);
 		};
 
 		Filters.prototype.isVisible = function(index){

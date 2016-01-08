@@ -14,7 +14,7 @@
 		}
 
 		Generator.prototype.generate = function(){
-			console.debug("generate file map start ",new Date());
+			console.info("FileMap generate - start ",new Date());
 			var fileMapperResults = this.fileMapper.execute().then(
 					this.thenFtn.bind(this),
 					this.errorFtn.bind(this),
@@ -43,7 +43,6 @@
 		 * @return {[type]}           [description]
 		 */
 		Generator.prototype.thenFtn = function(result){
-				console.debug("generateFctnThen",new Date());
 				this.noChunks = result.length;
 				this.fileMapperExecuteComplete = true;
 				this.resolveIfComplete(this.file);
@@ -71,7 +70,7 @@
 		 */
 		Generator.prototype.resolveIfComplete = function(result){
 			if(this.isComplete()){
-				console.debug("generate file map end ",new Date());
+				console.info("FileMap generate - complete ",new Date());
 				this.deferred.resolve(result);
 			}
 		};
