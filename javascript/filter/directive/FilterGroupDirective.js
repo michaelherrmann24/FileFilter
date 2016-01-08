@@ -1,9 +1,9 @@
 (function(){
 	"use strict"
-	angular.module(APP.MODULE.FILTER).directive("ffFilterGroup",[filterGroup]);
+	angular.module(APP.MODULE.FILTER).directive("ffFilterGroup",["FiltersView",filterGroup]);
 
 
-	function filterGroup(ffFilterGroup){
+	function filterGroup(FiltersView){
 		/**
 		 * The directive.
 		 */
@@ -22,11 +22,9 @@
 		}
 
 		function filterGroupController(scope,element, attrs){
-
-			// this.addFilter = function(){
-			// };
-			// this.removeFilter = function(){
-			// };
+			this.removeGroup = function(){
+				FiltersView.model.removeGroup(scope.group);
+			};
 		};
 	};
 

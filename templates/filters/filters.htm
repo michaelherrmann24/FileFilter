@@ -1,3 +1,13 @@
 <div class="filters" data-ng-show="view.visible">
-	<ff-filter-group data-group="group" data-ng-if="group" data-ng-repeat="group in view.model.groups track by $index"></ff-filter-group>
+	<ff-filter-group
+		data-group="group"
+		data-ng-if="group"
+		data-ng-repeat="group in view.model.groups track by $index">
+	</ff-filter-group>
+	<div class="filter-group" >
+		<button class="add-group"
+			data-ng-show="view.model.groups"
+			data-ng-click="view.model.addGroup()"
+		>Add Group</button>
+	</div>
 </div>

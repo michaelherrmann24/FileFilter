@@ -1,9 +1,9 @@
 (function(){
 	"use strict"
-	angular.module(APP.MODULE.FILTER).directive("ffFilter",[filter]);
+	angular.module(APP.MODULE.FILTER).directive("ffFilter",["$timeout",filter]);
 
 
-	function filter(){
+	function filter($timeout){
 		/**
 		 * The directive.
 		 */
@@ -18,7 +18,7 @@
 		};
 
 		function link(scope, element, attrs){
-
+			//if the value of the filter goes back to whitespace only then apply async to force the digest cycle again.
 		};
 
 		function filterController(scope,element, attrs){

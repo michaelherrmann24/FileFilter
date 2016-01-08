@@ -4,17 +4,18 @@
 
 
 	function FilterFactory($timeout,FilterMapGenerator){
-
+		var global_filter_index = 0;
 		var timeoutId = null;
 		var DEBOUNCE_TIME = 500;
 
 		function Filter(index){
 			var pValue = "";
 			this.generator;
+			this.id = global_filter_index++;
 			this.index = index;
 			this.type;
 			this.filterMap = [];
-
+			this.opt = 0;
 			Object.defineProperty(this,'value',{
 				configurable:false,
 				enumerable:true,
@@ -31,23 +32,25 @@
 					timeoutId = $timeout(function(){
 						timeoutId = null;
 						if(typeof(pValue) === 'undefined' || pValue === null || pValue.trim() === ""){
-							this.filterMap = this.filterMap.map(function(){ return true;});
+							console.debug("defaulting filter map");
+							this.filterMap = [];
 						}else{
-							this._generateFilterMap();
+							this.opt++;
+							this._generateFilterMap(this.opt);
 						}
 
-					}.bind(this),DEBOUNCE_TIME,false);
+					}.bind(this),DEBOUNCE_TIME);
 
 				}
 			});
 		};
 
-		Filter.prototype._generateFilterMap = function(){
+		Filter.prototype._generateFilterMap = function(opt){
 			 if(typeof(this.generator) !== 'undefined' && this.generator != null) {
 			 	this.generator.cancel();
 			 }
 
-			 this.generator = new FilterMapGenerator(this);
+			 this.generator = new FilterMapGenerator(this, opt);
 			 this.generator.generate();
 		};
 

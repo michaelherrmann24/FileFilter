@@ -71,7 +71,7 @@
 		},
 		FILE:{
 			// 				1B 	1KB 	1MB		X MB
-			BUFFER_SIZE : 	1 *	1024 *	1024 *	5 // X MB
+			BUFFER_SIZE : 	1 *	1024 *	1024 *	2 // X MB
 		}
 	});
 })();
@@ -164,11 +164,10 @@
 
 	function FilterMapGenerator($q,FilterMapper,fileView){
 
-		function Generator(filter){
+		function Generator(filter,opt){
 			this.fileModel = fileView.model;
 			this.filter = filter;
-			this.filterMapper = new FilterMapper(this.fileModel,this.filter);
-
+			this.filterMapper = new FilterMapper(this.fileModel,this.filter,opt);
 			this.deferred = $q.defer();
 
 			this.processingComplete = false;
@@ -316,8 +315,8 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).directive("fileContent",["fileView","pageView","SITE",fileContent]);
-	function fileContent(fileView,pageView,SITE){
+	angular.module(APP.MODULE.FILE).directive("fileContent",["fileView","pageView","FiltersView","SITE",fileContent]);
+	function fileContent(fileView,pageView,FiltersView,SITE){
 		return {
 			restrict : 'E',
 			templateUrl : SITE.HTML.BASE_DIR + '/fileContent.htm',
@@ -798,10 +797,10 @@
 	};
 })(); (function(){
 	"use strict"
-	angular.module(APP.MODULE.FILTER).directive("ffFilter",[filter]);
+	angular.module(APP.MODULE.FILTER).directive("ffFilter",["$timeout",filter]);
 
 
-	function filter(){
+	function filter($timeout){
 		/**
 		 * The directive.
 		 */
@@ -816,7 +815,7 @@
 		};
 
 		function link(scope, element, attrs){
-
+			//if the value of the filter goes back to whitespace only then apply async to force the digest cycle again.
 		};
 
 		function filterController(scope,element, attrs){
@@ -829,10 +828,10 @@
 })();
  (function(){
 	"use strict"
-	angular.module(APP.MODULE.FILTER).directive("ffFilterGroup",[filterGroup]);
+	angular.module(APP.MODULE.FILTER).directive("ffFilterGroup",["FiltersView",filterGroup]);
 
 
-	function filterGroup(ffFilterGroup){
+	function filterGroup(FiltersView){
 		/**
 		 * The directive.
 		 */
@@ -851,11 +850,9 @@
 		}
 
 		function filterGroupController(scope,element, attrs){
-
-			// this.addFilter = function(){
-			// };
-			// this.removeFilter = function(){
-			// };
+			this.removeGroup = function(){
+				FiltersView.model.removeGroup(scope.group);
+			};
 		};
 	};
 
@@ -877,7 +874,6 @@
 			controller: ['$scope','$element', '$attrs',filtersController],
 			controllerAs: 'filtersCtrl',
 			link:function(scope,element,attr){
-				console.debug("filters directive link");
 				scope.view = FiltersView;
 			}
 		};
@@ -893,17 +889,18 @@
 
 
 	function FilterFactory($timeout,FilterMapGenerator){
-
+		var global_filter_index = 0;
 		var timeoutId = null;
 		var DEBOUNCE_TIME = 500;
 
 		function Filter(index){
 			var pValue = "";
 			this.generator;
+			this.id = global_filter_index++;
 			this.index = index;
 			this.type;
 			this.filterMap = [];
-
+			this.opt = 0;
 			Object.defineProperty(this,'value',{
 				configurable:false,
 				enumerable:true,
@@ -920,23 +917,25 @@
 					timeoutId = $timeout(function(){
 						timeoutId = null;
 						if(typeof(pValue) === 'undefined' || pValue === null || pValue.trim() === ""){
-							this.filterMap = this.filterMap.map(function(){ return true;});
+							console.debug("defaulting filter map");
+							this.filterMap = [];
 						}else{
-							this._generateFilterMap();
+							this.opt++;
+							this._generateFilterMap(this.opt);
 						}
 
-					}.bind(this),DEBOUNCE_TIME,false);
+					}.bind(this),DEBOUNCE_TIME);
 
 				}
 			});
 		};
 
-		Filter.prototype._generateFilterMap = function(){
+		Filter.prototype._generateFilterMap = function(opt){
 			 if(typeof(this.generator) !== 'undefined' && this.generator != null) {
 			 	this.generator.cancel();
 			 }
 
-			 this.generator = new FilterMapGenerator(this);
+			 this.generator = new FilterMapGenerator(this, opt);
 			 this.generator.generate();
 		};
 
@@ -957,15 +956,16 @@
 })();
  (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).factory("FilterChunkPostProcessor",['$q','$timeout','Line',FilterChunkPostProcessorFactory]);
+	angular.module(APP.MODULE.FILE).factory("FilterChunkPostProcessor",['$q','$timeout','Line','FiltersView',FilterChunkPostProcessorFactory]);
 
-	function FilterChunkPostProcessorFactory($q,$timeout,Line){
+	function FilterChunkPostProcessorFactory($q,$timeout,Line,FiltersView){
 		/**
 		 * [ChunkProcessor description]
 		 */
-		function FilterChunkPostProcessor(filter){
+		function FilterChunkPostProcessor(filter,opt){
 			var _currentIndex = 0;
 			this.filter = filter;
+			this.opt = opt;
 			this.observers = []
 			Object.defineProperty(this,'currentIndex',{
 				get:function(){
@@ -1010,10 +1010,13 @@
 		 * @return {[type]}          [description]
 		 */
 		FilterChunkPostProcessor.prototype._processChunk = function(chunk,deferred){
-
-			this.filter.filterMap = this.filter.filterMap.concat(chunk.result);
+			if(this.opt === this.filter.opt){
+				this.filter.filterMap = this.filter.filterMap.concat(chunk.result);
+				deferred.resolve(this.filter.filterMap);
+			}else{
+				deferred.reject("newer process running");
+			}
 			this.currentIndex++;
-			deferred.resolve(this.filter.filterMap);
 		};
 
 		function _Observer(chunk,processor,deferred){
@@ -1126,11 +1129,9 @@
 			//treats the filters as and.   all have to pass to remain visible.
 			for(var i=0;i<this.filters.length;i++){
 				if(!this.filters[i].isVisible(idx)){
-					//console.debug("FilterGroup - isVisible",false);
 					return false;
 				}
 			}
-			//console.debug("FilterGroup - isVisible",true);
 			return true;
 		};
 
@@ -1149,16 +1150,15 @@
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
 		 * @param {[type]} file [description]
 		 */
-		function FilterMapper(fileModel,filter){
+		function FilterMapper(fileModel,filter,opt){
 			this.fileModel = fileModel;
 			this.filter = filter;
-			this.processor = new FilterChunkPostProcessor(this.filter);
+			this.processor = new FilterChunkPostProcessor(this.filter,opt);
 		};
 
 		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
 			return WorkManager.execute(chunks);
-
 		};
 		FilterMapper.prototype.seperateIntoChunks = function(){
 
@@ -1245,33 +1245,58 @@
 
 
 })();
-  (function(){
+ (function(){
 	"use strict"
-	angular.module(APP.MODULE.FILTER).filter("PageContent",['FiltersView',PageContentFilter]);
+	angular.module(APP.MODULE.FILTER).filter("PageContent",['FiltersView','pageView',PageContentFilter]);
 
-	function PageContentFilter(FiltersView){
+	function PageContentFilter(FiltersView,pageView){
 
-		function PageContentFilter(lineList){
+		function PageContent(lineList){
 
 			if(typeof(FiltersView.model) === 'undefined'){
 				return lineList;
 			}
 			var filteredList = lineList.filter(filterFunction);
-			//console.debug("PageContentFilter - filteredList",filteredList);
+
+			pageView.model.totalLines = filteredList.length;
+
 			return filteredList;
 
 			function filterFunction(line,index){
 				var isVisible = FiltersView.model.isVisible(index);
-				//console.debug("PageContentFilter - isVisible",isVisible,index);
 				return isVisible
 			};
 		};
 
-		return PageContentFilter;
+		return PageContent;
 
 	};
 })();
-  (function(){
+ (function(){
+	"use strict"
+	angular.module(APP.MODULE.FILTER).filter("VisibleLines",['fileView','FiltersView',VisibleLinesFilter]);
+
+	function VisibleLinesFilter(fileView,FiltersView){
+
+		function VisibleLines(totalLines){
+
+			if(typeof(FiltersView.model) === 'undefined'){
+				return lineList.length;
+			}
+			var count = lineList.filter(filterFunction).reduce(count);
+			return filteredList;
+
+			function filterFunction(line,index){
+				var isVisible = FiltersView.model.isVisible(index);
+				return isVisible
+			};
+		};
+
+		return VisibleLines;
+
+	};
+})();
+ (function(){
 	"use strict";
 	angular.module(APP.MODULE.FILTER).service("FiltersView",[filtersViewService]);
 

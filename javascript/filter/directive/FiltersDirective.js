@@ -14,7 +14,6 @@
 			controller: ['$scope','$element', '$attrs',filtersController],
 			controllerAs: 'filtersCtrl',
 			link:function(scope,element,attr){
-				console.debug("filters directive link");
 				scope.view = FiltersView;
 			}
 		};

@@ -4,11 +4,10 @@
 
 	function FilterMapGenerator($q,FilterMapper,fileView){
 
-		function Generator(filter){
+		function Generator(filter,opt){
 			this.fileModel = fileView.model;
 			this.filter = filter;
-			this.filterMapper = new FilterMapper(this.fileModel,this.filter);
-
+			this.filterMapper = new FilterMapper(this.fileModel,this.filter,opt);
 			this.deferred = $q.defer();
 
 			this.processingComplete = false;

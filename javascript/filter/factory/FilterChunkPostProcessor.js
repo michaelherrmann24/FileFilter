@@ -1,14 +1,15 @@
 (function(){
 	"use strict";
-	angular.module(APP.MODULE.FILE).factory("FilterChunkPostProcessor",['$q','$timeout','Line',FilterChunkPostProcessorFactory]);
+	angular.module(APP.MODULE.FILE).factory("FilterChunkPostProcessor",['$q','$timeout','Line','FiltersView',FilterChunkPostProcessorFactory]);
 
-	function FilterChunkPostProcessorFactory($q,$timeout,Line){
+	function FilterChunkPostProcessorFactory($q,$timeout,Line,FiltersView){
 		/**
 		 * [ChunkProcessor description]
 		 */
-		function FilterChunkPostProcessor(filter){
+		function FilterChunkPostProcessor(filter,opt){
 			var _currentIndex = 0;
 			this.filter = filter;
+			this.opt = opt;
 			this.observers = []
 			Object.defineProperty(this,'currentIndex',{
 				get:function(){
@@ -53,10 +54,13 @@
 		 * @return {[type]}          [description]
 		 */
 		FilterChunkPostProcessor.prototype._processChunk = function(chunk,deferred){
-
-			this.filter.filterMap = this.filter.filterMap.concat(chunk.result);
+			if(this.opt === this.filter.opt){
+				this.filter.filterMap = this.filter.filterMap.concat(chunk.result);
+				deferred.resolve(this.filter.filterMap);
+			}else{
+				deferred.reject("newer process running");
+			}
 			this.currentIndex++;
-			deferred.resolve(this.filter.filterMap);
 		};
 
 		function _Observer(chunk,processor,deferred){

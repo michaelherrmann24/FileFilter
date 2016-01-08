@@ -8,16 +8,15 @@
 		 * will create a work manager and divide up the file into chunks. once the work manager has completed then will merge all the chunk results back together.
 		 * @param {[type]} file [description]
 		 */
-		function FilterMapper(fileModel,filter){
+		function FilterMapper(fileModel,filter,opt){
 			this.fileModel = fileModel;
 			this.filter = filter;
-			this.processor = new FilterChunkPostProcessor(this.filter);
+			this.processor = new FilterChunkPostProcessor(this.filter,opt);
 		};
 
 		FilterMapper.prototype.execute = function(){
 			var chunks = this.seperateIntoChunks();
 			return WorkManager.execute(chunks);
-
 		};
 		FilterMapper.prototype.seperateIntoChunks = function(){
 
