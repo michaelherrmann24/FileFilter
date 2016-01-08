@@ -1096,10 +1096,10 @@
 
 
 	function FilterGroupFactory(Filter){
-
-		function FilterGroup(index){
-			this.index = index;
-			this.filters = [new Filter(0)];
+		var global_group_index = 0;
+		function FilterGroup(){
+			this.id = global_group_index++;
+			this.filters = [new Filter()];
 		};
 
 		/**
@@ -1107,7 +1107,7 @@
 		 * @param {[type]} filterGroup [description]
 		 */
 		FilterGroup.prototype.addFilter = function(){
-			this.filters.push(new Filter(this.filters.length));
+			this.filters.push(new Filter());
 		};
 		/**
 		 * remove the group from the groups array based on its index
@@ -1115,8 +1115,9 @@
 		 * @return void
 		 */
 		FilterGroup.prototype.removeFilter = function(filter){
-			var indexes = this.filters.map(function(item){return item.index;});
-			this.filters.splice(indexes.indexOf(filter.index),1);
+			var indexes = this.filters.map(function(item){return item.id;});
+			var index = indexes.indexOf(filter.id);
+			this.filters.splice(index,1);
 		};
 
 		FilterGroup.prototype.isVisible = function(idx){
@@ -1209,7 +1210,7 @@
 		 * @param {[type]} filterGroup [description]
 		 */
 		Filters.prototype.addGroup = function(){
-			this.groups.push(new FilterGroup(this.groups.length));
+			this.groups.push(new FilterGroup());
 		};
 		/**
 		 * remove the group from the groups array based on its index
@@ -1217,8 +1218,8 @@
 		 * @return void
 		 */
 		Filters.prototype.removeGroup = function(filterGroup){
-			var indexes = this.groups.map(function(item){return item.index;});
-			this.groups.splice(indexes.indexOf(filterGroup.index),1);
+			var indexes = this.groups.map(function(item){return item.id;});
+			this.groups.splice(indexes.indexOf(filterGroup.id),1);
 		};
 
 		Filters.prototype.isVisible = function(index){
@@ -1514,8 +1515,8 @@
 	};
 })(); (function(){
 	"use strict";
-	angular.module(APP.MODULE.NAV).directive("pagination",["fileView","pageView","SITE",pagination]);
-	function pagination(fileView,pageView,SITE){
+	angular.module(APP.MODULE.NAV).directive("pagination",["$window","fileView","pageView","SITE",pagination]);
+	function pagination($window,fileView,pageView,SITE){
 
 		/**
 		 * The directive.
@@ -1527,34 +1528,42 @@
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', PaginationController],
 			controllerAs: 'pagingCtrl',
+			link:link
+		};
+
+		function link($scope, $element, $attrs){
+			$scope.allowScroll = $attrs.allowScroll;
+			console.debug($attrs,$scope.allowScroll);
 		};
 
 		function PaginationController($scope, $element, $attrs){
-
 			$scope.pageView = pageView;
-			var scrollTo = $attrs.scrollTo;
 
 			this.next = function(){
 				if(pageView.model.currentPage < pageView.model.totalPages){
 					pageView.model.currentPage++;
 					$scope.$apply();
+					scrolltoTop();
 				}
 			};
 			this.prev = function(){
 				if(pageView.model.currentPage > 1){
 					pageView.model.currentPage--;
 					$scope.$apply();
+					scrolltoTop();
 				}
 			};
 
 			this.first = function(){
 				pageView.model.currentPage = 1;
 				$scope.$apply();
+				scrolltoTop();
 			};
 
 			this.last = function(){
 				pageView.model.currentPage = pageView.model.totalPages;
 				$scope.$apply();
+				scrolltoTop();
 			};
 
 			$scope.$watch(fileSizeWatcher,updatePage);
@@ -1574,6 +1583,12 @@
 					return fileView.model.displayMap.length;
 				}
 				return 0;
+			};
+
+			function scrolltoTop(){
+				if($scope.allowScroll){
+					$window.scrollTo(0,0);
+				}
 			};
 		};
 	};

@@ -14,7 +14,7 @@
 		 * @param {[type]} filterGroup [description]
 		 */
 		Filters.prototype.addGroup = function(){
-			this.groups.push(new FilterGroup(this.groups.length));
+			this.groups.push(new FilterGroup());
 		};
 		/**
 		 * remove the group from the groups array based on its index
@@ -22,8 +22,8 @@
 		 * @return void
 		 */
 		Filters.prototype.removeGroup = function(filterGroup){
-			var indexes = this.groups.map(function(item){return item.index;});
-			this.groups.splice(indexes.indexOf(filterGroup.index),1);
+			var indexes = this.groups.map(function(item){return item.id;});
+			this.groups.splice(indexes.indexOf(filterGroup.id),1);
 		};
 
 		Filters.prototype.isVisible = function(index){

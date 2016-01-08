@@ -4,10 +4,10 @@
 
 
 	function FilterGroupFactory(Filter){
-
-		function FilterGroup(index){
-			this.index = index;
-			this.filters = [new Filter(0)];
+		var global_group_index = 0;
+		function FilterGroup(){
+			this.id = global_group_index++;
+			this.filters = [new Filter()];
 		};
 
 		/**
@@ -15,7 +15,7 @@
 		 * @param {[type]} filterGroup [description]
 		 */
 		FilterGroup.prototype.addFilter = function(){
-			this.filters.push(new Filter(this.filters.length));
+			this.filters.push(new Filter());
 		};
 		/**
 		 * remove the group from the groups array based on its index
@@ -23,8 +23,9 @@
 		 * @return void
 		 */
 		FilterGroup.prototype.removeFilter = function(filter){
-			var indexes = this.filters.map(function(item){return item.index;});
-			this.filters.splice(indexes.indexOf(filter.index),1);
+			var indexes = this.filters.map(function(item){return item.id;});
+			var index = indexes.indexOf(filter.id);
+			this.filters.splice(index,1);
 		};
 
 		FilterGroup.prototype.isVisible = function(idx){
