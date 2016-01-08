@@ -12,17 +12,12 @@
 			replace:true,
 			scope : {},
 			controller: ['$scope', '$element', '$attrs', PaginationController],
-			controllerAs: 'pagingCtrl',
-			link:link
-		};
-
-		function link($scope, $element, $attrs){
-			$scope.allowScroll = $attrs.allowScroll;
-			console.debug($attrs,$scope.allowScroll);
+			controllerAs: 'pagingCtrl'
 		};
 
 		function PaginationController($scope, $element, $attrs){
 			$scope.pageView = pageView;
+			$scope.allowScroll = $attrs.allowScroll;
 
 			this.next = function(){
 				if(pageView.model.currentPage < pageView.model.totalPages){
