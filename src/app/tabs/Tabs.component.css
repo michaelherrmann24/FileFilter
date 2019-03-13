@@ -1,0 +1,6 @@
+:host .tabs{
+	width:100%;
+}
+:host >>> .tabs .tab{
+	display:inline-block;
+}

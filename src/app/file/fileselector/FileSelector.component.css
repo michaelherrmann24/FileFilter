@@ -1,0 +1,41 @@
+.container{
+	margin:25px;
+	padding: 25px;
+	border: 1px solid #5b5ba5;
+}
+.drop-zone{
+	border: 2px dashed #5b5ba5;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 25px;
+	text-align: center;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size: 20pt;
+	font-weight:bold;
+	color: #bbbbbb;
+}
+.file-container{
+	width:100%;
+}
+
+.file{
+	width:30%;
+	margin:20px;
+	border:2px solid #5b5ba5;
+}
+.file-name{
+	padding:5px;
+	display:inline-block;
+}
+.selected{
+	background-color: #adadb3;
+	vertical-align:middle;
+}
+
+.progress {
+	width:60%;
+	height:50%;
+	display:inline-block;
+	vertical-align:middle;
+}

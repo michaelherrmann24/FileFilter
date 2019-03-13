@@ -1,0 +1,13 @@
+<div class="container" (dropped)="receiveFiles($event)" drop-zone>
+	<div class="drop-zone">Drop File Here.</div>
+</div>
+<div class="file-container">
+	<div class="file"
+		*ngFor="let file of (files | async)"
+		[ngClass]="{'selected': file === (selected | async)}"
+		(click)="selectFile(file)" >
+
+		<progress-bar [progress]="(getProgress(file) | async)" >
+			<div class="file-name">{{file.name}}</div>
+		</progress-bar>
+</div>

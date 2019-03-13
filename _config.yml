@@ -1,3 +1,0 @@
-markdown: redcarpet
-baseurl: /FileFilter
-exclude: ['temp.htm','.gitignore','directive_template','FileFilter.sublime-project','FileFilter.sublime-build']

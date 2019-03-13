@@ -1,0 +1,29 @@
+:host{
+ 	padding:0;
+ 	margin:0;
+}
+
+:host >>> .tabs{
+	background-color: #000033;
+}
+
+:host >>> .tab .icon{
+	padding:5px 0px 5px 15px;
+	width:55px;
+	height:60px;
+}
+
+:host >>> .tab .icon:hover{
+	opacity:0.8;
+}
+:host >>> .tab.active .icon{
+	opacity:0.8;
+}
+
+:host >>> .tab svg.icon use{
+	fill:#ffffff;
+	stroke:#ffffff;
+	#stroke-width:0.2;
+}
+
+
