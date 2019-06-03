@@ -1,0 +1,23 @@
+.file-load-wrapper{
+    margin:10% 5%;
+    padding: 5%;
+    border: 2px dashed #253d82;
+    border-radius: 20px;
+    height: 30%;
+}
+
+.file-load:before{
+    content:'';
+    display:inline-block;
+    height:100%;
+    vertical-align:middle;
+    margin-right:-0.25em;
+}
+.file-load{
+    height: 100%;
+    color:#253d82;
+    border: 2px solid #253d82;
+    border-radius: 10px;
+    vertical-align:middle;
+    text-align: center;
+}

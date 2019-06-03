@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+}
+
+
+.content-holder{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+.content{
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+.content-holder header{
+  flex:0 1 50px;
+  background-color: #253d82;
+}
+.content-holder footer{
+  flex: 0 1 auto;
+}

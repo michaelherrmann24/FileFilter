@@ -1,8 +1,0 @@
-<project default="build">
-    <target name="build">
-        <exec executable='C:/Users/michael/AppData/Roaming/npm/grunt.cmd'>
-            <arg value="dev"/>
-        </exec>       
-    </target>
-    
-</project>
