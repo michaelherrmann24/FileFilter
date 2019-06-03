@@ -7,16 +7,16 @@ export class FileLoader extends Component {
   }
 
   handleDrag(e) {
-    console.log(e);
+    console.log('drag',e);
   }
   handleDragIn(e) {
-    console.log(e);
+    console.log('drag in',e);
   }
   handleDragOut(e) {
-    console.log(e);
+    console.log('drag out',e);
   }
   handleDrop(e) {
-    console.log(e);
+    console.log('drop',e);
   }
 
   componentDidMount() {
@@ -41,8 +41,8 @@ export class FileLoader extends Component {
 
   render() {
     return (
-      <div class="file-load-wrapper" ref={this.dropRef}>
-        <div class="file-load">Drop File</div>
+      <div className="file-load-wrapper" ref={this.dropRef}>
+        <div className="file-load">Drop File</div>
       </div>
     );
   }

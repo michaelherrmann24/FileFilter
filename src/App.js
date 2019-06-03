@@ -4,9 +4,9 @@ import './App.css';
 
 export class App extends React.Component {
   render() {
-    return  <div class="content-holder">
+    return  <div className="content-holder">
               <header></header>
-              <div class="content">
+              <div className="content">
                 <FileLoader></FileLoader>
               </div>
               <footer ></footer>
