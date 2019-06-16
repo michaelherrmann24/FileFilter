@@ -15,9 +15,28 @@
   overflow-y: auto;
 }
 .content-holder header{
-  flex:0 1 50px;
+  /* flex:0 1 50px; */
   background-color: #253d82;
+  color:white;
 }
 .content-holder footer{
   flex: 0 1 auto;
+}
+
+.msg-row{
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+.index{padding:2px;height:100%; width:5%; min-width:30px; max-width:50px;}
+.message{
+  padding-left:2px;
+  height:100%;
+  max-width: 95%;
+}
+
+.row{
+  margin:0;
+  overflow-x: auto;
+  padding:10px;
 }

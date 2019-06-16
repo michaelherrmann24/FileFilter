@@ -1,0 +1,35 @@
+
+.file-drop-wrapper{
+    padding: 5%;
+    border: 2px dashed var(--color);
+    border-radius: 2%;
+    height: 100%;
+    width: 100%;
+    opacity: var(--opacity);
+    box-sizing: border-box;
+}
+
+.file-drop:before{
+    content:'';
+    display:inline-block;
+    height:100%;
+    vertical-align:middle;
+    margin-right:-0.25em;
+}
+.file-drop{
+    height: 100%;
+    width: 100%;
+    color: var(--color);
+    border: 2px solid var(--color);
+    border-radius: 2%;
+    vertical-align:middle;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 600;
+    padding:10px 5px;
+    box-sizing: border-box;
+}
+
+.highlight{
+    border-width: 3px;
+}
