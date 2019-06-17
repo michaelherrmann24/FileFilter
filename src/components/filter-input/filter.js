@@ -47,15 +47,6 @@ export class Filter extends Component{
     }
 
     render(){
-
-        let pages = (this.context.pages / this.context.pageSize) + (this.context.pages % this.context.pageSize > 0)?1:0;
-        let pageSize = this.context.pagination.pageSize;
-        
-
-        console.log(this.context.pagination);
-        //display pages = first prev ... (current - 2) -> (current + 2) ... next last 
-
-
         return  ( <Page></Page>);
     }
 

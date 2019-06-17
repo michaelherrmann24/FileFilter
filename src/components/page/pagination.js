@@ -14,8 +14,8 @@ export class Paging extends Component{
         this.context.dispatch(new SetPagination({page:(nextPage-1)}));
     }
 
-    pageSizeChange(){
-
+    pageSizeChange(evt){
+        this.context.dispatch(new SetPagination({pageSize:evt.target.value}));
     }
 
     render(){
@@ -44,8 +44,6 @@ export class Paging extends Component{
 
             let nextpage = (pagination.page + 2 >= pages )?pages:pagination.page + 2;
             let prevPage = (pagination.page < 1)?1:pagination.page;
-
-            console.log(pagination,pages,offset, displayPages);
 
             return  (<Row>
                 <Col md={9}>
@@ -78,7 +76,7 @@ export class Paging extends Component{
                     <Container className="justify-content-end">
                     <Row >
                         <Col><label className="col-form-label">Page Size</label></Col>
-                        <Col><FormControl className="" as="input" type="number" value={pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl></Col>
+                        <Col><FormControl as="input" type="number" value={pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl></Col>
                     </Row>
                     </Container>
                     
