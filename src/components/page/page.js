@@ -24,7 +24,7 @@ export class Page extends Component {
           .slice(start,end)
           .map((line, index) => {
             return (
-              <Row key={index}>
+              <Row className="line-row" key={index}>
                 <div className="num-col text-center">{index}</div>
                 <Col md={11}>{line}</Col>
               </Row>

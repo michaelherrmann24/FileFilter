@@ -1,3 +1,6 @@
 .num-col{
     width:50px;
 }
+.row.line-row{
+    padding: 0 10px;
+}
