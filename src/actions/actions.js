@@ -16,12 +16,12 @@ export class SelectLogGroup{
     }
 }
 
-export class LogEventsReceived{
+export class SetPage{
     constructor(value){
         this.value = value;
     }
     reduce(state){
-        return {...state,logevents:this.value};
+        return {...state,page:this.value};
     }
 }
 

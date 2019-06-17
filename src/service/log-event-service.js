@@ -14,7 +14,6 @@ export class CloudWatchLogsService {
                     reject(err);
                 }
                 if(resp){
-                    console.log(resp);
                     resolve(resp.logGroups);
                 }
             });
@@ -25,6 +24,7 @@ export class CloudWatchLogsService {
         return new Promise((resolve,reject)=>{
             this.awsCloudWatchLogs.filterLogEvents(options,(err,resp)=>{
                 if(err){
+                    console.log(err);
                     reject(err);
                 }
                 if(resp){

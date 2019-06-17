@@ -3,7 +3,6 @@ import React,{createContext,useReducer} from "react";
 export const InitGlobalState = {
     logGroups:[],
     selectedGroup:{},
-    logevents:[],
     page:[],
     filters:{},
     pagination:{

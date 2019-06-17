@@ -40,15 +40,17 @@ export class LogGroupSelect extends Component{
 
     render(){
         return (
-            <div {...this.rest}>
+            <>
                 <label>Log Group</label>
                 <FormControl as="select" onChange={this.selectLogGroup.bind(this)} defaultValue="">
                     <option></option>
-                    {this.context.logGroups.map((lg,index)=>{
-                        return (<option key={index} value={index} >{lg.logGroupName}</option>)
-                    })}
+                    {
+                        this.context.logGroups.map((lg,index)=>{
+                            return (<option key={index} value={index} >{lg.logGroupName}</option>)
+                        })
+                    }
                 </FormControl>        
-            </div>
+            </>
         )
     }
 }
