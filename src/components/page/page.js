@@ -9,14 +9,19 @@ export class Page extends Component {
   static contextType = GlobalContext;
 
   render() {
+      let pageNo = this.context.pagination.page;
+      let size = this.context.pagination.pageSize;
+
+      let start = pageNo * size;
+      let end = start + size;
+      
     return (
       <Container fluid={true}>
         {this.context.page
-          .filter(line => {
-            return this.context.filters && this.context.filters.regexFilter
-              ? this.context.filters.regexFilter.test(line)
-              : true;
+          .filter((line,i )=> {
+            return this.context.index[i];
           })
+          .slice(start,end)
           .map((line, index) => {
             return (
               <Row key={index}>

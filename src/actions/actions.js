@@ -21,9 +21,25 @@ export class SetPage{
         this.value = value;
     }
     reduce(state){
-        return {...state,page:this.value};
+        return {
+            ...state,
+            page:this.value
+        };
     }
 }
+
+export class SetIndex{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        return {
+            ...state,
+            index:this.value
+        };
+    }
+}
+
 
 export class SetRegexFilter{
     constructor(value){
@@ -127,4 +143,18 @@ export class AWSSelectProfile{
             selectedProfile:this.value
         }
     }
+}export class SetPagination{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        return {
+            ...state,
+            pagination:{
+                ...state.pagination,
+                ...this.value
+            }
+        }
+    }
 }
+

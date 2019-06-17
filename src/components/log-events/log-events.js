@@ -4,8 +4,8 @@ import { GlobalContext } from "../../context/global-context";
 
 import { CloudWatchLogsService } from "../../service/log-event-service";
 
-import { SetPage } from "../../actions/actions";
-import {Page} from "../../components/page/page";
+import { SetPage, SetIndex } from "../../actions/actions";
+import {Filter} from "../../components/filter-input/filter";
 
 export class LogEvents extends Component {
   static contextType = GlobalContext;
@@ -31,7 +31,9 @@ export class LogEvents extends Component {
         .map((logEvent)=>{
             return logEvent.message;
         });
+
         this.context.dispatch(new SetPage(logEvents));
+        this.context.dispatch(new SetIndex([].fill(true,0,logEvents.length-1)));
       } catch (err) {
         console.log(err);
       }
@@ -55,6 +57,6 @@ export class LogEvents extends Component {
   }
 
   render() {
-    return ( <Page></Page>)
+    return ( <Filter></Filter>)
   }
 }

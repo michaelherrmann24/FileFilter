@@ -38,12 +38,53 @@ export class FileDrop extends Component {
     this.stopEvent(e);
     this.setHighlight(false);
   }
-  handleDrop(e) {
+
+  async traverseDirectory(dir){
+    let returnFiles = [];
+
+      let direntries = await this.readDirectory(dir);
+      for(let entry of direntries){
+        if(entry.isDirectory){
+          let entries = await this.traverseDirectory(entry);
+          returnFiles = returnFiles.concat(entries);
+        }else{
+          returnFiles = returnFiles.concat([entry])
+        }
+      }
+      return returnFiles;
+  }
+
+  readDirectory(dir){
+    return new Promise((resolve,reject)=>{
+      dir.createReader().readEntries((entries)=>{
+        resolve(entries);
+      },(err)=>{
+        reject(err);
+      });
+    });
+  }
+
+
+  async handleDrop(e) {
     this.stopEvent(e);
     this.setHighlight(false);
+
+    console.log(e.dataTransfer.items,e.dataTransfer.files);
+    let files =[];
+
+    for(let item of e.dataTransfer.items){
+      let entry  = item.webkitGetAsEntry();
+      if(entry.isDirectory){
+        let entries = await this.traverseDirectory(entry);
+        files = files.concat(entries);
+      }else{
+        files = files.concat([entry])
+      }
+    }
+
     if(this.props.handleDrop){
       try{
-        this.props.handleDrop(e.dataTransfer.files);
+        this.props.handleDrop(files);
       }catch(e){
         console.error("error handling Drop event",e);
       }

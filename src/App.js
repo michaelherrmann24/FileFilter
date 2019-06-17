@@ -9,7 +9,7 @@ import {LogGroupSelect} from "./components/log-group/log-group-select";
 import {RegexFilterInput} from "./components/filter-input/filter-input"
 import {LogEvents} from "./components/log-events/log-events";
 import {FileInput} from "./components/file/file-input"; 
-import {Page} from "./components/page/page";
+import {Filter} from "./components/filter-input/filter";
 
 import './App.css';
 
@@ -32,7 +32,7 @@ export class App extends Component {
             <header>
                 <Tabs onSelect={this.tabSelect.bind(this)}>
                   <Tab eventKey="file" title="File">
-                    <FileInput></FileInput>
+                    <Row><Col md={12}><FileInput></FileInput></Col></Row>
                   </Tab>
                   <Tab eventKey="aws" title="AWS">
                     <AWSContext.Consumer>
@@ -61,7 +61,7 @@ export class App extends Component {
                 this.state.selectedTab === "file" && 
                 (
                   <GlobalContext.Consumer>
-                    {gCtx => ( <Page></Page>)}
+                    {gCtx => ( <Filter></Filter>)}
                   </GlobalContext.Consumer>
                 )
               }

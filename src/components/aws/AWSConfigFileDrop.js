@@ -12,31 +12,35 @@ const KEY_VALUE_REGEX = /(.*?)=(.*)/;
 export class LoadAWSProfiles extends Component{
     static contextType = AWSContext;
 
-    async processFile(file){
-        let reader = FileReaderService.getInstance();
-        let actionClass = (file.name === 'credentials')? SetAWSCredential:SetAWSOptions;
-        let content = await reader.readFile(file);
-        let currentProfile = null;
+    async processFile(fileEntry){
 
-        content.split(SPLIT_LINES_REGEX).forEach((line)=>{
+        if(fileEntry.name === 'credentials' || fileEntry.name === 'config'){
+            let reader = FileReaderService.getInstance();
+            let actionClass = (fileEntry.name === 'credentials')? SetAWSCredential:SetAWSOptions;
             
-            let profRegRes = PROFILE_REGEX.exec(line);      
-            if(profRegRes && profRegRes[1]){
-                currentProfile = profRegRes[1];
+            let content = await reader.readFile(await new Promise((resolve,reject)=>fileEntry.file(resolve,reject)));
+            let currentProfile = null;
 
-                this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:{}}));
-            }
-
-            let keyVal = KEY_VALUE_REGEX.exec(line);
-            if(keyVal && keyVal[1] && keyVal[2]){
-                let value = {};
-                value[keyVal[1].trim()] = keyVal[2].trim();
+            content.split(SPLIT_LINES_REGEX).forEach((line)=>{
                 
-                let actionInst = new actionClass(currentProfile,value);
-                this.context.dispatch(actionInst);
-            }
+                let profRegRes = PROFILE_REGEX.exec(line);      
+                if(profRegRes && profRegRes[1]){
+                    currentProfile = profRegRes[1];
 
-        });
+                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:{}}));
+                }
+
+                let keyVal = KEY_VALUE_REGEX.exec(line);
+                if(keyVal && keyVal[1] && keyVal[2]){
+                    let value = {};
+                    value[keyVal[1].trim()] = keyVal[2].trim();
+                    
+                    let actionInst = new actionClass(currentProfile,value);
+                    this.context.dispatch(actionInst);
+                }
+
+            });
+        }
         return ;
     }
 

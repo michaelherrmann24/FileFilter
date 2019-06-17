@@ -4,10 +4,11 @@ export const InitGlobalState = {
     logGroups:[],
     selectedGroup:{},
     page:[],
+    index:[],
     filters:{},
     pagination:{
         page:0,
-        pageSize:500
+        pageSize:500,
     },
 };
 

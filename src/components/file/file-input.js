@@ -13,20 +13,17 @@ export class FileInput extends Component{
         this.state = {files:[]};
     }
 
-    async processFile(file){
+    async processFile(fileEntry){
         let reader = FileReaderService.getInstance();
 
         //should probably check the file size and split it up into chunks. then join lines together later.
-
-
-        let content = await reader.readFile(file);
+        let content = await reader.readFile(await new Promise((resolve,reject)=>fileEntry.file(resolve,reject)));
 
         let lines = content.split(SPLIT_LINES_REGEX);
         this.context.dispatch(new SetPage(lines));
     }
 
     async handleDrop(files){
-        console.log("files",files);
         let filArr = []
         if(files && files.length > 0){
             let responses = [];
@@ -41,7 +38,7 @@ export class FileInput extends Component{
 
     selectFile(event){
         let selectedFile = this.state.files.filter((file)=>{
-            return event.target.value === file.name;
+            return event.target.value === file.fullPath;
         }).reduce((cur,value)=>{
             return value;
         })
@@ -49,7 +46,6 @@ export class FileInput extends Component{
     }
 
     render(){
-        console.log("state",this.state);
         if(this.state.files.length > 0){
             return (
                 <>
@@ -57,8 +53,7 @@ export class FileInput extends Component{
                     <FormControl as="select" onChange={this.selectFile.bind(this)} defaultValue={this.state.files[0]}>
                         {
                             this.state.files.map((file)=>{
-                                console.log(file);
-                                return (<option key={file.name} value={file.name} title={file.name} >{file.name}</option>)
+                                return (<option key={file.fullPath} value={file.fullPath} >{file.fullPath}</option>)
                             })
                         } 
                     </FormControl> 
