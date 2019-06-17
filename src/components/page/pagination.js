@@ -1,45 +1,93 @@
 import React,{Component} from "react";
-import { Pagination } from "react-bootstrap";
+import { Pagination,Row,Col,FormControl,Container} from "react-bootstrap";
 import { GlobalContext } from "../../context/global-context";
+import {SetPagination} from "../../actions/actions";
 
+const PAGING_OFFSET = -2;
+const PAGING_TO_DISPLAY = 5;
 
-export class Pagination extends Component{
-    
+export class Paging extends Component{
+    SetPagination
     static contextType = GlobalContext;
+
+    toPage(nextPage){
+        this.context.dispatch(new SetPagination({page:(nextPage-1)}));
+    }
+
+    pageSizeChange(){
+
+    }
 
     render(){
 
-        let pages = (this.context.pages / this.context.pageSize) + (this.context.pages % this.context.pageSize > 0)?1:0;
-        let pageSize = this.context.pagination.pageSize;
         
+        let pagination = this.context.pagination;
 
-        
         //display pages = first prev ... (current - 2) -> (current + 2) ... next last 
+        if(pagination.lines && pagination.lines > pagination.pageSize){
+            let pages = Math.ceil(pagination.lines / pagination.pageSize);
+            let pageSize = pagination.pageSize;
 
+            let offset = (pagination.page + PAGING_OFFSET);
+            if(offset < 0){
+                offset = 0;
+            }
+            if(offset > (pages - PAGING_TO_DISPLAY)){
+                offset = pages - PAGING_TO_DISPLAY
+            }
 
-        return 
-            (<Row>
-                <Pagination>
-                    <Pagination.First />
-                    <Pagination.Prev />
-                    <Pagination.Item>{1}</Pagination.Item>
-                    <Pagination.Ellipsis />
+            let displayPages = [];
 
-                    <Pagination.Item>{10}</Pagination.Item>
-                    <Pagination.Item>{11}</Pagination.Item>
-                    <Pagination.Item active>{12}</Pagination.Item>
-                    <Pagination.Item>{13}</Pagination.Item>
-                    <Pagination.Item disabled>{14}</Pagination.Item>
+            for(let i=0;i<5;i++){
+                displayPages[i] = (i + offset + 1);
+            }
 
-                    <Pagination.Ellipsis />
-                    <Pagination.Item>{20}</Pagination.Item>
-                    <Pagination.Next />
-                    <Pagination.Last />
-                </Pagination>
-                <label>pageSize</label>
-                <FormControl as="input" type="number" value={this.context.pagination.pageSize}></FormControl>
+            let nextpage = (pagination.page + 2 >= pages )?pages:pagination.page + 2;
+            let prevPage = (pagination.page < 1)?1:pagination.page;
+
+            console.log(pagination,pages,offset, displayPages);
+
+            return  (<Row>
+                <Col md={9}>
+                    <Pagination>
+                        <Pagination.First onClick={this.toPage.bind(this,1)}/>
+                        <Pagination.Prev onClick={this.toPage.bind(this,prevPage)}/>
+                        {
+                            (displayPages[0] > 1 && <Pagination.Item key={1} active={0 === pagination.page} onClick={this.toPage.bind(this,1)}>{1}</Pagination.Item>) || <></>
+                        }
+                        {
+                            (displayPages[0] > 1 && <Pagination.Ellipsis />) || <></>
+                        }
+                        {
+                            displayPages.map((page,index)=>{
+
+                                return <Pagination.Item key={page} active={page-1 === pagination.page} onClick={this.toPage.bind(this,page)}>{page}</Pagination.Item>
+                            })
+                        }
+                        {
+                            (displayPages[4] < pages && <Pagination.Ellipsis />) || <></>
+                        }
+                        {
+                            (displayPages[4] < pages && <Pagination.Item key={pages} active={pages-1 === pagination.page} onClick={this.toPage.bind(this,pages)}>{pages}</Pagination.Item>) || <></>
+                        }
+                        <Pagination.Next onClick={this.toPage.bind(this,nextpage)}/>
+                        <Pagination.Last onClick={this.toPage.bind(this,pages)}/>
+                    </Pagination>
+                </Col>
+                <Col md={3}>
+                    <Container className="justify-content-end">
+                    <Row >
+                        <Col><label className="col-form-label">Page Size</label></Col>
+                        <Col><FormControl className="" as="input" type="number" value={pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl></Col>
+                    </Row>
+                    </Container>
+                    
+                </Col>
             </Row>
             )
+            ;
+        }else{return <></>}
+        
     }
 
 }

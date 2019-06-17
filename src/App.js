@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 // import {FileDrop} from './components/file-drop/file-drop';
 import {GlobalState,GlobalContext} from "./context/global-context";
-import {Row,Col,Tabs,Tab} from "react-bootstrap";
+import {Row,Col,Tabs,Tab, Pagination} from "react-bootstrap";
 import {AWSState,AWSContext} from "./context/aws-context";
 import {AWSProfileSelect} from "./components/aws/profile-select"
 import {LoadAWSProfiles} from "./components/aws/AWSConfigFileDrop";
@@ -10,6 +10,7 @@ import {RegexFilterInput} from "./components/filter-input/filter-input"
 import {LogEvents} from "./components/log-events/log-events";
 import {FileInput} from "./components/file/file-input"; 
 import {Filter} from "./components/filter-input/filter";
+import {Paging} from "./components/page/pagination";
 
 import './App.css';
 
@@ -55,6 +56,7 @@ export class App extends Component {
                   </Tab>
                 </Tabs>
               <Row><Col md={12}><RegexFilterInput></RegexFilterInput></Col></Row>
+              <Paging></Paging>
             </header>
             <div className="content">
               {
