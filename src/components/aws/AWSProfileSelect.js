@@ -3,7 +3,7 @@ import FormControl from "react-bootstrap/FormControl";
 import {AWSContext} from "../../context/aws-context";
 import {AWSSelectProfile} from "../../actions/actions";
 
-import "./profile-select.css";
+import "./AWSProfileSelect.css";
 
 export class AWSProfileSelect extends Component{
     static contextType = AWSContext;
@@ -35,7 +35,7 @@ export class AWSProfileSelect extends Component{
     render(){
         return (
             <>
-                <label>Profiles</label>
+                <label>Profile</label>
                 <FormControl as="select" onChange={this.select.bind(this)} defaultValue="default">
                     {
                         Object.entries(this.context.aws).map( ([key,value])=>{

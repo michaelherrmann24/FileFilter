@@ -3,7 +3,8 @@ import React,{Component} from 'react';
 import {GlobalState,GlobalContext} from "./context/global-context";
 import {Row,Col,Tabs,Tab, Pagination} from "react-bootstrap";
 import {AWSState,AWSContext} from "./context/aws-context";
-import {AWSProfileSelect} from "./components/aws/profile-select"
+import {AWSProfileSelect} from "./components/aws/AWSProfileSelect"
+import {AWSRegionSelect} from "./components/aws/AWSRegionSelect"
 import {LoadAWSProfiles} from "./components/aws/AWSConfigFileDrop";
 import {LogGroupSelect} from "./components/log-group/log-group-select";
 import {RegexFilterInput} from "./components/filter-input/filter-input"
@@ -42,8 +43,25 @@ export class App extends Component {
                           (
                             ctx.profilesLoaded && (
                               <>
-                                <Row><Col md={6}><AWSProfileSelect></AWSProfileSelect></Col></Row>
-                                <Row><Col md={6}><LogGroupSelect test="test" profile={ctx.selectedProfile}></LogGroupSelect></Col></Row>
+                                <Row>
+                                  <Col md={3}><AWSProfileSelect></AWSProfileSelect></Col>
+                                  <Col md={3}><AWSRegionSelect></AWSRegionSelect></Col>
+                                  <Col md={6}>
+                                    <Row>
+                                      <Col md={12}>
+                                        <label>Assume Role</label>
+                                      </Col>
+                                      <Col md={6}>
+                                        <input type="text" value="" placeholder="Account"/>
+                                      </Col>
+                                      <Col md={6}>
+                                        <input type="text" value="" placeholder="Role"/>
+                                      </Col>
+                                    </Row>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col md={6}><LogGroupSelect test="test" profile={ctx.selectedProfile}></LogGroupSelect></Col></Row>
                               </>
                             )  
                           ) || (
