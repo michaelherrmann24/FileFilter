@@ -6,6 +6,7 @@
 }
 .page-line{
     word-break: break-all;
+    justify-content: flex-start;
 }
 
 .page-line-row{

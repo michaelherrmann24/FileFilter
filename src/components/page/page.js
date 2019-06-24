@@ -13,19 +13,19 @@ export class Page extends Component {
     this.state= {showLine:true,showNumbers:true}
   }
 
-  groupRender(line,regexResponse){
+  groupRender(line,regexResponse,colWidth){
     if(regexResponse && !this.state.showLine){
-      return (<Row className="page-line-row">{Object.values(regexResponse.groups).map((groupVal)=>{return (<Col md="auto">{groupVal}</Col>) })}</Row>)
+      return (<Row className="page-line-row">{Object.values(regexResponse.groups).map((groupVal)=>{return (<Col md={colWidth}>{groupVal}</Col>) })}</Row>)
     }
-    return this.lineRender(line,regexResponse);
+    return this.lineRender(line,regexResponse,colWidth);
   }
-  captureRender(line,regexResponse){
+  captureRender(line,regexResponse,colWidth){
     if(regexResponse && !this.state.showLine){
-      return (<Row className="page-line-row">{regexResponse.splice(1,regexResponse.length).map((capt)=>{ return (<Col md="auto">{capt}</Col>) })}</Row>)
+      return (<Row className="page-line-row">{regexResponse.splice(1,regexResponse.length).map((capt)=>{ return (<Col md={colWidth}>{capt}</Col>) })}</Row>)
     }
-    return this.lineRender(line,regexResponse);
+    return this.lineRender(line,regexResponse,colWidth);
   }
-  lineRender(line,regexResponse){
+  lineRender(line,regexResponse,colWidth){
     return line;
   }
   showLineHandler(evt){
@@ -44,6 +44,8 @@ export class Page extends Component {
     let headers = []; 
     let renderType = this.lineRender.bind(this);
 
+    let colWidth = "auto";
+
     let pageRender = this.context.page
     .filter((line,i )=> {
       return this.context.index[i];
@@ -56,6 +58,9 @@ export class Page extends Component {
         if(regexResponse.groups){
           renderType = this.groupRender.bind(this);
           headers = Object.keys(regexResponse.groups);
+          if(headers.length > 0){
+            colWidth = Math.max(Math.floor(12/headers.length),1);  
+          }
         }else{
           renderType = this.captureRender.bind(this);
         }
@@ -64,11 +69,15 @@ export class Page extends Component {
       return (
         <Row className="line-row" key={index}>
           { this.state.showNumbers && (<div className="num-col text-center">{index}</div>)}  
-          <Col md={this.state.showNumbers?11:12} className="page-line">{renderType(line,regexResponse)}</Col>
+          <Col md={this.state.showNumbers?11:12} className="page-line">{renderType(line,regexResponse,colWidth)}</Col>
         </Row>
       );
     })
 
+
+    
+      
+       
 
     return (
       <Container fluid={true}>
@@ -76,15 +85,14 @@ export class Page extends Component {
           {pageRender.length > 0 && (<Form.Check inline label="numbers" type="checkbox" id="showlinecheckbox" checked={ this.state.showNumbers} onChange={this.showNumbersHandler.bind(this)}/>)}
           {
             grouped && <Form.Check inline label="raw" type="checkbox" id="showlinecheckbox" checked={ this.state.showLine} onChange={this.showLineHandler.bind(this)}/>
-          }
-        </Row>
-        
+          }  
+        </Row>      
         {
           headers.length > 0 && (
           <Row>
             <div className="num-col text-center"></div>
             <Col md={11} className="page-line">
-              <Row >{headers.map((header)=>{ return (<Col md="auto">{header}</Col>) })}</Row>
+              <Row >{headers.map((header)=>{ return (<Col md={colWidth}>{header}</Col>) })}</Row>
             </Col>
             
           </Row>)
