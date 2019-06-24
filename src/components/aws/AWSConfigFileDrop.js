@@ -37,7 +37,7 @@ export class LoadAWSProfiles extends Component{
                     
                     let actionInst = new actionClass(currentProfile,value);
                     this.context.dispatch(actionInst);
-                    this.context.dispatch(new SetViewSection("select"))
+                    this.context.dispatch(new SetViewSection({left:"select"}))
                 }
 
             });

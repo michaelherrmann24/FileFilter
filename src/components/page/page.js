@@ -26,7 +26,7 @@ export class Page extends Component {
             return (
               <Row className="line-row" key={index}>
                 <div className="num-col text-center">{index}</div>
-                <Col md={11}>{line}</Col>
+                <Col md={11} className="page-line">{line}</Col>
               </Row>
             );
           })}

@@ -32,8 +32,10 @@ export const InitAWSState = {
       "us-gov-east-1" : "AWS GovCloud (US-East)",	
       "us-gov-west-1" : "AWS GovCloud (US)"		
     },
-    viewSection:'load'
-
+    views:{
+      right:"filters",
+      left:"load"
+    }
 };
 
 export const AWSContext = createContext(InitAWSState);

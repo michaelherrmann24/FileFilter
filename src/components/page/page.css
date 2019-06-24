@@ -4,3 +4,6 @@
 .row.line-row{
     padding: 0 10px;
 }
+.page-line{
+    word-break: break-all;
+}
