@@ -29,7 +29,6 @@ export class AWSProfileSection extends Component{
     }
 
     render(){
-        console.log(this.context);
         return (
             <>
                 {
@@ -54,9 +53,7 @@ export class AWSProfileSection extends Component{
                             <Col md={6} ><LogGroupSelect test="test" profile={this.context.selectedProfile}></LogGroupSelect></Col>
                         </Row>
                     )
-                }
-                
-                
+                } 
             </>
         );
     }

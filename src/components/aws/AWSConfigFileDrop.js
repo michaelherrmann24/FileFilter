@@ -37,11 +37,13 @@ export class LoadAWSProfiles extends Component{
                     
                     let actionInst = new actionClass(currentProfile,value);
                     this.context.dispatch(actionInst);
-                    this.context.dispatch(new SetViewSection({left:"select"}))
+                    
                 }
 
             });
+            
         }
+        this.context.dispatch(new AWSProfilesLoaded(true));
         return ;
     }
 
@@ -53,7 +55,7 @@ export class LoadAWSProfiles extends Component{
             }
             try{
                 await Promise.all(responses);    
-                this.context.dispatch(new AWSProfilesLoaded(true));
+                this.context.dispatch(new SetViewSection({left:"select"}));
             }catch(e){
                 console.error(e)
             }

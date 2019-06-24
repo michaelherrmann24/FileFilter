@@ -15,7 +15,7 @@ export class  RegexFilterInput extends Component{
         let reg = null;
         
         try{
-            reg = new RegExp(event.target.value);
+            reg = new RegExp(event.target.value.trim());
         }catch(e){
             console.error("should probably handle bad input here ",e);
             this.setState({error:"Invalid Regular Expression."});

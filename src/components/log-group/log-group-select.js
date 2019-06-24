@@ -12,27 +12,46 @@ export class LogGroupSelect extends Component{
         super(props);
     }
 
-    async componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps) {
         
         let {profile} = this.props;
-        
-        if( profile && profile !== prevProps.profile){
-           let region = profile.options.region;
-            let key = profile.credentials.aws_access_key_id;
-            let secret = profile.credentials.aws_secret_access_key; 
+        let prevprofile = prevProps && prevProps.profile;
 
-            if(key && secret){
-                let cloudWatchLogsService = new CloudWatchLogsService(key,secret,region);
-                try {
-                    let logGroups =  await cloudWatchLogsService.getLogGroups();
-                    this.context.dispatch(new AddLogGroups(logGroups));
-                }catch(err){
-                    console.log(err);
-                }
+        let region = (profile && profile.options && profile.options.region) || null;
+        let key = (profile && profile.credentials && profile.credentials.aws_access_key_id) || null;
+        let secret = (profile && profile.credentials && profile.credentials.aws_secret_access_key) || null; 
+
+        let prevregion = (prevprofile && prevprofile.options && prevprofile.options.region) || null;
+        let prevkey = (prevprofile && prevprofile.credentials && prevprofile.credentials.aws_access_key_id) || null;
+        let prevsecret = (prevprofile && prevprofile.credentials && prevprofile.credentials.aws_secret_access_key) || null; 
+
+        if(region !== prevregion || key !== prevkey || secret !== prevsecret){
+            this.fetchLogGroups(profile);   
+        }
+        
+    } 
+//
+    async fetchLogGroups(profile){
+        let region = (profile && profile.options && profile.options.region) || null;
+        let key = (profile && profile.credentials && profile.credentials.aws_access_key_id) || null;
+        let secret = (profile && profile.credentials && profile.credentials.aws_secret_access_key) || null; 
+
+        if(key && secret && region){
+            let cloudWatchLogsService = new CloudWatchLogsService(key,secret,region);
+            try {
+                let logGroups =  await cloudWatchLogsService.getLogGroups();
+                this.context.dispatch(new AddLogGroups(logGroups));
+            }catch(err){
+                console.log(err);
             }
         }
-  
-    } 
+    }
+
+    componentDidMount(){
+        console.log("did mount");
+        // let {profile} = this.props;
+        // this.fetchLogGroups(profile);
+    }
 
     selectLogGroup(event){
         this.context.dispatch(new SelectLogGroup(this.context.logGroups[event.target.value]));
