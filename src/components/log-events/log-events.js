@@ -33,7 +33,6 @@ export class LogEvents extends Component {
         });
 
         this.context.dispatch(new SetPage(logEvents));
-        this.context.dispatch(new SetIndex([].fill(true,0,logEvents.length-1)));
       } catch (err) {
         console.log(err);
       }
@@ -49,8 +48,7 @@ export class LogEvents extends Component {
     if (
       profile &&
       logGroup &&
-      profile !== prevProps.profile &&
-      logGroup !== prevProps.logGroup
+      (profile !== prevProps.profile || logGroup !== prevProps.logGroup)
     ) {
       this.fetchEvents();
     }

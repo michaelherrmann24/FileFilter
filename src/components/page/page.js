@@ -14,7 +14,7 @@ export class Page extends Component {
 
       let start = pageNo * size;
       let end = start + size;
-      
+    
     return (
       <Container fluid={true}>
         {this.context.page

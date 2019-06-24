@@ -4,6 +4,7 @@ export class AddLogGroups{
         this.value = value;
     }
     reduce(state){
+        console.log("AddLogGroups");
         return {...state,logGroups:this.value};
     }
 }
@@ -12,6 +13,7 @@ export class SelectLogGroup{
         this.value = value;
     }
     reduce(state){
+        console.log("SelectLogGroup");
         return {...state,selectedGroup:this.value};
     }
 }
@@ -21,6 +23,7 @@ export class SetPage{
         this.value = value;
     }
     reduce(state){
+        console.log("SetPage");
         return {
             ...state,
             page:this.value
@@ -33,6 +36,7 @@ export class SetIndex{
         this.value = value;
     }
     reduce(state){
+        console.log("SetIndex");
         return {
             ...state,
             index:this.value
@@ -46,6 +50,7 @@ export class SetRegexFilter{
         this.value = value;
     }
     reduce(state){
+        console.log("SetRegexFilter");
         return {
             ...state,
             filters:{
@@ -62,6 +67,7 @@ export class SetAWSCredential{
         this.profile = profile;
     }
     reduce(state){
+        console.log("SetAWSCredential");
         let results = {
             ...state,
             aws:{
@@ -85,6 +91,7 @@ export class SetAWSOptions{
         this.profile = profile;
     }
     reduce(state){
+        console.log("SetAWSOptions");
         let results = {
             ...state,
             aws:{
@@ -107,6 +114,7 @@ export class SetAWSProfile{
         this.profile = profile;
     }
     reduce(state){
+        console.log("SetAWSProfile");
         let results = {
             ...state,
             aws:{
@@ -126,6 +134,7 @@ export class AWSProfilesLoaded{
         this.value = value;
     }
     reduce(state){
+        console.log("AWSProfilesLoaded");
         return {
             ...state,
             profilesLoaded:this.value
@@ -138,6 +147,7 @@ export class AWSSelectProfile{
         this.value = value;
     }
     reduce(state){
+        console.log("AWSSelectProfile");
         return {
             ...state,
             selectedProfile:{
@@ -153,11 +163,12 @@ export class AWSSelectProfile{
             }
         }
     }
-}export class SetPagination{
+}export class SetPagination{SetAWSCredential
     constructor(value){
         this.value = value;
     }
     reduce(state){
+        console.log("SetPagination");
         return {
             ...state,
             pagination:{
