@@ -140,7 +140,17 @@ export class AWSSelectProfile{
     reduce(state){
         return {
             ...state,
-            selectedProfile:this.value
+            selectedProfile:{
+                ...state.selectedProfile,
+                options:{
+                   ...state.selectedProfile.options,
+                    ...this.value.options
+                },
+                credentials:{
+                    ...state.selectedProfile.credentials,
+                    ...this.value.credentials
+                }
+            }
         }
     }
 }export class SetPagination{

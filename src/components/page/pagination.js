@@ -39,7 +39,9 @@ export class Paging extends Component{
             let displayPages = [];
 
             for(let i=0;i<5;i++){
-                displayPages[i] = (i + offset + 1);
+                if((i+offset + 1) > 0){
+                    displayPages[i] = (i + offset + 1);
+                }
             }
 
             let nextpage = (pagination.page + 2 >= pages )?pages:pagination.page + 2;

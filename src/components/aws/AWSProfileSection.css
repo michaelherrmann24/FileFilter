@@ -1,0 +1,19 @@
+.profile-load{
+    height: 30px;
+    transform: rotate(-90deg);
+    padding: 0 10px;
+    position: absolute;
+    transform-origin: 0 100%;
+    margin: 133px 0px 0px 30px;
+    width: 162px;
+    /* margin-top: 142px; */
+    /* left: -97px;
+    top: 142px;
+    width: 226.59px; */
+    border-radius: 0;
+    /* -webkit-transform-origin: 0 100%; */
+}
+
+.profile-display{
+    margin-left: 30px !important;
+}

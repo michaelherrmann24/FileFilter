@@ -5,6 +5,10 @@ export const InitAWSState = {
         
     },
     profilesLoaded:false,
+    selectedProfile:{
+      options:{},
+      credentials:{}
+    },
     regions:{
       "us-east-2" : "US East (Ohio)",
       "us-east-1" : "US East (N. Virginia)",
