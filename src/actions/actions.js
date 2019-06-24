@@ -163,7 +163,20 @@ export class AWSSelectProfile{
             }
         }
     }
-}export class SetPagination{SetAWSCredential
+}
+export class SetViewSection{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        console.log("SetViewSection");
+        return {
+            ...state,
+            viewSection:this.value
+        }
+    }
+}
+export class SetPagination{SetAWSCredential
     constructor(value){
         this.value = value;
     }

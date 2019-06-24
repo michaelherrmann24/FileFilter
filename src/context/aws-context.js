@@ -31,7 +31,8 @@ export const InitAWSState = {
       "sa-east-1" : "South America (São Paulo)",
       "us-gov-east-1" : "AWS GovCloud (US-East)",	
       "us-gov-west-1" : "AWS GovCloud (US)"		
-    }
+    },
+    viewSection:'load'
 
 };
 

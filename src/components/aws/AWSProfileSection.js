@@ -5,7 +5,7 @@ import {AWSProfileSelect} from "./AWSProfileSelect";
 import {AWSRegionSelect} from "./AWSRegionSelect";
 import {LogGroupSelect} from "../log-group/log-group-select";
 import {LoadAWSProfiles} from "./AWSConfigFileDrop";
-
+import {SetViewSection} from "../../actions/actions";
 import "./AWSProfileSection.css";
 
 
@@ -17,11 +17,10 @@ export class AWSProfileSection extends Component{
 
     constructor(){
         super();
-        this.state = {view:LOAD}
     }
 
     toggleView(){
-        this.state.view === LOAD?this.setState({view:SELECT}):this.setState({view:LOAD});
+        this.context.dispatch(new SetViewSection(this.context.viewSection === LOAD?SELECT:LOAD));
     }
 
     renderLoadProfile(){
@@ -59,8 +58,8 @@ export class AWSProfileSection extends Component{
     render(){
         return (
             <>
-                <Button onClick={this.toggleView.bind(this)} variant="secondary" className="profile-load">{this.state.view === SELECT?'Load Profile':'Select Profile'}</Button>
-                {this.state.view === SELECT?this.renderSelectProfile():this.renderLoadProfile()}
+                <Button onClick={this.toggleView.bind(this)} variant="secondary" className="profile-load">{this.context.viewSection === SELECT?'Load Profile':'Select Profile'}</Button>
+                {this.context.viewSection === SELECT?this.renderSelectProfile():this.renderLoadProfile()}
             </>
         );
     }

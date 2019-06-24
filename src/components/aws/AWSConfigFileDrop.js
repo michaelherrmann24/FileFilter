@@ -3,7 +3,7 @@ import React, { Component} from "react";
 import {FileDrop} from "../file-drop/file-drop";
 import {FileReaderService} from "../../service/FileReader";
 import { AWSContext } from "../../context/aws-context";
-import {SetAWSCredential,SetAWSOptions, SetAWSProfile,AWSProfilesLoaded} from "../../actions/actions";
+import {SetAWSCredential,SetAWSOptions, SetAWSProfile,AWSProfilesLoaded,SetViewSection} from "../../actions/actions";
 
 const SPLIT_LINES_REGEX =/\r\n|\n/;
 const PROFILE_REGEX = /\[(.*?)\]/;
@@ -37,6 +37,7 @@ export class LoadAWSProfiles extends Component{
                     
                     let actionInst = new actionClass(currentProfile,value);
                     this.context.dispatch(actionInst);
+                    this.context.dispatch(new SetViewSection("select"))
                 }
 
             });
