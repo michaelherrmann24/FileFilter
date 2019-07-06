@@ -19,7 +19,6 @@ export class SynchronizedContent extends Component{
         } 
 
         let profilesLoaded = aws && Object.keys(aws).length > 0;
-        console.log("test trigger profiles loaded",profilesLoaded,this.props.gctx.profilesLoaded !== profilesLoaded);
         if(profilesLoaded && this.props.gctx.profilesLoaded !== profilesLoaded) {
             window.setTimeout(()=>{ //doesnt like me doing dispatches in the same update loop. put the updates in the next one.
                 this.props.gctx.dispatch(new SetViewSection({left:"select"}));
@@ -38,7 +37,7 @@ export class SynchronizedContent extends Component{
         if(!parsed) return; // do nothing if no value to work with
         if (event.key == PULL_EVENT_KEY && lastEventString) {
             this.push(this.lastEvent); //Another tab requested content
-        } else if (event.key == PUSH_EVENT_KEY && event.newValue != lastEventString ) {
+        } else if (event.key == PUSH_EVENT_KEY && event.newValue !== lastEventString ) {
             //received new data. update context.
             this.lastEvent = parsed;
             this.context.dispatch(new SyncData({aws:parsed}));              
