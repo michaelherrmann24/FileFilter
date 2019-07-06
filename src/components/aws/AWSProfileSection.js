@@ -1,11 +1,12 @@
 import React,{Component} from "react";
 import {Row,Col, Button} from 'react-bootstrap';
-import {AWSContext} from "../../context/aws-context";
+import {GlobalContext} from "../../context/global-context";
+import {SyncContext} from "../../context/sync-context";
 import {AWSProfileSelect} from "./AWSProfileSelect";
 import {AWSRegionSelect} from "./AWSRegionSelect";
 import {LogGroupSelect} from "../log-group/log-group-select";
 import {LoadAWSProfiles} from "./AWSConfigFileDrop";
-import {SetViewSection} from "../../actions/actions";
+import {SetViewSection,AWSProfilesLoaded} from "../../actions/actions";
 import "./AWSProfileSection.css";
 
 
@@ -15,10 +16,10 @@ const ROLES = "role";
 const FILTERS = "filters";
 
 export class AWSProfileSection extends Component{
-    static contextType = AWSContext;
+    static contextType = GlobalContext;
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
     }
 
     toggleLeftSide(){
@@ -50,12 +51,17 @@ export class AWSProfileSection extends Component{
                 {
                     this.context.profilesLoaded && (
                         <Row className="profile-display">
-                            <Col md={6} ><LogGroupSelect test="test" profile={this.context.selectedProfile}></LogGroupSelect></Col>
+                            <Col md={6} ><LogGroupSelect profile={this.context.selectedProfile}></LogGroupSelect></Col>
                         </Row>
                     )
                 } 
             </>
         );
+    }
+
+    loadedProfilesHandler(){
+        this.context.dispatch(new SetViewSection({left:"select"}));
+        this.context.dispatch(new AWSProfilesLoaded(true));
     }
 
     renderRoleSection(){
@@ -68,13 +74,17 @@ export class AWSProfileSection extends Component{
 
     renderLoadProfile(){
         return (
-            <Row className="profile-display" ><Col md={12}><LoadAWSProfiles></LoadAWSProfiles></Col></Row>
+            <Row className="profile-display" ><Col md={12}><LoadAWSProfiles loadedHandler={this.loadedProfilesHandler.bind(this)}></LoadAWSProfiles></Col></Row>
         )
     }
     renderSelectProfile(){
         return (
             <Row className="profile-display p-0">
-                <Col md={6} ><AWSProfileSelect></AWSProfileSelect></Col>
+                <Col md={6} >
+                    <SyncContext.Consumer>
+                        {ctx=>(<AWSProfileSelect profiles={ctx.aws}></AWSProfileSelect>)}
+                    </SyncContext.Consumer>
+                </Col>    
                 <Col md={6} ><AWSRegionSelect></AWSRegionSelect></Col>
             </Row>
         )

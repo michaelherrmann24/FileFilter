@@ -8,13 +8,17 @@ import {AddLogGroups,SelectLogGroup} from "../../actions/actions";
 export class LogGroupSelect extends Component{
     static contextType = GlobalContext;
 
-    constructor(props){
-        super(props);
+    constructor({profile,rest}){
+        super({...profile,...rest});
+        //this.state = profile;
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps,prevState) {
         
         let {profile} = this.props;
+
+        console.log(this.state, prevState);
+
         let prevprofile = prevProps && prevProps.profile;
 
         let region = (profile && profile.options && profile.options.region) || null;
@@ -25,6 +29,7 @@ export class LogGroupSelect extends Component{
         let prevkey = (prevprofile && prevprofile.credentials && prevprofile.credentials.aws_access_key_id) || null;
         let prevsecret = (prevprofile && prevprofile.credentials && prevprofile.credentials.aws_secret_access_key) || null; 
 
+        console.log(region,prevregion,key,prevkey,secret,prevsecret,region !== prevregion || key !== prevkey || secret !== prevsecret)
         if(region !== prevregion || key !== prevkey || secret !== prevsecret){
             this.fetchLogGroups(profile);   
         }
@@ -36,6 +41,7 @@ export class LogGroupSelect extends Component{
         let key = (profile && profile.credentials && profile.credentials.aws_access_key_id) || null;
         let secret = (profile && profile.credentials && profile.credentials.aws_secret_access_key) || null; 
 
+        console.log(key,secret,region,key && secret && region);
         if(key && secret && region){
             let cloudWatchLogsService = new CloudWatchLogsService(key,secret,region);
             try {
@@ -48,9 +54,9 @@ export class LogGroupSelect extends Component{
     }
 
     componentDidMount(){
-        console.log("did mount");
-        // let {profile} = this.props;
-        // this.fetchLogGroups(profile);
+        console.log("did mount",this.props);
+        let {profile} = this.props;
+        this.fetchLogGroups(profile);
     }
 
     selectLogGroup(event){

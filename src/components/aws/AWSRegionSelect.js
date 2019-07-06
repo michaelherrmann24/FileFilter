@@ -1,12 +1,12 @@
 import React, { Component} from "react";
 import {FormControl} from "react-bootstrap";
-import { AWSContext } from "../../context/aws-context";
+import { GlobalContext } from "../../context/global-context";
 import {AWSSelectProfile} from "../../actions/actions";
 // import {SetAWSCredential,SetAWSOptions, SetAWSProfile,A
 
 const DEFAULT_REGION = "ap-southeast-2";
 export class AWSRegionSelect extends Component{
-    static contextType = AWSContext;
+    static contextType = GlobalContext;
 
     changeHandler(event){
         this.context.dispatch(new AWSSelectProfile({options:{region:event.target.value}}));

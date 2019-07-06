@@ -1,20 +1,21 @@
 import React, { Component} from "react";
 import FormControl from "react-bootstrap/FormControl";
-import {AWSContext} from "../../context/aws-context";
+import {GlobalContext} from "../../context/global-context";
 import {AWSSelectProfile} from "../../actions/actions";
 
 import "./AWSProfileSelect.css";
 
 export class AWSProfileSelect extends Component{
-    static contextType = AWSContext;
+    static contextType = GlobalContext;
 
-    constructor(props) {
-        super(props);
+    constructor({profiles,rest}) {
+        super({...profiles,...rest});
+        this.state = {profiles:profiles} || {profiles:{}};
       }
 
     select(event){
         
-        let selectedProfileEntry = Object.entries(this.context.aws).filter(([key,value])=>{
+        let selectedProfileEntry = Object.entries(this.state.profiles).filter(([key,value])=>{
             return event.target.value === key;
         }).map(([key,value])=>{
             return value;
@@ -22,6 +23,7 @@ export class AWSProfileSelect extends Component{
             return value;
         });
 
+        console.log("selectedProfileEntry",selectedProfileEntry);
         if(selectedProfileEntry){
             this.context.dispatch(new AWSSelectProfile(selectedProfileEntry));
         }
@@ -29,7 +31,7 @@ export class AWSProfileSelect extends Component{
     }
 
     componentDidMount() {
-        this.context.dispatch(new AWSSelectProfile(this.context.aws['default']));
+       this.context.dispatch(new AWSSelectProfile(this.state.profiles['default']));
     }
 
     render(){
@@ -38,7 +40,7 @@ export class AWSProfileSelect extends Component{
                 <label>Profile</label>
                 <FormControl as="select" onChange={this.select.bind(this)} defaultValue="default">
                     {
-                        Object.entries(this.context.aws).map( ([key,value])=>{
+                        Object.entries(this.state.profiles).map( ([key,value])=>{
                             return (<option key={key} title={key} >{key}</option>)
                         })
                     } 

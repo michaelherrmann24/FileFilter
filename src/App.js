@@ -2,14 +2,14 @@ import React,{Component} from 'react';
 // import {FileDrop} from './components/file-drop/file-drop';
 import {GlobalState,GlobalContext} from "./context/global-context";
 import {Row,Col,Tabs,Tab, Pagination} from "react-bootstrap";
-import {AWSState,AWSContext} from "./context/aws-context";
+import {SyncState,SyncContext} from "./context/sync-context";
 import {AWSProfileSection} from "./components/aws/AWSProfileSection"
 import {RegexFilterInput} from "./components/filter-input/filter-input"
 import {LogEvents} from "./components/log-events/log-events";
 import {FileInput} from "./components/file/file-input"; 
 import {Filter} from "./components/filter-input/filter";
 import {Paging} from "./components/page/pagination";
-
+import {SynchronizedContent} from "./components/sync/synchronized-content";
 import './App.css';
 
 export class App extends Component {
@@ -26,7 +26,11 @@ export class App extends Component {
   render(){
     return  (
       <GlobalState>
-        <AWSState>
+        <SyncState>
+        <GlobalContext.Consumer>
+          {gCtx => ( <SynchronizedContent gctx={gCtx}></SynchronizedContent>)}
+        </GlobalContext.Consumer>
+          
           <div className="content-holder">
             <header>
                 <Tabs onSelect={this.tabSelect.bind(this)}>
@@ -42,16 +46,11 @@ export class App extends Component {
             </header>
             <div className="content">
               {
-                this.state.selectedTab === "file" && 
-                (
-                  <GlobalContext.Consumer>
-                    {gCtx => ( <Filter></Filter>)}
-                  </GlobalContext.Consumer>
-                )
+                this.state.selectedTab === "file" && (<Filter></Filter>)
               }
               { this.state.selectedTab === "aws" && 
                 (
-                  <AWSContext.Consumer>
+                  <SyncContext.Consumer>
                     {
                       aCtx =>( 
                         aCtx.profilesLoaded && aCtx.selectedProfile && 
@@ -62,7 +61,7 @@ export class App extends Component {
                         ) 
                       )
                     }
-                  </AWSContext.Consumer>
+                  </SyncContext.Consumer>
                 )
               }
               
@@ -70,7 +69,7 @@ export class App extends Component {
             </div>
             <footer ></footer>
           </div>
-        </AWSState>
+        </SyncState>
       </GlobalState>
       )
   }

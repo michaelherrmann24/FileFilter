@@ -61,53 +61,6 @@ export class SetRegexFilter{
     }
 }
 
-export class SetAWSCredential{
-    constructor(profile,value){
-        this.value = value;
-        this.profile = profile;
-    }
-    reduce(state){
-        console.log("SetAWSCredential",this.value);
-        let results = {
-            ...state,
-            aws:{
-                ...state.aws,
-                [this.profile]:{
-                    ...state.aws[this.profile],
-                    credentials:{
-                        ...state.aws[this.profile].credentials,
-                        ...this.value
-                    }
-                }
-            }
-        };
-        return results;
-    }
-}
-
-export class SetAWSOptions{
-    constructor(profile,value){
-        this.value = value;
-        this.profile = profile;
-    }
-    reduce(state){
-        console.log("SetAWSOptions",this.value);
-        let results = {
-            ...state,
-            aws:{
-                ...state.aws,
-                [this.profile]:{
-                    ...state.aws[this.profile],
-                    options:{
-                        ...state.aws[this.profile].options,
-                        ...this.value
-                    }
-                }
-            }
-        };
-        return results;
-    }
-}
 export class SetAWSProfile{
     constructor(profile, value){
         this.value = value; 
@@ -121,10 +74,18 @@ export class SetAWSProfile{
                 ...state.aws,
                 [this.profile]:{
                     ...state.aws[this.profile],
-                    ...this.value[this.profile]      
+                    options:{
+                        ...(state.aws[this.profile] && state.aws[this.profile].options),
+                        ...(this.value[this.profile] && this.value[this.profile].options)
+                    },
+                    credentials:{
+                        ...(state.aws[this.profile] && state.aws[this.profile].credentials),
+                        ...(this.value[this.profile] && this.value[this.profile].credentials)
+                    }
                 }
             }
         };
+        console.log("set profile result",results);
         return results;
     }
 }
@@ -179,7 +140,7 @@ export class SetViewSection{
         }
     }
 }
-export class SetPagination{SetAWSCredential
+export class SetPagination{
     constructor(value){
         this.value = value;
     }
@@ -195,3 +156,14 @@ export class SetPagination{SetAWSCredential
     }
 }
 
+export class SyncData{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        console.log("SyncData",this.value);
+        return {
+            ...this.value
+        }
+    }
+}

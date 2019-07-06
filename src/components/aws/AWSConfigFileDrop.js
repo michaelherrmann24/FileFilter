@@ -2,21 +2,28 @@ import React, { Component} from "react";
 
 import {FileDrop} from "../file-drop/file-drop";
 import {FileReaderService} from "../../service/FileReader";
-import { AWSContext } from "../../context/aws-context";
-import {SetAWSCredential,SetAWSOptions, SetAWSProfile,AWSProfilesLoaded,SetViewSection} from "../../actions/actions";
+import { SyncContext } from "../../context/sync-context";
+import {SetAWSProfile} from "../../actions/actions";
 
 const SPLIT_LINES_REGEX =/\r\n|\n/;
 const PROFILE_REGEX = /\[(.*?)\]/;
-const KEY_VALUE_REGEX = /(.*?)=(.*)/;
+const KEY_VALUE_REGEX = /(.*?)=(.*)/;       
 
 export class LoadAWSProfiles extends Component{
-    static contextType = AWSContext;
+    static contextType = SyncContext;
+
+    constructor({loadedHandler,rest}){
+        super(rest);
+        this.profilesLoaded = loadedHandler;
+    }
 
     async processFile(fileEntry){
 
         if(fileEntry.name === 'credentials' || fileEntry.name === 'config'){
             let reader = FileReaderService.getInstance();
-            let actionClass = (fileEntry.name === 'credentials')? SetAWSCredential:SetAWSOptions;
+
+            let baseProfile = {credentials:{},options:{}}
+            let actionValue = (fileEntry.name === 'credentials')? baseProfile.credentials:baseProfile.options;
             
             let content = await reader.readFile(await new Promise((resolve,reject)=>fileEntry.file(resolve,reject)));
             let currentProfile = null;
@@ -27,23 +34,19 @@ export class LoadAWSProfiles extends Component{
                 if(profRegRes && profRegRes[1]){
                     currentProfile = profRegRes[1];
 
-                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:{}}));
+                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:baseProfile}));
                 }
 
                 let keyVal = KEY_VALUE_REGEX.exec(line);
                 if(keyVal && keyVal[1] && keyVal[2]){
-                    let value = {};
-                    value[keyVal[1].trim()] = keyVal[2].trim();
-                    
-                    let actionInst = new actionClass(currentProfile,value);
-                    this.context.dispatch(actionInst);
-                    
+                    actionValue[keyVal[1].trim()] = keyVal[2].trim();                 
+                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:baseProfile}));                  
                 }
 
             });
-            
         }
-        this.context.dispatch(new AWSProfilesLoaded(true));
+
+       
         return ;
     }
 
@@ -54,8 +57,10 @@ export class LoadAWSProfiles extends Component{
                 responses.push(this.processFile(files[i]));
             }
             try{
-                await Promise.all(responses);    
-                this.context.dispatch(new SetViewSection({left:"select"}));
+                await Promise.all(responses);   
+                if(this.profilesLoaded){
+                    this.profilesLoaded();
+                }
             }catch(e){
                 console.error(e)
             }
