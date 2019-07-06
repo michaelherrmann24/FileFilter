@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Row, Col, Container,Form} from "react-bootstrap";
 
 import { GlobalContext } from "../../context/global-context";
-
+import {ScrollTo} from "../scroll-to";
 import "./page.css";
 
 export class Page extends Component {

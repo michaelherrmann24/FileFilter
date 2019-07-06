@@ -1,21 +1,26 @@
 import React,{Component} from "react";
 import { Pagination,Row,Col,FormControl,Container} from "react-bootstrap";
 import { GlobalContext } from "../../context/global-context";
-import {SetPagination} from "../../actions/actions";
+import {SetPagination,SetTail} from "../../actions/actions";
 
 const PAGING_OFFSET = -2;
 const PAGING_TO_DISPLAY = 5;
 
 export class Paging extends Component{
-    SetPagination
+    
     static contextType = GlobalContext;
 
     toPage(nextPage){
+        this.context.dispatch(new SetTail(false));
         this.context.dispatch(new SetPagination({page:(nextPage-1)}));
     }
 
     pageSizeChange(){
 
+    }
+
+    componentDidUpdate(){
+       
     }
 
     render(){
@@ -26,6 +31,7 @@ export class Paging extends Component{
         //display pages = first prev ... (current - 2) -> (current + 2) ... next last 
         if(pagination.lines && pagination.lines > pagination.pageSize){
             let pages = Math.ceil(pagination.lines / pagination.pageSize);
+
             let pageSize = pagination.pageSize;
 
             let offset = (pagination.page + PAGING_OFFSET);
@@ -46,8 +52,6 @@ export class Paging extends Component{
 
             let nextpage = (pagination.page + 2 >= pages )?pages:pagination.page + 2;
             let prevPage = (pagination.page < 1)?1:pagination.page;
-
-            console.log(pagination,pages,offset, displayPages);
 
             return  (<Row>
                 <Col md={9}>

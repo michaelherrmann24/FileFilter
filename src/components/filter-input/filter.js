@@ -35,8 +35,19 @@ export class Filter extends Component{
 
             let lines = index.filter((iVal)=>iVal);
             
+            let pagination = this.context.pagination;
+            let page = pagination.page;
+            if(lines && lines > pagination.pageSize){
+                let newPages = Math.ceil(lines / pagination.pageSize);
+                if(pagination.page > newPages){
+                  page = newPages; 
+                }
+            }else{
+                page = 0;
+            }
+
             this.context.dispatch(new SetIndex(index));
-            this.context.dispatch(new SetPagination({lines:lines.length}));
+            this.context.dispatch(new SetPagination({lines:lines.length,page:page}));
         
             this.setState((state)=>{
                 return {

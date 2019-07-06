@@ -10,6 +10,7 @@ import {FileInput} from "./components/file/file-input";
 import {Filter} from "./components/filter-input/filter";
 import {Paging} from "./components/page/pagination";
 import {SynchronizedContent} from "./components/sync/synchronized-content";
+import {Scrollable} from "./components/scrollable";
 import './App.css';
 
 export class App extends Component {
@@ -44,7 +45,7 @@ export class App extends Component {
               <Row><Col md={12}><RegexFilterInput></RegexFilterInput></Col></Row>
               <Paging></Paging>
             </header>
-            <div className="content">
+            <Scrollable className="content">
               {
                 this.state.selectedTab === "file" && (<Filter></Filter>)
               }
@@ -56,7 +57,9 @@ export class App extends Component {
                         aCtx.profilesLoaded && aCtx.selectedProfile && 
                         (
                           <GlobalContext.Consumer>
-                            {gCtx => ( gCtx.selectedGroup && gCtx.selectedGroup.logGroupName && (<LogEvents profile={aCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName}></LogEvents> ))}
+                            {gCtx => ( gCtx.selectedGroup && gCtx.selectedGroup.logGroupName && (
+                                <LogEvents profile={aCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName}></LogEvents> 
+                              ))}
                           </GlobalContext.Consumer>
                         ) 
                       )
@@ -66,7 +69,7 @@ export class App extends Component {
               }
               
               
-            </div>
+              </Scrollable>
             <footer ></footer>
           </div>
         </SyncState>

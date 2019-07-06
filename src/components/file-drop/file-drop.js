@@ -64,16 +64,15 @@ export class FileDrop extends Component {
     });
   }
 
-
   async handleDrop(e) {
     this.stopEvent(e);
     this.setHighlight(false);
-
-    console.log(e.dataTransfer.items,e.dataTransfer.files);
     let files =[];
 
     for(let item of e.dataTransfer.items){
+
       let entry  = item.webkitGetAsEntry();
+
       if(entry.isDirectory){
         let entries = await this.traverseDirectory(entry);
         files = files.concat(entries);

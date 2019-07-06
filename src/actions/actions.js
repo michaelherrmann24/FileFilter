@@ -31,6 +31,20 @@ export class SetPage{
     }
 }
 
+
+export class SetTail{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        console.log("SetTail",this.value);
+        return {
+            ...state,
+            tail:this.value
+        };
+    }
+}
+
 export class SetIndex{
     constructor(value){
         this.value = value;

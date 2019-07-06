@@ -6,6 +6,7 @@ export const InitGlobalState = {
     page:[],
     index:[],
     filters:{},
+    tail:false,
     pagination:{
         page:0,
         pageSize:500,
