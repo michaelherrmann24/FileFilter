@@ -37,7 +37,7 @@ export class Filter extends Component{
             
             let pagination = this.context.pagination;
             let page = pagination.page;
-            if(lines && lines > pagination.pageSize){
+            if(lines){
                 let newPages = Math.ceil(lines / pagination.pageSize);
                 if(pagination.page > newPages){
                   page = newPages; 

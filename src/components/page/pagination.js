@@ -15,7 +15,10 @@ export class Paging extends Component{
         this.context.dispatch(new SetPagination({page:(nextPage-1)}));
     }
 
-    pageSizeChange(){
+    pageSizeChange(evt){
+
+        this.context.dispatch(new SetPagination({pageSize:(evt.target.value)}));
+
 
     }
 
@@ -29,7 +32,7 @@ export class Paging extends Component{
         let pagination = this.context.pagination;
 
         //display pages = first prev ... (current - 2) -> (current + 2) ... next last 
-        if(pagination.lines && pagination.lines > pagination.pageSize){
+        if(pagination.lines && pagination.pageSize && pagination.pageSize > 0){
             let pages = Math.ceil(pagination.lines / pagination.pageSize);
 
             let pageSize = pagination.pageSize;
@@ -80,19 +83,24 @@ export class Paging extends Component{
                         <Pagination.Last onClick={this.toPage.bind(this,pages)}/>
                     </Pagination>
                 </Col>
-                <Col md={3}>
-                    <Container className="justify-content-end">
-                    <Row >
-                        <Col><label className="col-form-label">Page Size</label></Col>
-                        <Col><FormControl className="" as="input" type="number" value={pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl></Col>
-                    </Row>
-                    </Container>
-                    
+                <Col md={1}><label>Page Size</label></Col>
+                <Col md={2}>  
+                    <FormControl className="" as="input" size="sm" type="number" value={pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl>                    
                 </Col>
             </Row>
             )
             ;
-        }else{return <></>}
+        }else{
+            return (
+                <Row>
+                    <Col md={9}></Col>
+                    <Col md={1}><label>Page Size</label></Col>
+                    <Col md={2}>  
+                        <FormControl className="" as="input" size="sm" type="number" value={pagination.pageSize} onChange={this.pageSizeChange.bind(this)}></FormControl>                    
+                    </Col>
+                </Row>
+            )
+        }
         
     }
 

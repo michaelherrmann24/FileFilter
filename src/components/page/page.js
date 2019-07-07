@@ -68,16 +68,11 @@ export class Page extends Component {
       
       return (
         <Row className="line-row" key={index}>
-          { this.state.showNumbers && (<div className="num-col text-center">{index}</div>)}  
+          { this.state.showNumbers && (<div className="num-col text-center">{start + index + 1}</div>)}  
           <Col md={this.state.showNumbers?11:12} className="page-line">{renderType(line,regexResponse,colWidth)}</Col>
         </Row>
       );
     })
-
-
-    
-      
-       
 
     return (
       <Container fluid={true}>

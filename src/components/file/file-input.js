@@ -30,7 +30,6 @@ export class FileInput extends Component{
 
         let lines = content.split(SPLIT_LINES_REGEX);
         this.context.dispatch(new SetPage(this.context.page.concat(lines)));
-
     }
 
     async handleDrop(files){
@@ -67,17 +66,13 @@ export class FileInput extends Component{
     }
 
     toggleTail(event){
-       this.context.dispatch(new SetTail(event.target["checked"]));
-
-       let pagination = this.context.pagination;
-
-       if(pagination.lines && pagination.lines > pagination.pageSize){
-           let pages = Math.ceil(pagination.lines / pagination.pageSize);
-           this.context.dispatch(new SetPagination({page:(pages-1)}));
-       }
+       this.context.dispatch(new SetTail(event.target["checked"])); 
     }
 
     componentDidUpdate(prevProps,prevState){
+
+
+
         if(this.state.tail && this.state.selectedFile && 
                 !(prevState && prevState.tail && prevState.selectedFile && prevState.selectedFile === this.state.selectedFile)
             ){
@@ -87,9 +82,25 @@ export class FileInput extends Component{
             this.state.intervalId && window.clearInterval(this.state.intervalId);
         }
 
+
         if(prevState.fileSize && prevState.fileSize !== this.state.fileSize){
-            this.processFileDelta(this.state.selectedFile,prevState.fileSize,this.state.fileSize);
+
+            if(prevState.fileSize < this.state.fileSize){
+                this.processFileDelta(this.state.selectedFile,prevState.fileSize,this.state.fileSize);
+            }else{
+                this.processFile(this.state.selectedFile);
+            }
+            
             //read the file dif;
+        }
+
+        let pagination = this.context.pagination;
+
+        if(pagination.lines && this.context.tail){
+            let pages = Math.ceil(pagination.lines / pagination.pageSize);
+            if(pagination.page !== pages-1){
+                this.context.dispatch(new SetPagination({page:(pages-1)}));
+            }
         }
 
         this.context.tail !== this.state.tail && this.setState({tail:this.context.tail});
