@@ -51,20 +51,15 @@ export class App extends Component {
               }
               { this.state.selectedTab === "aws" && 
                 (
-                  <SyncContext.Consumer>
-                    {
-                      aCtx =>( 
-                        aCtx.profilesLoaded && aCtx.selectedProfile && 
-                        (
-                          <GlobalContext.Consumer>
-                            {gCtx => ( gCtx.selectedGroup && gCtx.selectedGroup.logGroupName && (
-                                <LogEvents profile={aCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName}></LogEvents> 
-                              ))}
-                          </GlobalContext.Consumer>
-                        ) 
-                      )
-                    }
-                  </SyncContext.Consumer>
+                  
+                  <GlobalContext.Consumer>
+                    {gCtx => ( gCtx.profilesLoaded && gCtx.selectedProfile &&  gCtx.selectedGroup && gCtx.selectedGroup.logGroupName && (
+                  
+                        <LogEvents profile={gCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName}></LogEvents>
+                        
+                      ))}
+                  </GlobalContext.Consumer>
+                  
                 )
               }
               

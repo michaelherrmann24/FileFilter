@@ -10,7 +10,6 @@ import {Filter} from "../../components/filter-input/filter";
 export class LogEvents extends Component {
   static contextType = GlobalContext;
 
-
   async fetchEvents() {
     let { profile, logGroup } = this.props;
     let region = profile.options.region;
@@ -31,7 +30,7 @@ export class LogEvents extends Component {
         .map((logEvent)=>{
             return logEvent.message;
         });
-
+        console.log("logEvents",logEvents);
         this.context.dispatch(new SetPage(logEvents));
       } catch (err) {
         console.log(err);

@@ -10,14 +10,27 @@ export class LogGroupSelect extends Component{
 
     constructor({profile,rest}){
         super({...profile,...rest});
-        //this.state = profile;
     }
+    componentDidUpdate(nextProps){
+        let {profile} = this.props;
+        let nProfile = nextProps && nextProps.profile;
 
-    componentDidUpdate(prevProps,prevState) {
+        let region = (profile && profile.options && profile.options.region) || null;
+        let key = (profile && profile.credentials && profile.credentials.aws_access_key_id) || null;
+        let secret = (profile && profile.credentials && profile.credentials.aws_secret_access_key) || null; 
+
+        let nRegion = (nProfile && nProfile.options && nProfile.options.region) || null;
+        let nKey = (nProfile && nProfile.credentials && nProfile.credentials.aws_access_key_id) || null;
+        let nSecret = (nProfile && nProfile.credentials && nProfile.credentials.aws_secret_access_key) || null;
+
+        return region !== nRegion || key !== nKey || secret !== nSecret;
+
+    }
+    componentDidUpdate(prevProps) {
         
         let {profile} = this.props;
 
-        console.log(this.state, prevState);
+        console.log("loggroup select componentDidUpdate",this);
 
         let prevprofile = prevProps && prevProps.profile;
 
@@ -54,7 +67,6 @@ export class LogGroupSelect extends Component{
     }
 
     componentDidMount(){
-        console.log("did mount",this.props);
         let {profile} = this.props;
         this.fetchLogGroups(profile);
     }
