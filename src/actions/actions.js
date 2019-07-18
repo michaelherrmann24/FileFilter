@@ -81,7 +81,6 @@ export class SetAWSProfile{
         this.profile = profile;
     }
     reduce(state){
-        console.log("SetAWSProfile",this.value);
         let results = {
             ...state,
             aws:{
@@ -90,16 +89,16 @@ export class SetAWSProfile{
                     ...state.aws[this.profile],
                     options:{
                         ...(state.aws[this.profile] && state.aws[this.profile].options),
-                        ...(this.value[this.profile] && this.value[this.profile].options)
+                        ...(this.value && this.value.options)
                     },
                     credentials:{
                         ...(state.aws[this.profile] && state.aws[this.profile].credentials),
-                        ...(this.value[this.profile] && this.value[this.profile].credentials)
+                        ...(this.value && this.value.credentials)
                     }
                 }
             }
         };
-        console.log("set profile result",results);
+
         return results;
     }
 }
@@ -109,7 +108,6 @@ export class AWSProfilesLoaded{
         this.value = value;
     }
     reduce(state){
-        console.log("AWSProfilesLoaded",this.value);
         return {
             ...state,
             profilesLoaded:this.value

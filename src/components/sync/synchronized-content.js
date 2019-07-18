@@ -15,10 +15,12 @@ export class SynchronizedContent extends Component{
     componentDidUpdate(prevProps,prevState){
         let {aws} = this.context;
         if(aws && JSON.stringify(this.lastEvent) !== JSON.stringify(aws)){
+            console.log("SYNC AWS", aws);
             this.push(aws);         
         } 
 
         let profilesLoaded = aws && Object.keys(aws).length > 0;
+       
         if(profilesLoaded && this.props.gctx.profilesLoaded !== profilesLoaded) {
             window.setTimeout(()=>{ //doesnt like me doing dispatches in the same update loop. put the updates in the next one.
                 this.props.gctx.dispatch(new SetViewSection({left:"select"}));

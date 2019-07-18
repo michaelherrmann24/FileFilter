@@ -60,6 +60,7 @@ export class AWSProfileSection extends Component{
     }
 
     loadedProfilesHandler(){
+        console.log("loadedProfilesHandler - executing");;
         this.context.dispatch(new SetViewSection({left:"select"}));
         this.context.dispatch(new AWSProfilesLoaded(true));
     }

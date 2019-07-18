@@ -24,7 +24,7 @@ export class AWSProfileSelect extends Component{
         });
 
         console.log("selectedProfileEntry",selectedProfileEntry);
-        if(selectedProfileEntry){
+        if(selectedProfileEntry && this.context.profilesLoaded){
             this.context.dispatch(new AWSSelectProfile(selectedProfileEntry));
         }
             

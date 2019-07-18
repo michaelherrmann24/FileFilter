@@ -15,6 +15,7 @@ export class LoadAWSProfiles extends Component{
     constructor({loadedHandler,rest}){
         super(rest);
         this.profilesLoaded = loadedHandler;
+        this.profiles = {};
     }
 
     async processFile(fileEntry){
@@ -28,24 +29,37 @@ export class LoadAWSProfiles extends Component{
             let content = await reader.readFile(await new Promise((resolve,reject)=>fileEntry.file(resolve,reject)));
             let currentProfile = null;
 
+
+
             content.split(SPLIT_LINES_REGEX).forEach((line)=>{
                 
                 let profRegRes = PROFILE_REGEX.exec(line);      
                 if(profRegRes && profRegRes[1]){
                     currentProfile = profRegRes[1];
-
-                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:baseProfile}));
                 }
 
                 let keyVal = KEY_VALUE_REGEX.exec(line);
                 if(keyVal && keyVal[1] && keyVal[2]){
-                    actionValue[keyVal[1].trim()] = keyVal[2].trim();                 
-                    this.context.dispatch(new SetAWSProfile(currentProfile,{[currentProfile]:baseProfile}));                  
+                    actionValue[keyVal[1].trim()] = keyVal[2].trim();                                
+                }
+
+                this.profiles[currentProfile] = {
+                    options:{
+                        ...(this.profiles[currentProfile] && this.profiles[currentProfile].options),
+                        ...baseProfile.options
+                    },
+                    credentials:{
+                        ...(this.profiles[currentProfile] && this.profiles[currentProfile].credentials),
+                        ...baseProfile.credentials
+                    }
                 }
 
             });
-        }
 
+
+            
+        }
+        
        
         return ;
     }
@@ -59,6 +73,9 @@ export class LoadAWSProfiles extends Component{
             try{
                 await Promise.all(responses);   
                 if(this.profilesLoaded){
+                    Object.entries(this.profiles).forEach(([key,value])=>{
+                        this.context.dispatch(new SetAWSProfile(key,value));
+                    });
                     this.profilesLoaded();
                 }
             }catch(e){
