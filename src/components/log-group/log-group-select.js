@@ -35,9 +35,7 @@ export class LogGroupSelect extends Component{
     } 
 
     async fetchLogGroups(){
-        console.log("fetchLogGroups",this);
         if(this.key && this.secret && this.region){
-            console.log("fetchLogGroups fetching",this);
             let cloudWatchLogsService = new CloudWatchLogsService(this.key,this.secret,this.region);
             try {
                 let logGroups =  await cloudWatchLogsService.getLogGroups();
@@ -54,8 +52,6 @@ export class LogGroupSelect extends Component{
         this.region = (profile && profile.options && profile.options.region) || null;
         this.key = (profile && profile.credentials && profile.credentials.aws_access_key_id) || null;
         this.secret = (profile && profile.credentials && profile.credentials.aws_secret_access_key) || null;
-
-        console.log("componentDidMount",this);
 
         this.fetchLogGroups(profile);
     }
