@@ -55,7 +55,7 @@ export class App extends Component {
                   <GlobalContext.Consumer>
                     {gCtx => ( gCtx.profilesLoaded && gCtx.selectedProfile &&  gCtx.selectedGroup && gCtx.selectedGroup.logGroupName && (
                   
-                        <LogEvents profile={gCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName}></LogEvents>
+                        <LogEvents profile={gCtx.selectedProfile} logGroup={gCtx.selectedGroup.logGroupName} filters={gCtx.logEventFilters}></LogEvents>
                         
                       ))}
                   </GlobalContext.Consumer>

@@ -11,7 +11,7 @@ export class LogEvents extends Component {
   static contextType = GlobalContext;
 
   async fetchEvents() {
-    let { profile, logGroup } = this.props;
+    let { profile, logGroup , filters} = this.props;
     let region = profile.options.region;
     let key = profile.credentials.aws_access_key_id;
     let secret = profile.credentials.aws_secret_access_key;
@@ -23,14 +23,19 @@ export class LogEvents extends Component {
         region
       );
       try {
-        let logEvents = (await cloudWatchLogsService.getLogEvents({
+        let options = {
           logGroupName: logGroup,
           logStreamNamePrefix: "20"
-        }))
+        };
+        console.log("filters", filters, this.context);
+        if(filters){
+          options.startTime = filters.startTime;
+        }
+
+        let logEvents = (await cloudWatchLogsService.getLogEvents(options))
         .map((logEvent)=>{
             return logEvent.message;
         });
-        console.log("logEvents",logEvents);
         this.context.dispatch(new SetPage(logEvents));
       } catch (err) {
         console.log(err);
@@ -43,11 +48,11 @@ export class LogEvents extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let { profile, logGroup } = this.props;
+    let { profile, logGroup, filters} = this.props;
     if (
       profile &&
       logGroup &&
-      (profile !== prevProps.profile || logGroup !== prevProps.logGroup)
+      (profile !== prevProps.profile || logGroup !== prevProps.logGroup || filters != prevProps.filters)
     ) {
       this.fetchEvents();
     }

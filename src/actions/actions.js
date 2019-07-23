@@ -179,3 +179,19 @@ export class SyncData{
         }
     }
 }
+
+export class SetLogEventFilters{
+    constructor(value){
+        this.value = value;
+    }
+    reduce(state){
+        console.log("SetFilterStartTime",this.value);
+        return {
+            ...state,
+            logEventFilters:{
+                ...state.logEventFilters,
+                ...this.value
+            }
+        }
+    }
+}

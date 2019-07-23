@@ -6,7 +6,7 @@ import {AWSProfileSelect} from "./AWSProfileSelect";
 import {AWSRegionSelect} from "./AWSRegionSelect";
 import {LogGroupSelect} from "../log-group/log-group-select";
 import {LoadAWSProfiles} from "./AWSConfigFileDrop";
-import {SetViewSection,AWSProfilesLoaded} from "../../actions/actions";
+import {SetViewSection,AWSProfilesLoaded,SetLogEventFilters} from "../../actions/actions";
 import "./AWSProfileSection.css";
 
 
@@ -15,11 +15,27 @@ const SELECT = "select";
 const ROLES = "role";
 const FILTERS = "filters";
 
+
+const PERIOD_CHANGE_OPTIONS =[
+    ()=>0,
+    (value)=>new Date().setMonths(new Date().getMonths() - value),
+    (value)=>new Date().setDate(new Date().getDate() - (7 * value)),
+    (value)=>new Date().setDate(new Date().getDate() - value),
+    (value)=>new Date().setHours(new Date().getHours() - value),
+    (value)=>new Date().setMinutes(new Date().getMinutes() - value),
+    (value)=>new Date().setSeconds(new Date().getSeconds() - value)
+];
+
 export class AWSProfileSection extends Component{
     static contextType = GlobalContext;
 
     constructor(props){
         super(props);
+
+        this.state = {
+            periodFn : PERIOD_CHANGE_OPTIONS[0],
+            timeValue : 0
+        }
     }
 
     toggleLeftSide(){
@@ -60,9 +76,18 @@ export class AWSProfileSection extends Component{
     }
 
     loadedProfilesHandler(){
-        console.log("loadedProfilesHandler - executing");;
         this.context.dispatch(new SetViewSection({left:"select"}));
         this.context.dispatch(new AWSProfilesLoaded(true));
+    }
+
+    handleTimeChange(evt){
+        this.setState({timeValue : evt.target.value});
+        this.context.dispatch(new SetLogEventFilters({startTime:this.state.periodFn(evt.target.value)}));
+    }
+    handlePeriodChange(evt){
+        let fn = PERIOD_CHANGE_OPTIONS[evt.target.value]
+        this.setState({periodFn : fn});
+        this.context.dispatch(new SetLogEventFilters({startTime:fn(this.state.timeValue)}));
     }
 
     renderRoleSection(){
@@ -70,7 +95,26 @@ export class AWSProfileSection extends Component{
     }
 
     renderAWSFiltersSection(){
-        return (<div>AWS LOG Filter Section</div>)
+        return (<div>
+            <Row className="p-0">
+                <Col>
+                <label>Filter Start Time</label>
+                <div className="form-inline">
+                <input className="form-control" type="number" placeholder="num" onChange={this.handleTimeChange.bind(this)}/>
+                <select className="form-control" onChange={this.handlePeriodChange.bind(this)}>
+                    <option value={0}>All time</option>
+                    <option value={1}>Months</option>
+                    <option value={2}>Weeks</option>
+                    <option value={3}>Days</option>
+                    <option value={4}>Hours</option>
+                    <option value={5}>Mins</option>
+                    <option value={6}>Seconds</option>
+                </select>
+                </div>
+                </Col>
+            </Row>
+        </div>
+        )
     }
 
     renderLoadProfile(){
