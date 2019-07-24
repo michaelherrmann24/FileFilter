@@ -24,8 +24,7 @@ export class LogEvents extends Component {
       );
       try {
         let options = {
-          logGroupName: logGroup,
-          logStreamNamePrefix: "20"
+          logGroupName: logGroup
         };
         console.log("filters", filters, this.context);
         if(filters){
