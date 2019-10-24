@@ -4,7 +4,6 @@ export class AddLogGroups{
         this.value = value;
     }
     reduce(state){
-        console.log("AddLogGroups",this.value);
         return {...state,logGroups:this.value};
     }
 }
@@ -13,7 +12,6 @@ export class SelectLogGroup{
         this.value = value;
     }
     reduce(state){
-        console.log("SelectLogGroup",this.value);
         return {...state,selectedGroup:this.value};
     }
 }
@@ -23,7 +21,6 @@ export class SetPage{
         this.value = value;
     }
     reduce(state){
-        console.log("SetPage",this.value);
         return {
             ...state,
             page:this.value
@@ -37,7 +34,6 @@ export class SetTail{
         this.value = value;
     }
     reduce(state){
-        console.log("SetTail",this.value);
         return {
             ...state,
             tail:this.value
@@ -50,7 +46,6 @@ export class SetIndex{
         this.value = value;
     }
     reduce(state){
-        console.log("SetIndex",this.value);
         return {
             ...state,
             index:this.value
@@ -64,7 +59,6 @@ export class SetRegexFilter{
         this.value = value;
     }
     reduce(state){
-        console.log("SetRegexFilter",this.value);
         return {
             ...state,
             filters:{
@@ -120,7 +114,6 @@ export class AWSSelectProfile{
         this.value = value;
     }
     reduce(state){
-        console.log("AWSSelectProfile",this.value);
         return {
             ...state,
             selectedProfile:{
@@ -142,7 +135,6 @@ export class SetViewSection{
         this.value = value;
     }
     reduce(state){
-        console.log("SetViewSection",this.value);
         return {
             ...state,
             views:{
@@ -157,7 +149,6 @@ export class SetPagination{
         this.value = value;
     }
     reduce(state){
-        console.log("SetPagination",this.value);
         return {
             ...state,
             pagination:{
@@ -173,7 +164,6 @@ export class SyncData{
         this.value = value;
     }
     reduce(state){
-        console.log("SyncData",this.value);
         return {
             ...this.value
         }
@@ -185,7 +175,6 @@ export class SetLogEventFilters{
         this.value = value;
     }
     reduce(state){
-        console.log("SetFilterStartTime",this.value);
         return {
             ...state,
             logEventFilters:{

@@ -47,12 +47,15 @@ export class Page extends Component {
     let colWidth = "auto";
 
     let pageRender = this.context.page
-    .filter((line,i )=> {
-      return this.context.index[i];
-    })
+    .reduce((mapping,line,i )=> {   
+      if(this.context.index[i] && this.context.index[i][1]){
+        mapping.push({index:this.context.index[i][0],line:line});
+      } 
+      return mapping;
+    },[])
     .slice(start,end)
     .map((line, index) => {
-      let regexResponse = this.context.filters && this.context.filters.regexFilter && this.context.filters.regexFilter.exec(line);
+      let regexResponse = this.context.filters && this.context.filters.regexFilter && this.context.filters.regexFilter.exec(line.line);
       if(index === 0 && regexResponse && regexResponse.length > 1){
         grouped = true;
         if(regexResponse.groups){
@@ -65,11 +68,10 @@ export class Page extends Component {
           renderType = this.captureRender.bind(this);
         }
       }
-      
       return (
-        <Row className="line-row" key={index}>
-          { this.state.showNumbers && (<div className="num-col text-center">{start + index + 1}</div>)}  
-          <Col md={this.state.showNumbers?11:12} className="page-line">{renderType(line,regexResponse,colWidth)}</Col>
+        <Row className="line-row" key={line.index}>
+          { this.state.showNumbers && (<div className="num-col text-center">{line.index + 1}</div>)}  
+          <Col md={this.state.showNumbers?11:12} className="page-line">{renderType(line.line,regexResponse,colWidth)}</Col>
         </Row>
       );
     })

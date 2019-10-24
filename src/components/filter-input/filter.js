@@ -29,11 +29,11 @@ export class Filter extends Component{
         if(reindex){
 
             let index = this.context.page
-                .map(line => {
-                    return this.context.filters && this.context.filters.regexFilter ? this.context.filters.regexFilter.test(line) : true;
+                .map((line,index) => {
+                    return this.context.filters && this.context.filters.regexFilter ? [index,this.context.filters.regexFilter.test(line)] : [index,true];
                 });
 
-            let lines = index.filter((iVal)=>iVal);
+            let lines = index.filter((iVal)=>iVal[1]);
             
             let pagination = this.context.pagination;
             let page = pagination.page;
@@ -59,15 +59,6 @@ export class Filter extends Component{
     }
 
     render(){
-
-        // let pages = (this.context.pages / this.context.pageSize) + (this.context.pages % this.context.pageSize > 0)?1:0;
-        // let pageSize = this.context.pagination.pageSize;
-        
-
-        // console.log(this.context.pagination);
-        //display pages = first prev ... (current - 2) -> (current + 2) ... next last 
-
-
         return  ( <Page></Page>);
     }
 

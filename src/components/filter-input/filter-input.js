@@ -3,17 +3,21 @@ import {GlobalContext} from "../../context/global-context";
 import {SetRegexFilter} from "../../actions/actions";
 import FormControl from "react-bootstrap/FormControl";
 
+const DEBOUNCE = 300;
 export class  RegexFilterInput extends Component{
     static contextType = GlobalContext
-
     constructor(props){
         super(props);
         this.state = {};
+        this.timer = null;
     }
 
     handleChange (event){
         let reg = null;
-        
+        if(this.timer){
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
         try{
             reg = new RegExp(event.target.value.trim());
         }catch(e){
@@ -22,8 +26,10 @@ export class  RegexFilterInput extends Component{
         }
 
         if(reg){
-            this.setState({error:undefined});
-            this.context.dispatch(new SetRegexFilter(reg));
+            this.timer = setTimeout(()=>{
+                this.setState({error:undefined});
+                this.context.dispatch(new SetRegexFilter(reg));
+            },DEBOUNCE);  
         }
     }
     render(){
