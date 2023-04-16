@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "http://mjherrmann.github.io/FileFilter",
   "dependencies": {
-    "aws-sdk": "^2.471.0",
+    "aws-sdk": "^2.1359.0",
     "bootstrap": "^4.3.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
